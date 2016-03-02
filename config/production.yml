@@ -1,1 +1,1 @@
-runjunit_command: runjunit
+runqsim_command: java -jar -Djava.system.class.loader=com.uqbar.apo.APOClassLoader ./bin/QSim.jar
