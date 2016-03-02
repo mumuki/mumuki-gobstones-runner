@@ -4,10 +4,10 @@ describe 'running' do
   let(:runner) { TestHook.new('runqsim_command' => 'java -jar -Djava.system.class.loader=com.uqbar.apo.APOClassLoader ./bin/QSim.jar') }
 
   describe '#run' do
-    context 'when test does not compile' do
+    context 'when program finishes' do
       let(:file) { File.new 'spec/data/passed/programaqsimpass.qsim' }
       let(:result) { runner.run!(file) }
-      let(:expect) {'{
+      let(:expected_result_json) {'{
   "special_records": {
     "PC": "0005",
     "SP": "FFEF",
@@ -32,11 +32,8 @@ describe 'running' do
 }
 '}
   
-      it { puts "QUE ES RESULT"
-           puts result 
-           expect(result[1]).to eq :passed }
-      it { expect(result[0]).to include expect }
-
+      it { expect(result[1]).to eq :passed }
+      it { expect(result[0]).to include expected_result_json }
     end
   end
 end
