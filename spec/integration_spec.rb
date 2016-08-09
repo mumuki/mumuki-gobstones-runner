@@ -11,7 +11,7 @@ describe 'Server' do
   after(:all) { Process.kill 'TERM', @pid }
 
   it 'answers a valid hash when submission passes' do
-    response = bridge.run_tests!(test: '', extra: '', content: %q{
+    response = bridge.run_tests!(test: 'foo', extra: '', content: %q{
 MOV R3, 0x0003
 MOV R5, 0x0004
 ADD R3, R5}, expectations: [])
