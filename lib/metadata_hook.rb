@@ -3,9 +3,10 @@ class QSimMetadataHook < Mumukit::Hook
     {language: {
         name: 'qsim',
         icon: {type: 'devicon', name: 'qsim'},
-        version: 'v0.2.0',
+        version: 'v0.2.2',
         extension: 'qsim',
-        ace_mode: 'assembly_x86'
+        ace_mode: 'assembly_x86',
+        graphic: true
     }
 }
   end
