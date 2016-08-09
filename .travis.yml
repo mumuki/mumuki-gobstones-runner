@@ -1,3 +1,4 @@
+sudo: required
 language: ruby
 env: RACK_ENV=development
 rvm:
