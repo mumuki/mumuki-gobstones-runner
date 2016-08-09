@@ -1,0 +1,18 @@
+<h5><%=I18n.t :records %></h5>
+
+<table class="table table-bordered">
+  <thead>
+	<tr>
+	  <% @result[:records].each do |name, _| %>
+		  <th><%= name %></th>
+	  <% end %>
+	</tr>
+  </thead>
+  <tbody>
+	<tr>
+	  <% @result[:records].each do |_, value| %>
+		  <td><%= value %></td>
+	  <% end %>
+	</tr>
+  </tbody>
+</table>

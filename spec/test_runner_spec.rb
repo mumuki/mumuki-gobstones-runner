@@ -1,11 +1,19 @@
 require_relative 'spec_helper'
 
+class DummyRenderer
+  def render(json_result)
+    json_result
+  end
+end
+
 describe 'running' do
   let(:runner) { QsimTestHook.new }
 
-  describe '#run' do
+  describe '#run!' do
+    before { runner.renderer = DummyRenderer.new }
+
     context 'when program finishes' do
-      let(:file) { File.new 'spec/data/passed/programaqsimpass.qsim' }
+      let(:file) { File.new 'spec/data/q1-ok.qsim' }
       let(:result) { runner.run!(file) }
       let(:expected_result_json) {'{
   "special_records": {
@@ -31,9 +39,18 @@ describe 'running' do
   }
 }
 '}
-  
       it { expect(result[1]).to eq :passed }
-      it { expect(result[0]).to include expected_result_json }
+      it { expect(result[0]).to eq expected_result_json }
+    end
+  end
+
+  describe 'with HTML renderer' do
+    context 'when program finishes' do
+      let(:file) { File.new 'spec/data/q1-ok.qsim' }
+      let(:html) { runner.run!(file)[0] }
+
+      it { expect(html).to include '<th>R3</th>' }
+      it { expect(html).to include '<td>0007</td>' }
     end
   end
 end
