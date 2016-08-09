@@ -1,6 +1,8 @@
-sudo: required
 language: ruby
-env: RACK_ENV=development
+env:
+  matrix:
+  - RACK_ENV=development
+sudo: false
 rvm:
 - 2.0.0
 services:
