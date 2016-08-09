@@ -6,7 +6,6 @@ Mumukit.configure do |config|
   config.content_type = 'html'
 end
 
-require 'active_support/all'
 require 'erb'
 
 require_relative './test_hook'
