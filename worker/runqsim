@@ -1,0 +1,9 @@
+#!/bin/bash
+FILE="$1"
+Q_ARCHITECTURE="$2"
+
+DIRECTORY=$(mktemp -d)
+cp $FILE $directory/Submission.qsim
+
+java -jar QSim.jar "$directory/Submission.qsim" $Q_ARCHITECTURE 2>&1
+exit $?

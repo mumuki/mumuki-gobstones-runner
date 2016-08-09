@@ -1,9 +1,8 @@
 require 'mumukit'
 
+Mumukit.runner_name = 'qsim'
 Mumukit.configure do |config|
-  config.runner_name = 'qsim-server'
-  config.command_size_limit = 4096
-  config.command_time_limit = 30
+  config.docker_image = 'faloi/mumuki-qsim-worker'
 end
 
 require_relative './test_hook'

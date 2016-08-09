@@ -1,7 +1,7 @@
 require_relative 'spec_helper'
 
 describe 'running' do
-  let(:runner) { TestHook.new('runqsim_command' => 'java -jar -Djava.system.class.loader=com.uqbar.apo.APOClassLoader ./bin/QSim.jar') }
+  let(:runner) { QSimTestHook.new }
 
   describe '#run' do
     context 'when program finishes' do
