@@ -4,7 +4,7 @@ class QsimTestHook < Mumukit::Templates::FileHook
   attr_writer :renderer
 
   def renderer
-    @renderer ||= HtmlRenderer.new
+    @renderer ||= Qsim::HtmlRenderer.new
   end
 
   def tempfile_extension
