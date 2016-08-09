@@ -1,4 +1,4 @@
-class QSimMetadataHook < Mumukit::Hook
+class QsimMetadataHook < Mumukit::Hook
   def metadata
     {language: {
         name: 'qsim',

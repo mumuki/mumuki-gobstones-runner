@@ -1,4 +1,4 @@
-class QSimTestHook < Mumukit::Templates::FileHook
+class QsimTestHook < Mumukit::Templates::FileHook
   isolated true
 
   def tempfile_extension

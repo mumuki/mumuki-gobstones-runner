@@ -1,7 +1,7 @@
 require_relative 'spec_helper'
 
 describe 'running' do
-  let(:runner) { QSimTestHook.new }
+  let(:runner) { QsimTestHook.new }
 
   describe '#run' do
     context 'when program finishes' do
