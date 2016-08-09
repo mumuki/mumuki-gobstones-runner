@@ -11,6 +11,6 @@ class HtmlRenderer
   end
 
   def parse_json(json_result)
-    ActiveSupport::JSON.decode(json_result).deep_symbolize_keys
+    JSON.parse(json_result).deep_symbolize_keys
   end
 end
