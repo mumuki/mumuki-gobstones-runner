@@ -1,6 +1,13 @@
 class QsimTestHook < Mumukit::Templates::FileHook
   isolated true
 
+  attr_writer :renderer
+
+  def initialize(config=nil)
+    super config
+    @renderer = HtmlRenderer.new
+  end
+
   def tempfile_extension
     '.qsim'
   end
@@ -11,5 +18,9 @@ class QsimTestHook < Mumukit::Templates::FileHook
 
   def compile_file_content(request)
     request.content
+  end
+
+  def post_process_file(file, result, status)
+    [@renderer.render(result), status]
   end
 end
