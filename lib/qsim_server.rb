@@ -2,7 +2,7 @@ require 'mumukit'
 
 Mumukit.runner_name = 'qsim'
 Mumukit.configure do |config|
-  config.docker_image = 'faloi/mumuki-qsim-worker'
+  config.docker_image = 'mumuki/mumuki-qsim-worker'
 end
 
 require_relative './test_hook'
