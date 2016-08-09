@@ -3,9 +3,8 @@ class QsimTestHook < Mumukit::Templates::FileHook
 
   attr_writer :renderer
 
-  def initialize(config=nil)
-    super config
-    @renderer = HtmlRenderer.new
+  def renderer
+    @renderer ||= HtmlRenderer.new
   end
 
   def tempfile_extension
@@ -21,6 +20,6 @@ class QsimTestHook < Mumukit::Templates::FileHook
   end
 
   def post_process_file(file, result, status)
-    [@renderer.render(result), status]
+    [renderer.render(result), status]
   end
 end
