@@ -1,13 +1,13 @@
-[![Build Status](https://travis-ci.org/orga-unq/mumuki-qsim-server.svg?branch=master)](https://travis-ci.org/orga-unq/mumuki-qsim-server)
-[![Code Climate](https://codeclimate.com/github/orga-unq/mumuki-qsim-server/badges/gpa.svg)](https://codeclimate.com/github/orga-unq/mumuki-qsim-server)
-[![Test Coverage](https://codeclimate.com/github/orga-unq/mumuki-qsim-server/badges/coverage.svg)](https://codeclimate.com/github/orga-unq/mumuki-qsim-server)
+[![Build Status](https://travis-ci.org/mumuki/mumuki-qsim-server.svg?branch=master)](https://travis-ci.org/mumuki/mumuki-qsim-server)
+[![Code Climate](https://codeclimate.com/github/mumuki/mumuki-qsim-server/badges/gpa.svg)](https://codeclimate.com/github/mumuki/mumuki-qsim-server)
+[![Test Coverage](https://codeclimate.com/github/mumuki/mumuki-qsim-server/badges/coverage.svg)](https://codeclimate.com/github/mumuki/mumuki-qsim-server)
 
 # Install the server
 
 ## Clone the project
 
 ```
-git clone https://github.com/orga-unq/mumuki-qsim-server 
+git clone https://github.com/mumuki/mumuki-qsim-server 
 cd mumuki-qsim-server
 ```
 
