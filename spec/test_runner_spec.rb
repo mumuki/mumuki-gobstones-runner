@@ -5,7 +5,7 @@ describe 'running' do
 
   describe '#run' do
     context 'when program finishes' do
-      let(:file) { File.new 'spec/data/passed/programaqsimpass.qsim' }
+      let(:file) { File.new 'spec/data/q1-ok.qsim' }
       let(:result) { runner.run!(file) }
       let(:expected_result_json) {'{
   "special_records": {
