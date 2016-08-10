@@ -16,6 +16,10 @@ class QsimTestHook < Mumukit::Templates::FileHook
     "runqsim #{filename} 6"
   end
 
+  def compile_file_content(request)
+    (super request).strip
+  end
+
   def post_process_file(file, result, status)
     output = parse_json result
 
