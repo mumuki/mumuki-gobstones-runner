@@ -1,5 +1,6 @@
 class QsimTestHook < Mumukit::Templates::FileHook
   isolated true
+  mashup :extra, :content
 
   attr_writer :renderer
 
@@ -13,10 +14,6 @@ class QsimTestHook < Mumukit::Templates::FileHook
 
   def command_line(filename)
     "runqsim #{filename} 6"
-  end
-
-  def compile_file_content(request)
-    request.content
   end
 
   def post_process_file(file, result, status)

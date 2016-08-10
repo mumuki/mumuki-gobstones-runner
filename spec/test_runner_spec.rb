@@ -9,6 +9,13 @@ end
 describe 'running' do
   let(:runner) { QsimTestHook.new }
 
+  describe '#compile_file_content' do
+    let(:request) { OpenStruct.new(content: 'ADD R1, R2', extra: 'MOV R1, 0x00FA', test: '') }
+    let(:result) { runner.compile_file_content request }
+
+    it { expect(result).to eq "MOV R1, 0x00FA\nADD R1, R2" }
+  end
+
   describe '#run!' do
     before { runner.renderer = DummyRenderer.new }
     let(:result) { runner.run!(file) }
