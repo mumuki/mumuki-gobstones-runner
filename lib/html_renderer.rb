@@ -1,7 +1,7 @@
 module Qsim
   class HtmlRenderer
-    def render(json_result)
-      @result =  parse_json json_result
+    def render(result)
+      @result = result
       template_file.result binding
     end
 
@@ -9,10 +9,6 @@ module Qsim
 
     def template_file
       ERB.new File.read("#{__dir__}/records.html.erb")
-    end
-
-    def parse_json(json_result)
-      JSON.parse(json_result).deep_symbolize_keys
     end
   end
 end

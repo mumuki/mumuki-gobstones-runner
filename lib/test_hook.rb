@@ -20,6 +20,22 @@ class QsimTestHook < Mumukit::Templates::FileHook
   end
 
   def post_process_file(file, result, status)
-    [renderer.render(result), status]
+    output = parse_json result
+
+    case status
+      when :passed
+        [renderer.render(output), status]
+      when :failed
+        actual_status = output[:kind] == 'runtime' ? :failed : :errored
+        [output[:error], actual_status]
+      else
+        [output, status]
+    end
+  end
+
+  private
+
+  def parse_json(json_result)
+    JSON.parse(json_result).deep_symbolize_keys
   end
 end
