@@ -49,8 +49,8 @@ describe 'running' do
       let(:file) { File.new 'spec/data/q1-ok.qsim' }
       let(:html) { runner.run!(file)[0] }
 
-      it { expect(html).to include '<th>R3</th>' }
-      it { expect(html).to include '<td>0007</td>' }
+      it { expect(html).to include 'R3' }
+      it { expect(html).to include '0007' }
     end
   end
 end
