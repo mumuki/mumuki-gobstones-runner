@@ -1,2 +1,3 @@
 es:
   records: 'Registros'
+  check_compare_failure: "Se esperaba que %{record} valiera %{expected}, pero se encontró %{actual}"

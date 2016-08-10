@@ -21,11 +21,11 @@ describe 'metatest' do
     end
     let(:compilation) do
       {
-          special_records: {PC: "0005", SP: "FFEF", IR: "28E5 "},
+          special_records: {PC: '0005', SP: 'FFEF', IR: '28E5 '},
           flags: {N: 0, Z: 0, V: 0, C: 0},
           records: {
-              R0: "0000", R1: "0000", R2: "0000", R3: "0000",
-              R4: "0003", R5: "0004", R6: "0000", R7: "0000"
+              R0: '0000', R1: '0000', R2: '0000', R3: '0000',
+              R4: '0003', R5: '0004', R6: '0000', R7: '0000'
           }
       }
     end
