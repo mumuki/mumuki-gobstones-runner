@@ -42,7 +42,7 @@ describe 'running' do
 
       let(:expected_result) { 'Una de las etiquetas utilizadas es invalida' }
 
-      it { expect(result[1]).to eq :errored  }
+      it { expect(result[1]).to eq :failed  }
       it { expect(result[0]).to eq expected_result }
     end
   end

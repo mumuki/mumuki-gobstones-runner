@@ -26,7 +26,8 @@ class QsimTestHook < Mumukit::Templates::FileHook
       when :passed
         [renderer.render(output), status]
       when :failed
-        [output[:error], :errored]
+        actual_status = output[:kind] == 'runtime' ? :failed : :errored
+        [output[:error], actual_status]
       else
         [output, status]
     end
