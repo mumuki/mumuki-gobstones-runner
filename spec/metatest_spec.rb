@@ -35,7 +35,7 @@ describe 'metatest' do
              name: 'R3 is 0003',
              preconditions: [],
              operation: :run,
-             postconditions: {compare: {R3: '0003'}}
+             postconditions: {equal: {R3: '0003'}}
          }]
       }
       it { expect(result).to eq [[['R3 is 0003', :failed, 'R3 should be 0003, but was 0000']]] }
@@ -45,7 +45,7 @@ describe 'metatest' do
       let(:examples) {
         [{
              name: 'R3 is 0003',
-             postconditions: {compare: {R3: '0003'}}
+             postconditions: {equal: {R3: '0003'}}
          }]
       }
       it { expect(result).to eq [[['R3 is 0003', :failed, 'R3 should be 0003, but was 0000']]] }
@@ -56,12 +56,12 @@ describe 'metatest' do
         [{
              name: 'R3 is 0003',
              preconditions: {R3: '0001', R4: '0003'},
-             postconditions: {compare: {R3: '0003'}}
+             postconditions: {equal: {R3: '0003'}}
          },
          {
              name: 'R4 is 0003',
              preconditions: {R3: '0001', R4: '0003'},
-             postconditions: {compare: {R4: '0003'}}
+             postconditions: {equal: {R4: '0003'}}
          }]
       }
       it { expect(result).to eq [[['R3 is 0003', :failed, 'R3 should be 0003, but was 0000'],
