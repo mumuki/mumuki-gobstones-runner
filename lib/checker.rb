@@ -3,7 +3,7 @@ module Qsim
     def check_equal(result, records)
       records.each do |record, expected|
         actual = result[:records][record]
-        fail I18n.t :check_compare_failure, {record: record, expected: expected, actual: actual} unless actual == expected
+        fail I18n.t :check_equal_failure, {record: record, expected: expected, actual: actual} unless actual == expected
       end
     end
 

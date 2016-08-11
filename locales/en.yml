@@ -1,3 +1,3 @@
 en:
   records: 'Records'
-  check_compare_failure: "%{record} should be %{expected}, but was %{actual}"
+  check_equal_failure: "<b>%{record}</b> should be <b>%{expected}</b>, but was <b>%{actual}</b>"
