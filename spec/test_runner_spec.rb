@@ -4,21 +4,21 @@ require_relative './data/fixture'
 describe 'running' do
   include Fixture
 
-  def mk_request(content, extra, test = 'examples: []')
-    OpenStruct.new(content: content, extra: extra, test: test)
+  def req(content, extra, test = 'examples: []')
+    struct content: content, extra: extra, test: test
   end
 
   let(:runner) { QsimTestHook.new }
 
   describe '#compile_file_content' do
-    let(:request) { mk_request 'ADD R1, R2', 'MOV R1, 0x00FA' }
+    let(:request) { req 'ADD R1, R2', 'MOV R1, 0x00FA' }
     let(:result) { runner.compile_file_content request }
 
     it { expect(result).to eq "MOV R1, 0x00FA\nADD R1, R2" }
   end
 
   describe '#execute!' do
-    let(:request) { mk_request q1_ok_program, '' }
+    let(:request) { req q1_ok_program, '' }
     let(:result) { runner.execute! request }
 
     let(:expected_result) {{
@@ -34,7 +34,7 @@ describe 'running' do
   end
 
   describe '#run!' do
-    let(:file) { runner.compile(mk_request content, '', test.to_yaml) }
+    let(:file) { runner.compile(req content, '', test.to_yaml) }
     let(:test) { {examples: examples} }
     let(:examples) { [] }
     let(:result) { runner.run!(file) }
