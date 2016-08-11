@@ -7,8 +7,12 @@ module Qsim
       end
     end
 
-    def make_output(result)
+    def make_success_output(result)
       renderer.render result
+    end
+
+    def make_error_output(result, error)
+      "#{error}\n#{renderer.render result}"
     end
 
     private

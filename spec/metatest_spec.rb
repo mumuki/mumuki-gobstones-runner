@@ -38,7 +38,8 @@ describe 'metatest' do
              postconditions: {equal: {R3: '0003'}}
          }]
       }
-      it { expect(result).to eq [[['R3 is 0003', :failed, 'R3 should be 0003, but was 0000']]] }
+      it { expect(result[0][0]).to include 'R3 is 0003', :failed }
+      it { expect(result[0][0][2]).to include '<b>R3</b> should be <b>0003</b>, but was <b>0000</b>' }
     end
 
     context 'simple qsim test with implicit preconditions and operation' do
@@ -48,7 +49,8 @@ describe 'metatest' do
              postconditions: {equal: {R3: '0003'}}
          }]
       }
-      it { expect(result).to eq [[['R3 is 0003', :failed, 'R3 should be 0003, but was 0000']]] }
+      it { expect(result[0][0]).to include 'R3 is 0003', :failed }
+      it { expect(result[0][0][2]).to include '<b>R3</b> should be <b>0003</b>, but was <b>0000</b>' }
     end
 
     context 'simple qsim test with explicit preconditions' do
@@ -64,7 +66,7 @@ describe 'metatest' do
              postconditions: {equal: {R4: '0003'}}
          }]
       }
-      it { expect(result[0][0]).to eq ['R3 is 0003', :failed, 'R3 should be 0003, but was 0000'] }
+      it { expect(result[0][0]).to include 'R3 is 0003', :failed }
       it { expect(result[0][1]).to include 'R4 is 0003', :passed }
     end
   end
