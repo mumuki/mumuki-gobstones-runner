@@ -2,12 +2,6 @@ class QsimTestHook < Mumukit::Templates::FileHook
   isolated true
   mashup :extra, :content
 
-  attr_writer :renderer
-
-  def renderer
-    @renderer ||= Qsim::HtmlRenderer.new
-  end
-
   def tempfile_extension
     '.qsim'
   end
@@ -17,7 +11,13 @@ class QsimTestHook < Mumukit::Templates::FileHook
   end
 
   def compile_file_content(request)
+    @examples = parse_test(request)[:examples]
     (super request).strip
+  end
+
+  def execute!(request)
+    result, _ = run_file! compile request
+    parse_json result
   end
 
   def post_process_file(file, result, status)
@@ -25,7 +25,7 @@ class QsimTestHook < Mumukit::Templates::FileHook
 
     case status
       when :passed
-        [renderer.render(output), status]
+        framework.test output, @examples
       when :failed
         [output[:error], :errored]
       else
@@ -35,7 +35,16 @@ class QsimTestHook < Mumukit::Templates::FileHook
 
   private
 
+  def framework
+    Mumukit::Metatest::Framework.new checker: Qsim::Checker.new,
+                                     runner: Mumukit::Metatest::IdentityRunner.new
+  end
+
   def parse_json(json_result)
     JSON.parse(json_result).deep_symbolize_keys
+  end
+
+  def parse_test(request)
+    YAML.load(request.test).deep_symbolize_keys
   end
 end

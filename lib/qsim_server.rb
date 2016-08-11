@@ -8,6 +8,7 @@ Mumukit.runner_name = 'qsim'
 Mumukit.configure do |config|
   config.docker_image = 'mumuki/mumuki-qsim-worker'
   config.content_type = 'html'
+  config.structured = true
 end
 
 require_relative './metatest'

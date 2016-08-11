@@ -64,8 +64,8 @@ describe 'metatest' do
              postconditions: {equal: {R4: '0003'}}
          }]
       }
-      it { expect(result).to eq [[['R3 is 0003', :failed, 'R3 should be 0003, but was 0000'],
-                                  ['R4 is 0003', :passed, nil]]] }
+      it { expect(result[0][0]).to eq ['R3 is 0003', :failed, 'R3 should be 0003, but was 0000'] }
+      it { expect(result[0][1]).to include 'R4 is 0003', :passed }
     end
   end
 
