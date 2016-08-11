@@ -1,2 +1,3 @@
 en:
   records: 'Records'
+  check_compare_failure: "%{record} should be %{expected}, but was %{actual}"

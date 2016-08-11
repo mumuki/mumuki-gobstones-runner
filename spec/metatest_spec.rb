@@ -21,11 +21,11 @@ describe 'metatest' do
     end
     let(:compilation) do
       {
-          special_records: {PC: "0005", SP: "FFEF", IR: "28E5 "},
+          special_records: {PC: '0005', SP: 'FFEF', IR: '28E5 '},
           flags: {N: 0, Z: 0, V: 0, C: 0},
           records: {
-              R0: "0000", R1: "0000", R2: "0000", R3: "0000",
-              R4: "0003", R5: "0004", R6: "0000", R7: "0000"
+              R0: '0000', R1: '0000', R2: '0000', R3: '0000',
+              R4: '0003', R5: '0004', R6: '0000', R7: '0000'
           }
       }
     end
@@ -35,7 +35,7 @@ describe 'metatest' do
              name: 'R3 is 0003',
              preconditions: [],
              operation: :run,
-             postconditions: {compare: {R3: '0003'}}
+             postconditions: {equal: {R3: '0003'}}
          }]
       }
       it { expect(result).to eq [[['R3 is 0003', :failed, 'R3 should be 0003, but was 0000']]] }
@@ -45,7 +45,7 @@ describe 'metatest' do
       let(:examples) {
         [{
              name: 'R3 is 0003',
-             postconditions: {compare: {R3: '0003'}}
+             postconditions: {equal: {R3: '0003'}}
          }]
       }
       it { expect(result).to eq [[['R3 is 0003', :failed, 'R3 should be 0003, but was 0000']]] }
@@ -56,16 +56,16 @@ describe 'metatest' do
         [{
              name: 'R3 is 0003',
              preconditions: {R3: '0001', R4: '0003'},
-             postconditions: {compare: {R3: '0003'}}
+             postconditions: {equal: {R3: '0003'}}
          },
          {
              name: 'R4 is 0003',
              preconditions: {R3: '0001', R4: '0003'},
-             postconditions: {compare: {R4: '0003'}}
+             postconditions: {equal: {R4: '0003'}}
          }]
       }
-      it { expect(result).to eq [[['R3 is 0003', :failed, 'R3 should be 0003, but was 0000'],
-                                  ['R4 is 0003', :passed, nil]]] }
+      it { expect(result[0][0]).to eq ['R3 is 0003', :failed, 'R3 should be 0003, but was 0000'] }
+      it { expect(result[0][1]).to include 'R4 is 0003', :passed }
     end
   end
 
