@@ -8,10 +8,7 @@ ADD R3, R5
   end
 
   def syntax_error_program
-%q{
-MOV R3, 0x0003
-MOV REGISTRY5, 0x0004
-}
+    'MOB R3, 0x0003'
   end
 
   def runtime_error_program
