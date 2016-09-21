@@ -4,7 +4,7 @@ require_relative './data/fixture'
 describe 'running' do
   include Fixture
 
-  def req(content, extra, test = 'examples: []')
+  def req(content, extra, test = 'examples: [{}]')
     struct content: content.strip, extra: extra.strip, test: test
   end
 
@@ -59,13 +59,13 @@ EOF
         }
     }}
 
-    it { expect(result).to eq expected_result }
+    it { expect(result.first).to include expected_result }
   end
 
   describe '#run!' do
     let(:file) { runner.compile(req content, '', test.to_yaml) }
     let(:test) { {examples: examples} }
-    let(:examples) { [] }
+    let(:examples) { [{}] }
     let(:result) { runner.run!(file) }
 
     context 'when program finishes' do

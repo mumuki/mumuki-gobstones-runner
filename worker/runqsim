@@ -1,9 +1,10 @@
 #!/bin/bash
 FILE="$1"
 Q_ARCHITECTURE="$2"
+INPUT_FILE="$3"
 
 DIRECTORY=$(mktemp -d)
 cp $FILE $DIRECTORY/Submission.qsim
 
-java -jar QSim.jar "$DIRECTORY/Submission.qsim" $Q_ARCHITECTURE 2>&1
+java -jar QSim.jar "$DIRECTORY/Submission.qsim" $Q_ARCHITECTURE $INPUT_FILE 2>&1
 exit $?
