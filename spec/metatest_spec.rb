@@ -8,6 +8,7 @@ describe 'metatest' do
   end
   let(:compilation) do
     [{
+        id: 0,
         special_records: {PC: '0005', SP: 'FFEF', IR: '28E5 '},
         flags: {N: 0, Z: 0, V: 0, C: 0},
         records: {
@@ -16,44 +17,27 @@ describe 'metatest' do
         }
     }]
   end
-  context 'simple qsim test' do
-    let(:examples) {
-      [{
-           name: 'R3 is 0003',
-           preconditions: [],
-           operation: :run,
-           postconditions: {equal: {R3: '0003'}}
-       }]
-    }
-    it { expect(result[0][0]).to include 'R3 is 0003', :failed }
-    it { expect(result[0][0][2]).to include '<b>R3</b> should be <b>0003</b>, but was <b>0000</b>' }
-  end
 
-  context 'simple qsim test with implicit preconditions and operation' do
-    let(:examples) {
-      [{
-           name: 'R3 is 0003',
-           postconditions: {equal: {R3: '0003'}}
-       }]
-    }
-    it { expect(result[0][0]).to include 'R3 is 0003', :failed }
-    it { expect(result[0][0][2]).to include '<b>R3</b> should be <b>0003</b>, but was <b>0000</b>' }
-  end
+  describe 'equal postcondition' do
+    context 'when fails' do
+      let(:examples) {
+        [{
+             name: 'R3 is 0003',
+             postconditions: {equal: {R3: '0003'}}
+         }]
+      }
+      it { expect(result[0][0]).to include 'R3 is 0003', :failed }
+      it { expect(result[0][0][2]).to include '<b>R3</b> should be <b>0003</b>, but was <b>0000</b>' }
+    end
 
-  context 'simple qsim test with explicit preconditions' do
-    let(:examples) {
-      [{
-           name: 'R3 is 0003',
-           preconditions: {R3: '0001', R4: '0003'},
-           postconditions: {equal: {R3: '0003'}}
-       },
-       {
-           name: 'R4 is 0003',
-           preconditions: {R3: '0001', R4: '0003'},
-           postconditions: {equal: {R4: '0003'}}
-       }]
-    }
-    it { expect(result[0][0]).to include 'R3 is 0003', :failed }
-    it { expect(result[0][1]).to include 'R4 is 0003', :passed }
+    context 'when passes' do
+      let(:examples) {
+        [{
+             name: 'R3 is 0000',
+             postconditions: {equal: {R3: '0000'}}
+         }]
+      }
+      it { expect(result[0][0]).to include 'R3 is 0000', :passed }
+    end
   end
 end
