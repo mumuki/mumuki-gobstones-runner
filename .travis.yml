@@ -9,3 +9,11 @@ services:
 - docker
 before_install:
 - docker pull mumuki/mumuki-qsim-worker
+deploy:
+  provider: rubygems
+  api_key:
+    secure: AzdYeM9aZuvSVOhCyWN8tauOkHDdLzYa8zJfmQBNTvYn8b89NbM+ysLDPCQc+EWQ9K/uKCcsPDm/YHXLqVtNBrF8x1qFK4wsZMmaUTPdeeSUf3CFmZ1bNs99zio52pQMEICfcj0aeDg91Px0xuT6FtmeRW72i1HoZsrqPZaAz/KKqNVkkyYw1kOU98vlU4nwFZwjiE0zILoLDZZT1xbDBVy7NivmKPeg1iPshQr/p+sM8xOG6L6GNmkxr/i6Vtlw3t9y095IAbXsucvy01eVNZFk/9es3gZtz6wR3WZVMM+YRymmiXdZenP8CTQoWo0bSz5Gjp4qL/AayHyNEtTB9CkLGUkctZT8O+R8yM7Qca1OBmpGhAXpjGX2WbhAbglH9ONmwxzoPQCtzemrLWXCtbrL+9+2o/hgpbDq8FYus61K8jZ8jojitg6an1qDyYaOxToxrnVL0MdDs/stF9dEYqzQDcc/2QwdmOqVfSddWJhGWk3zBePaRyc1KjjpfaQZ9qsOYUeh5OOEzj/3gFrcP0sz8dy2ulJFGZ92o0x0j4/hFdRWPPwIBNv0XNYY82UH43gqehlswHr+w//64UNcbjQBLeT43L5G38UuNwO+CjXp76400K0hPK+XgeWZ0e0sSCwNMMIYUGb+H6vz48zSxc6ajBzhB6E2E7oxWghPpmU=
+  gem: mumuki-qsim-runner
+  on:
+    tags: true
+    repo: mumuki/mumuki-qsim-runner
