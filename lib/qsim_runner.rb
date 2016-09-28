@@ -1,9 +1,7 @@
-require 'i18n'
-require 'mumukit'
 require 'mumukit'
 require 'erb'
 
-I18n.load_path += Dir[File.join('.', 'locales', '*.yml')]
+I18n.load_translations_path File.join(__dir__, 'locales', '*.yml')
 
 Mumukit.runner_name = 'qsim'
 Mumukit.configure do |config|
