@@ -54,7 +54,7 @@ EOF
   end
 
   def parse_json(json_result)
-    JSON.parse(json_result).map { |it| it.deep_symbolize_keys.except :memory }
+    JSON.parse(json_result).map(&:deep_symbolize_keys)
   end
 
   def parse_test(request)
