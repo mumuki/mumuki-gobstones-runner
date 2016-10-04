@@ -7,6 +7,10 @@ ADD R3, R5
 }
   end
 
+  def sum_r1_r2_program
+    'ADD R1, R2'
+  end
+
   def syntax_error_program
     'MOB R3, 0x0003'
   end

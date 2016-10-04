@@ -72,7 +72,6 @@ EOF
       let(:examples) {
         [{
           name: 'R3 is 0007',
-          preconditions: [],
           operation: :run,
           postconditions: {equal: {R3: '0007'}}
          }]
@@ -82,6 +81,24 @@ EOF
       let(:example_result) { result[0][0] }
 
       it { expect(example_result[0]).to eq 'R3 is 0007' }
+      it { expect(example_result[1]).to eq :passed }
+      it { expect(example_result[2]).to include '<table' }
+    end
+
+    context 'with records preconditions' do
+      let(:examples) {
+        [{
+             name: 'R1 is 0008',
+             preconditions: { records: {R1: '0005', R2: '0003'} },
+             operation: :run,
+             postconditions: {equal: {R1: '0008'}}
+         }]
+      }
+
+      let(:content) { sum_r1_r2_program }
+      let(:example_result) { result[0][0] }
+
+      it { expect(example_result[0]).to eq 'R1 is 0008' }
       it { expect(example_result[1]).to eq :passed }
       it { expect(example_result[2]).to include '<table' }
     end

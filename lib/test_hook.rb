@@ -12,7 +12,7 @@ class QsimTestHook < Mumukit::Templates::FileHook
   end
 
   def compile_file_content(request)
-    @examples = with_ids(parse_test(request)[:examples])
+    @examples = to_examples(parse_test(request)[:examples])
 
     <<EOF
 CALL main
@@ -44,8 +44,9 @@ EOF
 
   private
 
-  def with_ids(examples)
-    examples.each_with_index.map { |example, index| example.merge(id: index) }
+  def to_examples(examples)
+    defaults = { preconditions: {} }
+    examples.each_with_index.map { |example, index| defaults.merge(example).merge(id: index) }
   end
 
   def framework
@@ -89,7 +90,7 @@ EOF
   end
 
   def create_input_file!
-    initial_states = @examples.map { |example| default_initial_state.merge(id: example[:id]) }
+    initial_states = @examples.map { |example| default_initial_state.merge(id: example[:id]).merge(example[:preconditions]) }
     write_tempfile! JSON.generate(initial_states)
   end
 end
