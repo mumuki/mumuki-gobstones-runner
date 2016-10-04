@@ -8,7 +8,7 @@ describe 'metatest' do
   end
   let(:compilation) do
     [{
-        id: 0,
+        id: 1,
         special_records: {PC: '0005', SP: 'FFEF', IR: '28E5 '},
         flags: {N: 0, Z: 0, V: 0, C: 0},
         records: {
@@ -22,8 +22,9 @@ describe 'metatest' do
     context 'when fails' do
       let(:examples) {
         [{
-             name: 'R3 is 0003',
-             postconditions: {equal: {R3: '0003'}}
+            id: 1,
+            name: 'R3 is 0003',
+            postconditions: {equal: {R3: '0003'}}
          }]
       }
       it { expect(result[0][0]).to include 'R3 is 0003', :failed }
@@ -33,8 +34,9 @@ describe 'metatest' do
     context 'when passes' do
       let(:examples) {
         [{
-             name: 'R3 is 0000',
-             postconditions: {equal: {R3: '0000'}}
+            id: 1,
+            name: 'R3 is 0000',
+            postconditions: {equal: {R3: '0000'}}
          }]
       }
       it { expect(result[0][0]).to include 'R3 is 0000', :passed }
