@@ -1,6 +1,5 @@
 class QsimTestHook < Mumukit::Templates::FileHook
   isolated true
-  mashup :extra, :content
 
   def tempfile_extension
     '.qsim'
@@ -12,7 +11,15 @@ class QsimTestHook < Mumukit::Templates::FileHook
 
   def compile_file_content(request)
     @examples = parse_test(request)[:examples]
-    (super request).strip
+
+    <<EOF
+CALL main
+
+#{request.extra}
+
+main:
+#{request.content}
+EOF
   end
 
   def execute!(request)
