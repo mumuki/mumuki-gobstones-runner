@@ -40,6 +40,8 @@ RET
 main:
 MOV R1, 0x0004
 CALL duplicateR1
+!!!BEGIN_EXAMPLES!!!
+[{"special_records":{"PC":"0000","SP":"FFEF","IR":"0000"},"flags":{"N":0,"Z":0,"V":0,"C":0},"records":{"R0":"0000","R1":"0000","R2":"0000","R3":"0000","R4":"0000","R5":"0000","R6":"0000","R7":"0000"},"memory":{},"id":0}]
 EOF
     }
 

@@ -1,10 +1,9 @@
 #!/bin/bash
 FILE="$1"
 Q_ARCHITECTURE="$2"
-INPUT_FILE="$3"
+SEPARATOR="$3"
 
-DIRECTORY=$(mktemp -d)
-cp $FILE $DIRECTORY/Submission.qsim
+csplit --quiet --suppress-matched --prefix=qsim --digits=1 $FILE '/$SEPARATOR/' '{*}'
 
-java -jar QSim.jar "$DIRECTORY/Submission.qsim" $Q_ARCHITECTURE $INPUT_FILE 2>&1
+java -jar QSim.jar qsim0 $Q_ARCHITECTURE qsim1 2>&1
 exit $?

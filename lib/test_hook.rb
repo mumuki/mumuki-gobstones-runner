@@ -7,8 +7,7 @@ class QsimTestHook < Mumukit::Templates::FileHook
   end
 
   def command_line(filename)
-    input_file = create_input_file!
-    "runqsim #{filename} 6 #{input_file.path}"
+    "runqsim #{filename} #{q_architecture} #{input_file_separator}"
   end
 
   def compile_file_content(request)
@@ -21,6 +20,8 @@ CALL main
 
 main:
 #{request.content}
+#{input_file_separator}
+#{initial_state_file}
 EOF
   end
 
@@ -89,8 +90,16 @@ EOF
     }
   end
 
-  def create_input_file!
+  def initial_state_file
     initial_states = @examples.map { |example| default_initial_state.merge(id: example[:id]).merge(example[:preconditions]) }
-    write_tempfile! JSON.generate(initial_states)
+    JSON.generate initial_states
+  end
+
+  def input_file_separator
+    '!!!BEGIN_EXAMPLES!!!'
+  end
+
+  def q_architecture
+    6
   end
 end
