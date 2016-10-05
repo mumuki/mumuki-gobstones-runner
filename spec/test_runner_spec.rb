@@ -103,6 +103,28 @@ EOF
       it { expect(example_result[2]).to include '<table' }
     end
 
+    context 'with multiple examples and preconditions' do
+      let(:examples) {
+        [{
+             name: 'R1 is 0008',
+             preconditions: { records: {R1: '0005', R2: '0003'} },
+             operation: :run,
+             postconditions: {equal: {R1: '0008'}}
+         }, {
+             name: 'R1 is 0010',
+             preconditions: { records: {R1: '000E', R2: '0001'} },
+             operation: :run,
+             postconditions: {equal: {R1: '0010'}}
+        }]
+      }
+
+      let(:content) { sum_r1_r2_program }
+      let(:example_results) { result[0] }
+
+      it { expect(example_results[0][1]).to eq :passed }
+      it { expect(example_results[1][1]).to eq :failed }
+    end
+
     context 'when program fails with syntax error' do
       let(:content) { syntax_error_program }
       let(:expected_result) { 'Ha ocurrido un error en la linea 2 : ' }
