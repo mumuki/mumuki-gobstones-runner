@@ -13,4 +13,5 @@ end
 require_relative './test_hook'
 require_relative './metadata_hook'
 require_relative './checker'
+require_relative './multiple_executions_runner'
 require_relative './html_renderer'
