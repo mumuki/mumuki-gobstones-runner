@@ -1,5 +1,7 @@
 class QsimTestHook < Mumukit::Templates::FileHook
   include Mumukit::WithTempfile
+  attr_reader :examples
+
   isolated true
 
   def tempfile_extension

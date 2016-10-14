@@ -26,11 +26,24 @@ RET
 EOF
     }
 
-    let(:request) { req content, extra }
-    let(:result) { runner.compile_file_content request }
+    let(:test) {
+%q{
+examples:
+- name: 'R2 stores the sum of R0 and R1'
+  preconditions:
+    records:
+      R0: 'B5E1'
+      R1: '000F'
+  postconditions:
+    equal:
+      R2: 'B5F0'}}
 
-    let(:expected_compiled_code) {
-<<EOF
+    let(:request) { req content, extra, test }
+    let!(:result) { runner.compile_file_content request }
+
+    context 'compiles the code and the preconditions' do
+      let(:expected_compiled_code) {
+        <<EOF
 CALL main
 
 duplicateR1:
@@ -41,11 +54,28 @@ main:
 MOV R1, 0x0004
 CALL duplicateR1
 !!!BEGIN_EXAMPLES!!!
-[{"special_records":{"PC":"0000","SP":"FFEF","IR":"0000"},"flags":{"N":0,"Z":0,"V":0,"C":0},"records":{"R0":"0000","R1":"0000","R2":"0000","R3":"0000","R4":"0000","R5":"0000","R6":"0000","R7":"0000"},"memory":{},"id":0}]
+[{"special_records":{"PC":"0000","SP":"FFEF","IR":"0000"},"flags":{"N":0,"Z":0,"V":0,"C":0},"records":{"R0":"B5E1","R1":"000F"},"memory":{},"id":0}]
 EOF
-    }
+      }
 
-    it { expect(result).to eq expected_compiled_code }
+      it { expect(result).to eq expected_compiled_code }
+    end
+
+    context 'parses the examples' do
+      let(:expected_example) {
+        {
+            id: 0,
+            name: 'R2 stores the sum of R0 and R1',
+            preconditions: {
+                records: {R0: 'B5E1', R1: '000F'}
+            },
+            postconditions: {
+                equal: {R2: 'B5F0'}
+            }
+        }
+      }
+      it { expect(runner.examples).to eq [expected_example] }
+    end
   end
 
   describe '#execute!' do
