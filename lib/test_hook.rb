@@ -93,7 +93,7 @@ EOF
   end
 
   def initial_state_file
-    initial_states = @examples.map { |example| default_initial_state.merge(id: example[:id]).merge(example[:preconditions]) }
+    initial_states = @examples.map { |example| default_initial_state.merge(id: example[:id]).deep_merge(example[:preconditions]) }
     JSON.generate initial_states
   end
 

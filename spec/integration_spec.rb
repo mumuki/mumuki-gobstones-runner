@@ -14,20 +14,29 @@ describe 'Server' do
   let(:test) {
     %q{
 examples:
-- name: 'R3 is 0007'
+- name: 'Result is OK'
+  preconditions:
+    records:
+      R0: 'B5E1'
+      R1: '000F'
   postconditions:
     equal:
-      R3: '0007'
-- name: 'R5 is 0004'
+      R2: 'B5F0'
+
+- name: 'Records are not modified'
+  preconditions:
+    records:
+      R0: '0001'
+      R1: '000A'
   postconditions:
     equal:
-      R5: '0004'}}
+      R0: '0001'
+      R1: '000A'}}
 
   it 'answers a valid hash when submission passes' do
     response = bridge.run_tests!(test: test, extra: '', content: %q{
-MOV R3, 0x0003
-MOV R5, 0x0004
-ADD R3, R5}, expectations: [])
+ADD R2, R0
+ADD R2, R1}, expectations: [])
 
     expect(response[:response_type]).to eq :structured
     expect(response[:test_results].size).to eq 2
