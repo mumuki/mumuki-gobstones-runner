@@ -16,7 +16,7 @@ class QsimTestHook < Mumukit::Templates::FileHook
     @examples = to_examples(parse_test(request)[:examples])
 
     <<EOF
-CALL main
+JMP main
 
 #{request.extra}
 

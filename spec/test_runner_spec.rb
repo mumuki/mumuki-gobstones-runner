@@ -44,7 +44,7 @@ examples:
     context 'compiles the code and the preconditions' do
       let(:expected_compiled_code) {
         <<EOF
-CALL main
+JMP main
 
 duplicateR1:
 MUL R1, 0x0002
@@ -83,7 +83,7 @@ EOF
     let(:result) { runner.execute! request }
 
     let(:expected_result) {{
-        special_records: { PC: '0007', SP: 'FFEE', IR: '28E5 ' },
+        special_records: { PC: '0007', SP: 'FFEF', IR: '28E5 ' },
         flags: { N: 0, Z: 0, V: 0, C: 0 },
         records: {
             R0: '0000', R1: '0000', R2: '0000', R3: '0007',
