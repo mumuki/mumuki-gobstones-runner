@@ -95,10 +95,11 @@ EOF
   end
 
   describe '#run!' do
-    let(:file) { runner.compile(req content, '', test.to_yaml) }
+    let(:file) { runner.compile(req content, extra, test.to_yaml) }
     let(:test) { {examples: examples} }
     let(:examples) { [{}] }
     let(:result) { runner.run!(file) }
+    let(:extra) { '' }
 
     context 'when program finishes' do
       let(:examples) {
@@ -133,6 +134,28 @@ EOF
       it { expect(example_result[0]).to eq 'R1 is 0008' }
       it { expect(example_result[1]).to eq :passed }
       it { expect(example_result[2]).to include '<table' }
+    end
+
+    context 'with extra code' do
+      let(:examples) {
+        [{
+             name: 'R1 is 0008',
+             preconditions: { },
+             operation: :run,
+             postconditions: {equal: {R1: '0008'}}
+         }]
+      }
+
+      let(:content) { times_two_program }
+      let(:extra) {
+%q{
+timesTwo:
+MUL R1, 0x0002
+RET}}
+      let(:example_result) { result[0][0] }
+
+      it { expect(example_result[0]).to eq 'R1 is 0008' }
+      it { expect(example_result[1]).to eq :passed }
     end
 
     context 'with multiple examples and preconditions' do
