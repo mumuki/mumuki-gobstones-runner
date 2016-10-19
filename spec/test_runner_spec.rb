@@ -51,6 +51,7 @@ MUL R1, 0x0002
 RET
 
 main:
+MOV R0, R0
 MOV R1, 0x0004
 CALL duplicateR1
 !!!BEGIN_EXAMPLES!!!
@@ -83,7 +84,7 @@ EOF
     let(:result) { runner.execute! request }
 
     let(:expected_result) {{
-        special_records: { PC: '0007', SP: 'FFEF', IR: '28E5 ' },
+        special_records: { PC: '0008', SP: 'FFEF', IR: '28E5 ' },
         flags: { N: 0, Z: 0, V: 0, C: 0 },
         records: {
             R0: '0000', R1: '0000', R2: '0000', R3: '0007',
@@ -146,7 +147,7 @@ EOF
          }]
       }
 
-      let(:content) { times_two_program }
+      let(:content) { times_two_usage_program }
       let(:extra) {
 %q{
 timesTwo:
@@ -155,6 +156,23 @@ RET}}
       let(:example_result) { result[0][0] }
 
       it { expect(example_result[0]).to eq 'R1 is 0008' }
+      it { expect(example_result[1]).to eq :passed }
+    end
+
+    context 'with routine definition' do
+      let(:examples) {
+        [{
+             name: 'Times two stores the result in R1',
+             preconditions: {records: {R1: '0003'}},
+             operation: :run,
+             postconditions: {equal: {R1: '0006'}}
+         }]
+      }
+
+      let(:content) { times_two_definition_program }
+      let(:example_result) { result[0][0] }
+
+      it { expect(example_result[0]).to eq 'Times two stores the result in R1' }
       it { expect(example_result[1]).to eq :passed }
     end
 

@@ -11,11 +11,18 @@ ADD R3, R5
     'ADD R1, R2'
   end
 
-  def times_two_program
+  def times_two_usage_program
 %q{
 MOV R1, 0x0002
 CALL timesTwo
 CALL timesTwo
+}
+  end
+
+  def times_two_definition_program
+%q{
+timesTwo:
+MUL R1, 0x0002
 }
   end
 

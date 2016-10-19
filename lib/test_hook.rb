@@ -21,6 +21,7 @@ JMP main
 #{request.extra}
 
 main:
+#{skip_command}
 #{request.content}
 #{input_file_separator}
 #{initial_state_file}
@@ -103,5 +104,9 @@ EOF
 
   def q_architecture
     6
+  end
+
+  def skip_command
+    'MOV R0, R0'
   end
 end
