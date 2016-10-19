@@ -5,8 +5,8 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 Gem::Specification.new do |spec|
   spec.name          = 'mumuki-qsim-runner'
   spec.version       = '1.1.3'
-  spec.authors       = ['Franco Leonardo Bulgarelli']
-  spec.email         = ['franco@mumuki.org']
+  spec.authors       = ['Federico Aloi']
+  spec.email         = ['fede@mumuki.org']
   spec.summary       = 'Qsim Runner for Mumuki'
   spec.homepage      = 'http://github.com/mumuki/mumuki-qsim-server'
   spec.license       = 'MIT'
