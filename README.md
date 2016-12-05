@@ -14,7 +14,7 @@ cd mumuki-gobstones-runner
 ## Install Ruby
 
 ```bash
-rbenv install 2.0.0-p481
+rbenv install 2.3.1
 rbenv rehash
 gem install bundler
 ```
