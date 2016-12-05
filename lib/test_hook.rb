@@ -2,29 +2,27 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   include Mumukit::WithTempfile
   attr_reader :examples
 
-  isolated true
+  isolated false # // TODO: No such file or directory - connect(2) for /var/run/docker.sock
 
   def tempfile_extension
     '.json'
   end
 
   def command_line(filename)
-    "runqsim #{filename} #{input_file_separator}"
+    "gs-weblang-cli --batch #{filename}"
   end
 
   def compile_file_content(request)
     @examples = to_examples(parse_test(request)[:examples])
+    p "EXAMPLES:",  @examples # // TODO borrar
 
-    <<EOF
-JMP main
-
-#{request.extra}
-
-main:
-#{request.content}
-#{input_file_separator}
-#{initial_state_file}
-EOF
+    @examples
+      .map { |example|
+        {
+          initialBoard: example[:initial_board],
+          code: request.extra + "\n" + request.content
+        }
+      }.to_json
   end
 
   def execute!(request)
@@ -34,12 +32,13 @@ EOF
 
   def post_process_file(file, result, status)
     output = parse_json result
+    p "OUTPUT", output # // TODO borrar
 
     case status
       when :passed
         framework.test output, @examples
       when :failed
-        [output[:error], :errored]
+        [output, :errored]
       else
         [output, status]
     end
@@ -96,8 +95,4 @@ EOF
   #   initial_states = @examples.map { |example| default_initial_state.merge(id: example[:id]).deep_merge(example[:preconditions]) }
   #   JSON.generate initial_states
   # end
-
-  def input_file_separator # // TODO
-    '!!!BEGIN_EXAMPLES!!!'
-  end
 end
