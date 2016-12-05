@@ -1,4 +1,4 @@
-module Qsim
+module Gobstones
   class HtmlRenderer
     def render(result)
       @result = result

@@ -1,4 +1,4 @@
-module Qsim
+module Gobstones
   class MultipleExecutionsRunner
     def run(output, example)
       result = output.find { |it| it[:id] == example[:id] }

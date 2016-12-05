@@ -1,15 +1,15 @@
-class QsimTestHook < Mumukit::Templates::FileHook
+class GobstonesTestHook < Mumukit::Templates::FileHook
   include Mumukit::WithTempfile
   attr_reader :examples
 
   isolated true
 
   def tempfile_extension
-    '.qsim'
+    '.json'
   end
 
   def command_line(filename)
-    "runqsim #{filename} #{q_architecture} #{input_file_separator}"
+    "runqsim #{filename} #{input_file_separator}"
   end
 
   def compile_file_content(request)
@@ -21,7 +21,6 @@ JMP main
 #{request.extra}
 
 main:
-#{skip_command}
 #{request.content}
 #{input_file_separator}
 #{initial_state_file}
@@ -54,8 +53,8 @@ EOF
   end
 
   def framework
-    Mumukit::Metatest::Framework.new checker: Qsim::Checker.new,
-                                     runner: Qsim::MultipleExecutionsRunner.new
+    Mumukit::Metatest::Framework.new checker: Gobstones::Checker.new,
+                                     runner: Gobstones::MultipleExecutionsRunner.new
   end
 
   def parse_json(json_result)
@@ -66,47 +65,39 @@ EOF
     YAML.load(request.test).deep_symbolize_keys
   end
 
-  def default_initial_state
-    {
-      special_records: {
-        PC: '0000',
-        SP: 'FFEF',
-        IR: '0000'
-      },
-      flags: {
-        N: 0,
-        Z: 0,
-        V: 0,
-        C: 0
-      },
-      records: {
-        R0: '0000',
-        R1: '0000',
-        R2: '0000',
-        R3: '0000',
-        R4: '0000',
-        R5: '0000',
-        R6: '0000',
-        R7: '0000'
-      },
-      memory: {}
-    }
-  end
+  # def default_initial_state
+  #   {
+  #     special_records: {
+  #       PC: '0000',
+  #       SP: 'FFEF',
+  #       IR: '0000'
+  #     },
+  #     flags: {
+  #       N: 0,
+  #       Z: 0,
+  #       V: 0,
+  #       C: 0
+  #     },
+  #     records: {
+  #       R0: '0000',
+  #       R1: '0000',
+  #       R2: '0000',
+  #       R3: '0000',
+  #       R4: '0000',
+  #       R5: '0000',
+  #       R6: '0000',
+  #       R7: '0000'
+  #     },
+  #     memory: {}
+  #   }
+  # end
 
-  def initial_state_file
-    initial_states = @examples.map { |example| default_initial_state.merge(id: example[:id]).deep_merge(example[:preconditions]) }
-    JSON.generate initial_states
-  end
+  # def initial_state_file
+  #   initial_states = @examples.map { |example| default_initial_state.merge(id: example[:id]).deep_merge(example[:preconditions]) }
+  #   JSON.generate initial_states
+  # end
 
-  def input_file_separator
+  def input_file_separator # // TODO
     '!!!BEGIN_EXAMPLES!!!'
-  end
-
-  def q_architecture
-    6
-  end
-
-  def skip_command
-    'MOV R0, R0'
   end
 end

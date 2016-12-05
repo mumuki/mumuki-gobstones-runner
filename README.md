@@ -1,14 +1,14 @@
-[![Build Status](https://travis-ci.org/mumuki/mumuki-qsim-server.svg?branch=master)](https://travis-ci.org/mumuki/mumuki-qsim-server)
-[![Code Climate](https://codeclimate.com/github/mumuki/mumuki-qsim-server/badges/gpa.svg)](https://codeclimate.com/github/mumuki/mumuki-qsim-server)
-[![Test Coverage](https://codeclimate.com/github/mumuki/mumuki-qsim-server/badges/coverage.svg)](https://codeclimate.com/github/mumuki/mumuki-qsim-server)
+[![Build Status](https://travis-ci.org/mumuki/mumuki-gobstones-server.svg?branch=master)](https://travis-ci.org/mumuki/mumuki-gobstones-server)
+[![Code Climate](https://codeclimate.com/github/mumuki/mumuki-gobstones-server/badges/gpa.svg)](https://codeclimate.com/github/mumuki/mumuki-gobstones-server)
+[![Test Coverage](https://codeclimate.com/github/mumuki/mumuki-gobstones-server/badges/coverage.svg)](https://codeclimate.com/github/mumuki/mumuki-gobstones-server)
 
 # Install the server
 
 ## Clone the project
 
 ```
-git clone https://github.com/mumuki/mumuki-qsim-server 
-cd mumuki-qsim-server
+git clone https://github.com/mumuki/mumuki-gobstones-runner 
+cd mumuki-gobstones-runner
 ```
 
 ## Install Ruby

@@ -1,12 +1,12 @@
-class QsimMetadataHook < Mumukit::Hook
+class GobstonesMetadataHook < Mumukit::Hook
   def metadata
     {
       language: {
-        name: 'qsim',
-        icon: {type: 'devicon', name: 'qsim'},
+        name: 'gobstones',
+        icon: {type: 'devicon', name: 'gobstones'},
         version: 'v0.2.2',
-        extension: 'qsim',
-        ace_mode: 'assembly_x86',
+        extension: 'gbs',
+        ace_mode: 'gobstones',
         graphic: true
       },
       test_framework: {

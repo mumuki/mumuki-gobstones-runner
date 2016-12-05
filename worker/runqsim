@@ -1,9 +1,0 @@
-#!/bin/bash
-FILE="$1"
-Q_ARCHITECTURE="$2"
-SEPARATOR="$3"
-
-csplit --quiet --suppress-matched --prefix=qsim --digits=1 $FILE '/'$SEPARATOR'/' '{*}'
-
-java -jar QSim.jar qsim0 $Q_ARCHITECTURE qsim1 2>&1
-exit $?

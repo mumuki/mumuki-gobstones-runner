@@ -8,12 +8,12 @@ rvm:
 services:
 - docker
 before_install:
-- docker pull mumuki/mumuki-qsim-worker
+- docker pull mumuki/mumuki-mocha-worker
 deploy:
   provider: rubygems
   api_key:
     secure: WCMo7Incc46GqNjGaXuEisF6cbmuOtuLXJrSOTp2djoQZ1526G/g0yKLpii6FkYy7trcJHAUuQO35Sc6cUE9IgdAwOryCQYlFvtv2i5KQnTx3flCR8KW7tJuQJ6mVBITe8Igr2p1wTHYyUH/rAjoXmkdkRui0D2fCzrTsFRkBgIa+y/1n4GBI16/SibwGEMll42RKNlYJR0rw1oKNF6RdMTcNT53IV4X9tFX4v9K9tjndkOsx5nV3A6Kqn4x6NUxR4sinKeTvvV0qQq3bxMFHdEu+9MafGvB+uiqB5u54MP+hsZUnMpVHYXwlfgQIB39/5ANOfLyE2QnfiQTgOs/yoSpnl4SaEtnTpo2hS/1va/M6OJXwwJD24oCLJM8fUHYIP4hk5gR1oJuNGzP3E1d1oe2vuI0lq3fb+X91wbFDU1O/i2TzLFjtTjQWRDD97IEqDaYhIvxAQjQS90P6yg//b5aztaj9D9t9OhVh+EQvRPmOkK14lJln9CNpsMtA68uIIqTghG9GmgSYJRqwnCXX7pyjXmi5H+l17A3h0Pn1KUYNPcjxfVFg5xuCnQ1REh959V/jj+cU4FjhAd/dDePz9oWntWYF43SOcoIvSMNl6NxwsRbnz+cP9sjxYoPfXBX84F8cltUZ6aGLGMUeeSvcYcvHCliFm79jkC6EYroWos=
-  gem: mumuki-qsim-runner
+  gem: mumuki-gobstones-runner
   on:
     tags: true
-    repo: mumuki/mumuki-qsim-runner
+    repo: mumuki/mumuki-gobstones-runner

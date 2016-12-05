@@ -1,4 +1,4 @@
-module Qsim
+module Gobstones
   class Checker < Mumukit::Metatest::Checker
     def check_equal(result, records)
       records.each do |record, expected|
@@ -18,7 +18,7 @@ module Qsim
     private
 
     def renderer
-      @renderer ||= Qsim::HtmlRenderer.new
+      @renderer ||= Gobstones::HtmlRenderer.new
     end
   end
 end

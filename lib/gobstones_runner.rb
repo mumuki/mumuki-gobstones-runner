@@ -3,9 +3,9 @@ require 'erb'
 
 I18n.load_translations_path File.join(__dir__, 'locales', '*.yml')
 
-Mumukit.runner_name = 'qsim'
+Mumukit.runner_name = 'gobstones'
 Mumukit.configure do |config|
-  config.docker_image = 'mumuki/mumuki-qsim-worker'
+  config.docker_image = 'mumuki/mumuki-mocha-worker'
   config.content_type = 'html'
   config.structured = true
 end

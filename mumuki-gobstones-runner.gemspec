@@ -3,12 +3,12 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
-  spec.name          = 'mumuki-qsim-runner'
-  spec.version       = '1.1.4'
-  spec.authors       = ['Federico Aloi']
-  spec.email         = ['fede@mumuki.org']
-  spec.summary       = 'Qsim Runner for Mumuki'
-  spec.homepage      = 'http://github.com/mumuki/mumuki-qsim-server'
+  spec.name          = 'mumuki-gobstones-runner'
+  spec.version       = '1.0.0'
+  spec.authors       = ['Rodrigo Alfonso']
+  spec.email         = ['rodri042@gmail.com']
+  spec.summary       = 'Gobstones Runner for Mumuki'
+  spec.homepage      = 'http://github.com/gobstones/mumuki-gobstones-server'
   spec.license       = 'MIT'
 
   spec.files         = Dir['lib/**/**']
@@ -24,6 +24,3 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'codeclimate-test-reporter'
   spec.add_development_dependency 'mumukit-bridge', '~> 1.3'
 end
-
-
-
