@@ -15,13 +15,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
 
   def compile_file_content(request)
     test = parse_test(request)
-    get_option = lambda do |it| test[it] || false end
-
-    @examples = to_examples(test[:examples])
-    @options = {
-      show_initial_board: get_option[:show_initial_board],
-      check_head_position: get_option[:check_head_position]
-    }
+    @examples = to_examples(test)
     # p "EXAMPLES:", @examples # // TODO borrar
 
     @examples
@@ -29,6 +23,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
         {
           initialBoard: example[:initial_board],
           code: request.extra + "\n" + request.content
+          # // TODO y los arguments?
         }
       }.to_json
   end
@@ -54,15 +49,23 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
 
   private
 
-  def to_examples(examples)
-    defaults = { preconditions: {}, postconditions: [] }
+  def to_examples(test)
+    examples = test[:examples]
+    get_option = lambda do |it| test[it] || false end
+
+    options = {
+      show_initial_board: get_option[:show_initial_board],
+      check_head_position: get_option[:check_head_position]
+    }
+
+    defaults = { preconditions: {}, postconditions: {} }
     examples.each_with_index.map { |example, index| defaults.merge(example).merge(id: index) }
   end
 
   def test_with_framework(output, examples)
     Mumukit::Metatest::Framework.new({
       checker: Gobstones::Checker.new,
-      runner: Gobstones::MultipleExecutionsRunner.new(examples)
+      runner: Gobstones::MultipleExecutionsRunner.new
     }).test output, @examples
   end
 

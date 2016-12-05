@@ -1,11 +1,7 @@
 module Gobstones
   class MultipleExecutionsRunner
-    def initialize(examples)
-      @examples = examples
-    end
-
     def run(output, example)
-      execution = output[@examples.index example]
+      execution = output[example[:id]]
 
       result = execution[:result]
       has_errors = execution[:status] != :passed.to_s
