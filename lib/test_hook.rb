@@ -16,14 +16,13 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   def compile_file_content(request)
     test = parse_test(request)
     @examples = to_examples(test)
-    # p "EXAMPLES:", @examples # // TODO borrar
 
     @examples
       .map { |example|
         {
           initialBoard: example[:initial_board],
           code: request.extra + "\n" + request.content
-          # // TODO y los arguments?
+          # // TODO y los :arguments?
         }
       }.to_json
   end
@@ -35,7 +34,6 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
 
   def post_process_file(file, result, status)
     output = parse_json result
-    # p "OUTPUT", output # // TODO borrar
 
     case status
       when :passed
@@ -51,15 +49,25 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
 
   def to_examples(test)
     examples = test[:examples]
-    get_option = lambda do |it| test[it] || false end
+    options = to_options test
 
-    options = {
-      show_initial_board: get_option[:show_initial_board],
-      check_head_position: get_option[:check_head_position]
+    examples.each_with_index.map { |example, index|
+      {
+        id: index,
+        postconditions: example.except_keys(preconditions)
+      }.merge example.only_keys(preconditions)
     }
+  end
 
-    defaults = { preconditions: {}, postconditions: {} }
-    examples.each_with_index.map { |example, index| defaults.merge(example).merge(id: index) }
+  def preconditions
+    [:initial_board, :arguments]
+  end
+
+  def to_options(test)
+    [
+      :show_initial_board,
+      :check_head_position
+    ].map { |it| [it, test[it] || false] }.to_h
   end
 
   def test_with_framework(output, examples)

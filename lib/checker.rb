@@ -1,10 +1,14 @@
 module Gobstones
   class Checker < Mumukit::Metatest::Checker
-    def check_equal(result, records)
-      records.each do |record, expected|
-        actual = result[:records][record]
-        fail I18n.t :check_equal_failure, {record: record, expected: expected, actual: actual} unless actual == expected
-      end
+    # def check_equal(result, records)
+    #   records.each do |record, expected|
+    #     actual = result[:records][record]
+    #     fail I18n.t :check_equal_failure, {record: record, expected: expected, actual: actual} unless actual == expected
+    #   end
+    # end
+
+    def check_final_board(actual, expected)
+      return
     end
 
     def render_success_output(result)
