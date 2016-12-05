@@ -12,6 +12,7 @@ module Gobstones
     end
 
     def render_error_output(result, error)
+      p "RENDER ERROR", result, error # // TODO borrar
       "#{error}\n#{renderer.render result}"
     end
 
