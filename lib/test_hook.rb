@@ -14,7 +14,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
 
   def compile_file_content(request)
     @examples = to_examples(parse_test(request)[:examples])
-    # p "EXAMPLES:",  @examples # // TODO borrar
+    p "EXAMPLES:",  @examples # // TODO borrar
 
     @examples
       .map { |example|
@@ -47,7 +47,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   private
 
   def to_examples(examples)
-    defaults = { preconditions: {} }
+    defaults = { preconditions: {}, postconditions: [] }
     examples.each_with_index.map { |example, index| defaults.merge(example).merge(id: index) }
   end
 

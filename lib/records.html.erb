@@ -1,32 +1,6 @@
 <style>
-/*    table.qsim-records {
-    max-width: 10%;
-    display: inline-block;
-    border: none;
-  }
 
-  td.qsim-record-name {
-    background-color: #ecf0f1;
-    font-weight: bold;
-    width: 1%;
-    white-space: nowrap;
-  }*/
 </style>
 
-<h5><%=I18n.t :records %></h5>
+<h5><%=I18n.t :records %></h5> <!-- // TODO cambiar -->
 <p>Hola, yo soy un resultado <%= @result  %></p>
-
-<!--
-<% @result[:records].each_slice(4) do |group| %>
-  <table class="table table-bordered qsim-records">
-    <tbody>
-        <% group.each do |name, value| %>
-        <tr>
-            <td class="qsim-record-name"><%= name %></td>
-            <td class="text-center"><%= value %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% end %>
--->
