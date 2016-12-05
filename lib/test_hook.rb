@@ -1,6 +1,7 @@
 class GobstonesTestHook < Mumukit::Templates::FileHook
   include Mumukit::WithTempfile
   attr_reader :examples
+  attr_reader :options
 
   isolated false # // TODO: No such file or directory - connect(2) for /var/run/docker.sock
 
@@ -13,8 +14,15 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   end
 
   def compile_file_content(request)
-    @examples = to_examples(parse_test(request)[:examples])
-    p "EXAMPLES:",  @examples # // TODO borrar
+    test = parse_test(request)
+    get_option = lambda do |it| test[it] || false end
+
+    @examples = to_examples(test[:examples])
+    @options = {
+      show_initial_board: get_option[:show_initial_board],
+      check_head_position: get_option[:check_head_position]
+    }
+    # p "EXAMPLES:", @examples # // TODO borrar
 
     @examples
       .map { |example|

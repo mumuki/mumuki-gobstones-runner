@@ -8,9 +8,9 @@ module Gobstones
       execution = output[@examples.index example]
 
       result = execution[:result]
-      hasErrors = execution[:status] != :passed.to_s
+      has_errors = execution[:status] != :passed.to_s
 
-      raise Mumukit::Metatest::Errored, result if hasErrors
+      raise Mumukit::Metatest::Errored, result if has_errors
       result
     end
   end
