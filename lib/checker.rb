@@ -9,6 +9,8 @@ module Gobstones
       end
     end
 
+    # // TODO postconditions que faltan: return, boom
+
     def render_success_output(result)
       renderer.render result
     end

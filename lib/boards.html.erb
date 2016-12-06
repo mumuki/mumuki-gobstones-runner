@@ -1,17 +1,20 @@
-<style>
-
-</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.23/webcomponents.min.js"></script>
+<link href="http://polygit.org/components/polymer/polymer.html" rel="import">
+<link rel="import" href="https://raw.githubusercontent.com/gobstones/gs-board/master/dist/components/gs-board.html"></link>
+<!-- // TODO: CDNs de la UNQ? -->
+<!-- // Esto trae problemas para mumuki-desktop -->
 
 <% if @result[:error] %>
 
-  <p>Tablero final esperado<p>
+  <p><%=I18n.t :expected_final_board %><p>
   <p><%= @result[:error] %></p>
 
-  <p>Tablero final obtenido</p>
+  <p><%=I18n.t :actual_final_board %></p>
   <p><%= @result[:error] %></p>
 
 <% else %>
 
-  <p>Hola, yo soy un resultado <%= @result %></p>
+  <gs-board size='{ "x": 4, "y": 4 }'></gs-board>
+  <!--<p>Hola, yo soy un resultado <%= @result %></p>-->
 
 <% end %>

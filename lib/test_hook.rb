@@ -1,7 +1,6 @@
 class GobstonesTestHook < Mumukit::Templates::FileHook
   include Mumukit::WithTempfile
   attr_reader :examples
-  attr_reader :options
 
   structured true
   isolated false # // TODO: No such file or directory - connect(2) for /var/run/docker.sock
@@ -12,6 +11,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
 
   def command_line(filename)
     "gs-weblang-cli --batch #{filename} --format gbb"
+    # // TODO: Agregarle que devuelva en ambos formatos el tablero inicial y final
   end
 
   def compile_file_content(request)
@@ -45,7 +45,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
 
   def to_examples(test)
     examples = test[:examples]
-    options = to_options test
+    options = to_options test # // TODO: Darle bola a estas options
 
     examples.each_with_index.map { |example, index|
       {
