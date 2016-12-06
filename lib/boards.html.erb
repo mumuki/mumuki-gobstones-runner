@@ -13,9 +13,8 @@
 
 <% else %>
 
-  <!--<gs-board size='{ "x": 4, "y": 4 }'></gs-board>-->
-  <p><%= @result[:initial_board] %></p>
-  <p><%= @result[:final_board] %></p>
-  <!-- //TODO: Mostrar tablero real -->
+  <gs-board size='{ "x": <%= @result[:initial_board][:sizeX] %>, "y": <%= @result[:initial_board][:sizeY] %>}', header='<%= JSON.generate(@result[:initial_board]) %>', table='<%= JSON.generate(@result[:initial_board][:table][:json]) %>'></gs-board>
+
+  <gs-board size='{ "x": <%= @result[:final_board][:sizeX] %>, "y": <%= @result[:final_board][:sizeY] %>}', header='<%= JSON.generate(@result[:final_board]) %>', table='<%= JSON.generate(@result[:final_board][:table][:json]) %>'></gs-board>
 
 <% end %>
