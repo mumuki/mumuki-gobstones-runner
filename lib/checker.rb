@@ -4,30 +4,33 @@ module Gobstones
       actual = result[:finalBoard][:table][:gbb]
 
       if clean(actual) != clean(expected)
-        report = {
-          status: :check_equal_failed,
+        fail_with({
+          status: :check_final_board_failed,
           result: {
             initial: result[:initialBoard],
             expected: result[:extraBoard],
-            actual: actual[:finalBoard]
+            actual: result[:finalBoard]
           }
-        }
-        fail JSON.generate(report)
+        })
       end
     end
 
     # // TODO postconditions que faltan: return, boom
 
     def render_success_output(result)
-      renderer.render_success result[:initialBoard], result[:finalBoard]
+      renderer.render_success result
     end
 
     def render_error_output(result, error)
-      report = JSON.parse(error)
-      renderer.render_error report
+      report = error.parse_as_json
+      renderer.send "render_error_#{report[:status]}", report[:result]
     end
 
     private
+
+    def fail_with(error)
+      fail JSON.generate(error)
+    end
 
     def renderer
       @renderer ||= Gobstones::HtmlRenderer.new

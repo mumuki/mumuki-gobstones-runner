@@ -21,20 +21,19 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
       .map { |example|
         {
           initialBoard: example[:initial_board],
-          code: request.extra + "\n" + request.content
+          code: request.extra + "\n" + request.content,
+          extraBoard: example[:postconditions][:final_board]
           # // TODO ¿y los :arguments? Generar programa dummy que invoque al procedimiento o función que haga el alumno
         }
       }.to_json
   end
 
   def post_process_file(file, result, status)
-    output = parse_json result
+    output = result.parse_as_json
 
     case status
       when :passed
         test_with_framework output, @examples
-      when :failed
-        [output, :errored]
       else
         [output, status]
     end
@@ -70,10 +69,6 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
       checker: Gobstones::Checker.new,
       runner: Gobstones::MultipleExecutionsRunner.new
     }).test output, @examples
-  end
-
-  def parse_json(json_result)
-    JSON.parse(json_result).map(&:deep_symbolize_keys)
   end
 
   def parse_test(request)

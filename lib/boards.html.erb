@@ -3,18 +3,51 @@
 <link rel="import" href="https://raw.githubusercontent.com/gobstones/gs-board/master/dist/components/gs-board.html"></link>
 <!-- // TODO: Esto no funciona offline. A) Embeber todo en un solo archivo con vulcanize y embeberlo o B) Mover a un CDN configurable -->
 
-<% if @result[:error] %>
+<% if @result[:error] == :check_final_board_failed %>
 
-  <p><%=I18n.t :expected_final_board %><p>
-  <p><%= @result[:error] %></p>
+  <div>
 
-  <p><%=I18n.t :actual_final_board %></p>
-  <p><%= @result[:error] %></p>
+    <div>
+      <p><%=I18n.t :initial_board %><p>
+      <p>
+        <gs-board size='<%= @result[:initial][:size] %>', header='<%= @result[:initial][:header] %>', table='<%= @result[:initial][:table] %>'></gs-board>
+      </p>
+    </div>
+
+    <div>
+      <p><%=I18n.t :expected_final_board %><p>
+      <p>
+        <gs-board size='<%= @result[:expected][:size] %>', header='<%= @result[:expected][:header] %>', table='<%= @result[:expected][:table] %>'></gs-board>
+      </p>
+    </div>
+
+    <div>
+      <p><%=I18n.t :actual_final_board %></p>
+      <p>
+        <gs-board size='<%= @result[:actual][:size] %>', header='<%= @result[:actual][:header] %>', table='<%= @result[:actual][:table] %>'></gs-board>
+      </p>
+    </div>
+
+  </div>
 
 <% else %>
 
-  <gs-board size='{ "x": <%= @result[:initial_board][:sizeX] %>, "y": <%= @result[:initial_board][:sizeY] %>}', header='<%= JSON.generate(@result[:initial_board]) %>', table='<%= JSON.generate(@result[:initial_board][:table][:json]) %>'></gs-board>
+  <div>
 
-  <gs-board size='{ "x": <%= @result[:final_board][:sizeX] %>, "y": <%= @result[:final_board][:sizeY] %>}', header='<%= JSON.generate(@result[:final_board]) %>', table='<%= JSON.generate(@result[:final_board][:table][:json]) %>'></gs-board>
+    <div>
+      <p><%=I18n.t :initial_board %><p>
+      <p>
+        <gs-board size='<%= @result[:initial_board][:size] %>', header='<%= @result[:initial_board][:header] %>', table='<%= @result[:initial_board][:table] %>'></gs-board>
+      </p>
+    </div>
+
+    <div>
+      <p><%=I18n.t :final_board %><p>
+      <p>
+        <gs-board size='<%= @result[:final_board][:size] %>', header='<%= @result[:final_board][:header] %>', table='<%= @result[:final_board][:table] %>'></gs-board>
+      </p>
+    </div>
+
+  </div>
 
 <% end %>

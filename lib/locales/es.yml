@@ -1,4 +1,5 @@
-en:
-  initial_board: 'Tablero inicial'
-  expected_final_board: 'Tablero final esperado'
+es:
   actual_final_board: 'Tablero final obtenido'
+  expected_final_board: 'Tablero final esperado'
+  final_board: 'Tablero final'
+  initial_board: 'Tablero inicial'
