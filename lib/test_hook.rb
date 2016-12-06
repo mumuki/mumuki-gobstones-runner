@@ -10,8 +10,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   end
 
   def command_line(filename)
-    "gs-weblang-cli --batch #{filename} --format gbb"
-    # // TODO: Agregarle que devuelva en ambos formatos el tablero inicial y final
+    "gs-weblang-cli --batch #{filename}"
   end
 
   def compile_file_content(request)
@@ -23,7 +22,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
         {
           initialBoard: example[:initial_board],
           code: request.extra + "\n" + request.content
-          # // TODO y los :arguments?
+          # // TODO ¿y los :arguments? Generar programa dummy que invoque al procedimiento o función que haga el alumno
         }
       }.to_json
   end

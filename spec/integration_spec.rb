@@ -1,6 +1,7 @@
 require 'active_support/all'
 require 'mumukit/bridge'
 
+# // TODO: Testear
 describe 'Server' do
   let(:bridge) { Mumukit::Bridge::Runner.new('http://localhost:4568') }
 

@@ -1,8 +1,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.23/webcomponents.min.js"></script>
 <link href="http://polygit.org/components/polymer/polymer.html" rel="import">
 <link rel="import" href="https://raw.githubusercontent.com/gobstones/gs-board/master/dist/components/gs-board.html"></link>
-<!-- // TODO: CDNs de la UNQ? -->
-<!-- // Esto trae problemas para mumuki-desktop -->
+<!-- // TODO: Esto no funciona offline. A) Embeber todo en un solo archivo con vulcanize y embeberlo o B) Mover a un CDN configurable -->
 
 <% if @result[:error] %>
 
@@ -14,7 +13,9 @@
 
 <% else %>
 
-  <gs-board size='{ "x": 4, "y": 4 }'></gs-board>
-  <!--<p>Hola, yo soy un resultado <%= @result %></p>-->
+  <!--<gs-board size='{ "x": 4, "y": 4 }'></gs-board>-->
+  <p><%= @result[:initial_board] %></p>
+  <p><%= @result[:final_board] %></p>
+  <!-- //TODO: Mostrar tablero real -->
 
 <% end %>
