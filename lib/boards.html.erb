@@ -1,0 +1,17 @@
+<style>
+
+</style>
+
+<% if @result[:error] %>
+
+  <p>Tablero final esperado<p>
+  <p><%= @result[:error] %></p>
+
+  <p>Tablero final obtenido</p>
+  <p><%= @result[:error] %></p>
+
+<% else %>
+
+  <p>Hola, yo soy un resultado <%= @result %></p>
+
+<% end %>

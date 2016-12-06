@@ -8,7 +8,7 @@ module Gobstones
     private
 
     def template_file
-      ERB.new File.read("#{__dir__}/records.html.erb")
+      ERB.new File.read("#{__dir__}/boards.html.erb")
     end
   end
 end

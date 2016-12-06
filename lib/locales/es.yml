@@ -1,3 +1,4 @@
-es:
-  records: 'Registros'
-  check_final_board_failure: "Should be <b>%{expected}</b>, but was <b>%{actual}</b>"
+en:
+  initial_board: 'Tablero inicial'
+  expected_final_board: 'Tablero final esperado'
+  actual_final_board: 'Tablero final obtenido'

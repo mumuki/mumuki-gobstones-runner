@@ -4,7 +4,8 @@ module Gobstones
       actual = result[:table]
 
       if clean(actual) != clean(expected)
-        fail I18n.t :check_final_board_failure, { expected: expected, actual: actual }
+        error = { expected: expected, actual: actual }
+        fail error
       end
     end
 
@@ -13,7 +14,8 @@ module Gobstones
     end
 
     def render_error_output(result, error)
-      "#{error}\n#{renderer.render result}"
+      to_render = { error: error } # // TODO: error es un String :/
+      renderer.render to_render
     end
 
     private

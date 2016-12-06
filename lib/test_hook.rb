@@ -3,6 +3,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   attr_reader :examples
   attr_reader :options
 
+  structured true
   isolated false # // TODO: No such file or directory - connect(2) for /var/run/docker.sock
 
   def tempfile_extension
@@ -25,11 +26,6 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
           # // TODO y los :arguments?
         }
       }.to_json
-  end
-
-  def execute!(request)
-    result, _ = run_file! compile request
-    parse_json result
   end
 
   def post_process_file(file, result, status)
@@ -59,15 +55,15 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
     }
   end
 
-  def preconditions
-    [:initial_board, :arguments]
-  end
-
   def to_options(test)
     [
       :show_initial_board,
       :check_head_position
     ].map { |it| [it, test[it] || false] }.to_h
+  end
+
+  def preconditions
+    [:initial_board, :arguments]
   end
 
   def test_with_framework(output, examples)
