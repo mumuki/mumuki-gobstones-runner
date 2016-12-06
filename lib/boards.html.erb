@@ -1,9 +1,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.23/webcomponents.min.js"></script>
 <link href="http://polygit.org/components/polymer/polymer.html" rel="import">
 <link rel="import" href="https://raw.githubusercontent.com/gobstones/gs-board/master/dist/components/gs-board.html"></link>
-<!-- // TODO: Esto no funciona offline. A) Embeber todo en un solo archivo con vulcanize y embeberlo o B) Mover a un CDN configurable -->
+<!-- // TODO: Esto no funciona offline. A) Compilar todo en un solo archivo con vulcanize y embeberlo o B) Mover a un CDN configurable -->
 
 <% if @result[:error] == :check_final_board_failed %>
+  <!-- // TODO: Agregar css -->
+  <!-- // TODO: Querido code reviewer, si conoces algún método para evitar el html repetido de <gs-board> coméntala aquí (?) -->
 
   <div>
 
@@ -32,7 +34,7 @@
 
 <% else %>
 
-  <div>
+  <div id="passed">
 
     <div>
       <p><%=I18n.t :initial_board %><p>

@@ -25,6 +25,12 @@ gem install bundler
 bundle install
 ```
 
+# Run tests
+
+```bash
+bundle exec rake
+```
+
 # Run the server
 
 ```bash
