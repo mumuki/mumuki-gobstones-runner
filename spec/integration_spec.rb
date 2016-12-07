@@ -1,7 +1,6 @@
 require 'active_support/all'
 require 'mumukit/bridge'
 
-# // TODO: Testear
 describe 'Server' do
   let(:bridge) { Mumukit::Bridge::Runner.new('http://localhost:4568') }
 
@@ -15,29 +14,29 @@ describe 'Server' do
   let(:test) {
     %q{
 examples:
-- name: 'Result is OK'
-  preconditions:
-    records:
-      R0: 'B5E1'
-      R1: '000F'
-  postconditions:
-    equal:
-      R2: 'B5F0'
-
-- name: 'Records are not modified'
-  preconditions:
-    records:
-      R0: '0001'
-      R1: '000A'
-  postconditions:
-    equal:
-      R0: '0001'
-      R1: '000A'}}
+- initial_board: |
+    GBB/1.0
+    size 3 3
+    head 0 0
+  final_board: |
+    GBB/1.0
+    size 3 3
+    head 0 1
+- initial_board: |
+    GBB/1.0
+    size 2 2
+    head 0 0
+  final_board: |
+    GBB/1.0
+    size 2 2
+    head 0 1
+}}
 
   it 'answers a valid hash when submission passes' do
     response = bridge.run_tests!(test: test, extra: '', content: %q{
-ADD R2, R0
-ADD R2, R1}, expectations: [])
+program {
+  Mover(Norte)
+}}, expectations: [])
 
     expect(response[:response_type]).to eq :structured
     expect(response[:test_results].size).to eq 2

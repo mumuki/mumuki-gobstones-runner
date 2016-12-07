@@ -1,9 +1,6 @@
 require_relative './spec_helper'
-require_relative './data/fixture'
 
 describe 'running' do
-  include Fixture
-
   def req(content, extra, test = 'examples: [{}]')
     struct content: content.strip, extra: extra.strip, test: test
   end
