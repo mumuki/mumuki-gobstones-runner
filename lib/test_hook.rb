@@ -3,7 +3,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   attr_reader :examples
 
   structured true
-  isolated false # // TODO: No such file or directory - connect(2) for /var/run/docker.sock
+  isolated true
 
   def tempfile_extension
     '.json'

@@ -37,5 +37,11 @@ bundle exec rake
 RACK_ENV=development bundle exec rackup -p 4567
 ```
 
+# Deploy docker image
 
-
+```bash
+cd worker/
+# docker login
+docker build -t mumuki/mumuki-gobstones-worker
+docker push mumuki/mumuki-gobstones-worker
+```
