@@ -20,12 +20,19 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
 
     @examples
       .map { |example|
-        {
+        expected_board = example[:postconditions][:final_board]
+
+        # // TODO: Contemplar :subject, :arguments. Generar programa dummy que invoque al procedimiento o función que haga el alumno
+        request = {
           initialBoard: example[:preconditions][:initial_board],
-          code: request.extra + "\n" + request.content,
-          extraBoard: example[:postconditions][:final_board]
-          # // TODO: ¿y los :arguments, :subject? Generar programa dummy que invoque al procedimiento o función que haga el alumno
+          code: request.extra + "\n" + request.content
         }
+
+        if expected_board
+          request.merge extraBoard: expected_board
+        else
+          request
+        end
       }.to_json
   end
 
@@ -48,7 +55,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
     examples.each_with_index.map { |example, index|
       {
         id: index,
-        title: example[:title],
+        title: example[:title], # // TODO: Pregunta: ¿Para qué debería usar esto?
         preconditions: example.slice(*preconditions),
         postconditions: example.slice(*postconditions)
       }

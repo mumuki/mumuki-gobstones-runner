@@ -4,10 +4,15 @@ module Gobstones
       execution = output[example[:id]]
 
       result = execution[:result]
-      has_errors = execution[:status] != :passed.to_s
 
-      raise Mumukit::Metatest::Errored, result if has_errors
+      raise Mumukit::Metatest::Errored, result unless is_success?(execution)
       result
+    end
+
+    private
+
+    def is_success?(execution)
+      [:passed, :runtime_error].include? execution[:status].to_sym
     end
   end
 end

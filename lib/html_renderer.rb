@@ -21,6 +21,14 @@ module Gobstones
       bind
     end
 
+    def render_error_check_error_failed_expected_boom(result)
+      # // TODO
+    end
+
+    def render_error_check_error_failed_another_reason(result)
+      # // TODO
+    end
+
     private
 
     def prepare_boards(names, result)
