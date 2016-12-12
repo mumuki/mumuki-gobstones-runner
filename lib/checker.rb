@@ -36,7 +36,7 @@ module Gobstones
     end
 
     def renderer
-      @renderer ||= Gobstones::HtmlRenderer.new
+      @renderer ||= Gobstones::HtmlRenderer.new(@options)
     end
 
     def clean(gbb)

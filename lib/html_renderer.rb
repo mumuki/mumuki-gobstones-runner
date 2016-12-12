@@ -1,5 +1,9 @@
 module Gobstones
   class HtmlRenderer
+    def initialize(options)
+      @options = options
+    end
+
     def render_success(result)
       @result = {
         boards: prepare_boards([:initial, :final], result)
@@ -11,7 +15,7 @@ module Gobstones
     def render_error_check_final_board_failed(result)
       @result = {
         error: :check_final_board_failed,
-        boards: prepare_boards([:actual, :initial, :expected], result)
+        boards: prepare_boards([:initial, :expected, :actual], result)
       }
 
       bind
@@ -20,7 +24,9 @@ module Gobstones
     private
 
     def prepare_boards(names, result)
-      names.map { |it|
+      names.reject { |it|
+        it == :initial and not @options[:show_initial_board]
+      }.map { |it|
         struct title: "#{it}_board".to_sym, board: adapt_to_view(result[it])
       }
     end
