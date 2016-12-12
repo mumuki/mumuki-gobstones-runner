@@ -3,3 +3,4 @@
 hs_*.log
 bin/
 Gemfile.lock
+*.sublime-workspace

@@ -1,2 +1,2 @@
-require_relative '../lib/qsim_runner'
+require_relative '../lib/gobstones_runner'
 require 'rspec'

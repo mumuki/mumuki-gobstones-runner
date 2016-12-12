@@ -1,3 +1,6 @@
 es:
-  records: 'Registros'
-  check_equal_failure: "<b>%{record}</b> debería contener el valor <b>%{expected}</b>, pero se encontró <b>%{actual}</b>"
+  actual_board: 'Tablero final obtenido'
+  check_final_board_failed: 'Se obtuvo un tablero distinto al esperado'
+  expected_board: 'Tablero final esperado'
+  final_board: 'Tablero final'
+  initial_board: 'Tablero inicial'

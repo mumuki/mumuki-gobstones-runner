@@ -14,7 +14,7 @@ cd mumuki-gobstones-runner
 ## Install Ruby
 
 ```bash
-rbenv install 2.0.0-p481
+rbenv install 2.3.1
 rbenv rehash
 gem install bundler
 ```
@@ -25,11 +25,23 @@ gem install bundler
 bundle install
 ```
 
+# Run tests
+
+```bash
+bundle exec rake
+```
+
 # Run the server
 
 ```bash
 RACK_ENV=development bundle exec rackup -p 4567
 ```
 
+# Deploy docker image
 
-
+```bash
+cd worker/
+# docker login
+docker build -t mumuki/mumuki-gobstones-worker
+docker push mumuki/mumuki-gobstones-worker
+```

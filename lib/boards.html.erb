@@ -1,0 +1,23 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.23/webcomponents.min.js"></script>
+<link href="http://polygit.org/components/polymer/polymer.html" rel="import">
+<link rel="import" href="https://raw.githubusercontent.com/gobstones/gs-board/master/dist/components/gs-board.html"></link>
+<!-- // TODO: Esto no funciona offline. A) Compilar todo en un solo archivo con vulcanize y embeberlo o B) Mover a un CDN configurable -->
+<!-- // TODO: Agregar css -->
+<!-- // TODO: Usar options[:show_initial_board] -->
+
+<% if @result[:error] == :check_final_board_failed %>
+  <pre><%=I18n.t @result[:error]%></pre>
+<% end %>
+
+<div>
+
+  <% @result[:boards].each do |it| %>
+    <div>
+      <p><%=I18n.t it.title %></p>
+      <p>
+        <gs-board size='<%= it.board[:size] %>', header='<%= it.board[:header] %>', table='<%= it.board[:table] %>'></gs-board>
+      </p>
+    </div>
+  <% end %>
+
+</div>

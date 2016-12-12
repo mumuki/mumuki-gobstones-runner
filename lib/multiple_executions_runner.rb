@@ -1,9 +1,12 @@
 module Gobstones
   class MultipleExecutionsRunner
     def run(output, example)
-      result = output.find { |it| it[:id] == example[:id] }
+      execution = output[example[:id]]
 
-      raise Mumukit::Metatest::Errored, result[:error] if result[:error]
+      result = execution[:result]
+      has_errors = execution[:status] != :passed.to_s
+
+      raise Mumukit::Metatest::Errored, result if has_errors
       result
     end
   end

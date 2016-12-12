@@ -2,44 +2,78 @@ require_relative './spec_helper'
 
 describe 'metatest' do
   let(:result) { framework.test compilation, examples }
+  let(:options) { { show_initial_board: false, check_head_position: true } }
   let(:framework) do
-    Mumukit::Metatest::Framework.new checker: Qsim::Checker.new,
-                                     runner: Qsim::MultipleExecutionsRunner.new
+    Mumukit::Metatest::Framework.new checker: Gobstones::Checker.new(options),
+                                     runner: Gobstones::MultipleExecutionsRunner.new
+  end
+  let(:dummy_view_board) do
+    { x: 0, y: 0, sizeX: 3, sizeY: 3, table: {
+      json: []
+    } }
   end
   let(:compilation) do
-    [{
-        id: 1,
-        special_records: {PC: '0005', SP: 'FFEF', IR: '28E5 '},
-        flags: {N: 0, Z: 0, V: 0, C: 0},
-        records: {
-            R0: '0000', R1: '0000', R2: '0000', R3: '0000',
-            R4: '0003', R5: '0004', R6: '0000', R7: '0000'
+    [
+      {
+        status: "passed",
+        result: {
+          extraBoard: dummy_view_board,
+          initialBoard: dummy_view_board,
+          finalBoard: {
+            x: 0,
+            y: 1,
+            sizeX: 3,
+            sizeY: 3,
+            table: {
+              gbb: "GBB/1.0\r\nsize 3 3\r\nhead 1 0\r\n",
+              json: []
+            }
+          }
         }
-    }]
+      }
+    ]
   end
 
-  describe 'equal postcondition' do
-    context 'when fails' do
-      let(:examples) {
-        [{
-            id: 1,
-            name: 'R3 is 0003',
-            postconditions: {equal: {R3: '0003'}}
-         }]
-      }
-      it { expect(result[0][0]).to include 'R3 is 0003', :failed }
-      it { expect(result[0][0][2]).to include '<b>R3</b> should be <b>0003</b>, but was <b>0000</b>' }
-    end
-
+  describe 'final_board postcondition' do
     context 'when passes' do
       let(:examples) {
         [{
-            id: 1,
-            name: 'R3 is 0000',
-            postconditions: {equal: {R3: '0000'}}
+            id: 0,
+            postconditions: {
+              final_board: "GBB/1.0\r\nsize 3 3\r\nhead 1 0\r\n"
+            }
          }]
       }
-      it { expect(result[0][0]).to include 'R3 is 0000', :passed }
+
+      it { expect(result[0][0]).to include :passed }
+    end
+
+    context 'when passes with check_head_position=false' do
+      let(:options) { { show_initial_board: false, check_head_position: false } }
+
+      let(:examples) {
+        [{
+            id: 0,
+            postconditions: {
+              final_board: "GBB/1.0\r\nsize 3 3\r\nhead 5 5\r\n"
+            }
+         }]
+      }
+
+      it { expect(result[0][0]).to include :passed }
+    end
+
+    context 'when fails' do
+      let(:examples) {
+        [{
+            id: 0,
+            postconditions: {
+              final_board: "GBB/1.0\r\nsize 3 3\r\nhead 5 5\r\n"
+            }
+         }]
+      }
+
+      it { expect(result[0][0]).to include :failed }
     end
   end
 end

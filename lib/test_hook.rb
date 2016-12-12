@@ -1,7 +1,8 @@
 class GobstonesTestHook < Mumukit::Templates::FileHook
   include Mumukit::WithTempfile
-  attr_reader :examples
+  attr_reader :options, :examples
 
+  structured true
   isolated true
 
   def tempfile_extension
@@ -9,37 +10,31 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   end
 
   def command_line(filename)
-    "runqsim #{filename} #{input_file_separator}"
+    "gs-weblang-cli --batch #{filename}"
   end
 
   def compile_file_content(request)
-    @examples = to_examples(parse_test(request)[:examples])
+    test = parse_test request
+    @options = to_options test
+    @examples = to_examples test
 
-    <<EOF
-JMP main
-
-#{request.extra}
-
-main:
-#{request.content}
-#{input_file_separator}
-#{initial_state_file}
-EOF
-  end
-
-  def execute!(request)
-    result, _ = run_file! compile request
-    parse_json result
+    @examples
+      .map { |example|
+        {
+          initialBoard: example[:preconditions][:initial_board],
+          code: request.extra + "\n" + request.content,
+          extraBoard: example[:postconditions][:final_board]
+          # // TODO: ¿y los :arguments? Generar programa dummy que invoque al procedimiento o función que haga el alumno
+        }
+      }.to_json
   end
 
   def post_process_file(file, result, status)
-    output = parse_json result
+    output = result.parse_as_json
 
     case status
       when :passed
-        framework.test output, @examples
-      when :failed
-        [output[:error], :errored]
+        test_with_framework output, @examples
       else
         [output, status]
     end
@@ -47,57 +42,37 @@ EOF
 
   private
 
-  def to_examples(examples)
-    defaults = { preconditions: {} }
-    examples.each_with_index.map { |example, index| defaults.merge(example).merge(id: index) }
+  def to_examples(test)
+    examples = test[:examples]
+
+    examples.each_with_index.map { |example, index|
+      {
+        id: index,
+        preconditions: example.slice(*preconditions),
+        postconditions: example.except(*preconditions)
+      }
+    }
   end
 
-  def framework
-    Mumukit::Metatest::Framework.new checker: Gobstones::Checker.new,
-                                     runner: Gobstones::MultipleExecutionsRunner.new
+  def to_options(test)
+    [
+      struct(key: :show_initial_board, default: true),
+      struct(key: :check_head_position, default: false)
+    ].map { |it| [it.key, test[it.key] || it.default] }.to_h
   end
 
-  def parse_json(json_result)
-    JSON.parse(json_result).map(&:deep_symbolize_keys)
+  def preconditions
+    [:initial_board, :arguments]
+  end
+
+  def test_with_framework(output, examples)
+    Mumukit::Metatest::Framework.new({
+      checker: Gobstones::Checker.new(@options),
+      runner: Gobstones::MultipleExecutionsRunner.new
+    }).test output, @examples
   end
 
   def parse_test(request)
     YAML.load(request.test).deep_symbolize_keys
-  end
-
-  # def default_initial_state
-  #   {
-  #     special_records: {
-  #       PC: '0000',
-  #       SP: 'FFEF',
-  #       IR: '0000'
-  #     },
-  #     flags: {
-  #       N: 0,
-  #       Z: 0,
-  #       V: 0,
-  #       C: 0
-  #     },
-  #     records: {
-  #       R0: '0000',
-  #       R1: '0000',
-  #       R2: '0000',
-  #       R3: '0000',
-  #       R4: '0000',
-  #       R5: '0000',
-  #       R6: '0000',
-  #       R7: '0000'
-  #     },
-  #     memory: {}
-  #   }
-  # end
-
-  # def initial_state_file
-  #   initial_states = @examples.map { |example| default_initial_state.merge(id: example[:id]).deep_merge(example[:preconditions]) }
-  #   JSON.generate initial_states
-  # end
-
-  def input_file_separator # // TODO
-    '!!!BEGIN_EXAMPLES!!!'
   end
 end
