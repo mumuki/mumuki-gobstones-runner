@@ -2,54 +2,21 @@
 <link href="http://polygit.org/components/polymer/polymer.html" rel="import">
 <link rel="import" href="https://raw.githubusercontent.com/gobstones/gs-board/master/dist/components/gs-board.html"></link>
 <!-- // TODO: Esto no funciona offline. A) Compilar todo en un solo archivo con vulcanize y embeberlo o B) Mover a un CDN configurable -->
+<!-- // TODO: Agregar css -->
 
 <% if @result[:error] == :check_final_board_failed %>
-  <!-- // TODO: Agregar css -->
-  <!-- // TODO: Querido code reviewer, si conoces algún método para evitar el html repetido de <gs-board> coméntala aquí (?) -->
-
-  <div>
-
-    <div>
-      <p><%=I18n.t :initial_board %><p>
-      <p>
-        <gs-board size='<%= @result[:initial][:size] %>', header='<%= @result[:initial][:header] %>', table='<%= @result[:initial][:table] %>'></gs-board>
-      </p>
-    </div>
-
-    <div>
-      <p><%=I18n.t :expected_final_board %><p>
-      <p>
-        <gs-board size='<%= @result[:expected][:size] %>', header='<%= @result[:expected][:header] %>', table='<%= @result[:expected][:table] %>'></gs-board>
-      </p>
-    </div>
-
-    <div>
-      <p><%=I18n.t :actual_final_board %></p>
-      <p>
-        <gs-board size='<%= @result[:actual][:size] %>', header='<%= @result[:actual][:header] %>', table='<%= @result[:actual][:table] %>'></gs-board>
-      </p>
-    </div>
-
-  </div>
-
-<% else %>
-
-  <div id="passed">
-
-    <div>
-      <p><%=I18n.t :initial_board %><p>
-      <p>
-        <gs-board size='<%= @result[:initial_board][:size] %>', header='<%= @result[:initial_board][:header] %>', table='<%= @result[:initial_board][:table] %>'></gs-board>
-      </p>
-    </div>
-
-    <div>
-      <p><%=I18n.t :final_board %><p>
-      <p>
-        <gs-board size='<%= @result[:final_board][:size] %>', header='<%= @result[:final_board][:header] %>', table='<%= @result[:final_board][:table] %>'></gs-board>
-      </p>
-    </div>
-
-  </div>
-
+  <pre><%=I18n.t @result[:error]%></pre>
 <% end %>
+
+<div>
+
+  <% @result[:boards].each do |it| %>
+    <div>
+      <p><%=I18n.t it.title %></p>
+      <p>
+        <gs-board size='<%= it.board[:size] %>', header='<%= it.board[:header] %>', table='<%= it.board[:table] %>'></gs-board>
+      </p>
+    </div>
+  <% end %>
+
+</div>

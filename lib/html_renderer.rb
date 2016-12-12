@@ -2,26 +2,28 @@ module Gobstones
   class HtmlRenderer
     def render_success(result)
       @result = {
-        initial_board: adapt_to_view(result[:initialBoard]),
-        final_board: adapt_to_view(result[:finalBoard])
+        boards: prepare_boards([:initial, :final], result)
       }
 
       bind
     end
 
     def render_error_check_final_board_failed(result)
-      adapted_boards = result.map { | k, v |
-        [ k, adapt_to_view(v) ]
-      }.to_h
-
       @result = {
-        error: :check_final_board_failed
-      }.merge adapted_boards
+        error: :check_final_board_failed,
+        boards: prepare_boards([:actual, :initial, :expected], result)
+      }
 
       bind
     end
 
     private
+
+    def prepare_boards(names, result)
+      names.map { |it|
+        struct title: "#{it}_board".to_sym, board: adapt_to_view(result[it])
+      }
+    end
 
     def adapt_to_view(board)
       return {

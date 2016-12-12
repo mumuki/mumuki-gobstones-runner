@@ -3,7 +3,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   attr_reader :examples
 
   structured true
-  isolated true
+  isolated false # // TODO: Subir container de Docker y probarlo
 
   def tempfile_extension
     '.json'

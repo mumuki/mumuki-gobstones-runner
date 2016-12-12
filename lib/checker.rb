@@ -4,21 +4,20 @@ module Gobstones
       actual = result[:finalBoard][:table][:gbb]
 
       if clean(actual) != clean(expected)
-        fail_with({
-          status: :check_final_board_failed,
-          result: {
-            initial: result[:initialBoard],
-            expected: result[:extraBoard],
-            actual: result[:finalBoard]
-          }
-        })
+        fail_with status: :check_final_board_failed,
+                  result: {
+                    initial: result[:initialBoard],
+                    expected: result[:extraBoard],
+                    actual: result[:finalBoard]
+                  }
       end
     end
 
     # // TODO postconditions que faltan: return, boom
 
     def render_success_output(result)
-      renderer.render_success result
+      renderer.render_success initial: result[:initialBoard],
+                              final: result[:finalBoard]
     end
 
     def render_error_output(result, error)
