@@ -3,7 +3,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   attr_reader :options, :examples
 
   structured true
-  isolated true
+  isolated false # // TODO: Subir imagen con la nueva versión de gs-weblang-cli
 
   def tempfile_extension
     '.json'
@@ -24,7 +24,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
           initialBoard: example[:preconditions][:initial_board],
           code: request.extra + "\n" + request.content,
           extraBoard: example[:postconditions][:final_board]
-          # // TODO: ¿y los :arguments? Generar programa dummy que invoque al procedimiento o función que haga el alumno
+          # // TODO: ¿y los :arguments, :subject? Generar programa dummy que invoque al procedimiento o función que haga el alumno
         }
       }.to_json
   end
@@ -48,8 +48,9 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
     examples.each_with_index.map { |example, index|
       {
         id: index,
+        title: example[:title],
         preconditions: example.slice(*preconditions),
-        postconditions: example.except(*preconditions)
+        postconditions: example.slice(*postconditions)
       }
     }
   end
@@ -57,12 +58,17 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   def to_options(test)
     [
       struct(key: :show_initial_board, default: true),
-      struct(key: :check_head_position, default: false)
+      struct(key: :check_head_position, default: false),
+      struct(key: :subject, default: nil)
     ].map { |it| [it.key, test[it.key] || it.default] }.to_h
   end
 
   def preconditions
     [:initial_board, :arguments]
+  end
+
+  def postconditions
+    [:final_board, :error, :return]
   end
 
   def test_with_framework(output, examples)
