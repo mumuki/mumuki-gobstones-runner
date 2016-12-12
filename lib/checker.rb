@@ -40,7 +40,13 @@ module Gobstones
     end
 
     def clean(gbb)
-      gbb.gsub /\r|\n/, ""
+      clean_gbb = gbb.gsub /\r|\n/, ""
+
+      if @options[:check_head_position]
+        clean_gbb
+      else
+        clean_gbb.gsub /head \d+ \d+/, ""
+      end
     end
   end
 end

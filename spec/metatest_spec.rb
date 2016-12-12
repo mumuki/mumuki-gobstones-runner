@@ -2,7 +2,7 @@ require_relative './spec_helper'
 
 describe 'metatest' do
   let(:result) { framework.test compilation, examples }
-  let(:options) { { show_initial_board: false, check_head_position: false } }
+  let(:options) { { show_initial_board: false, check_head_position: true } }
   let(:framework) do
     Mumukit::Metatest::Framework.new checker: Gobstones::Checker.new(options),
                                      runner: Gobstones::MultipleExecutionsRunner.new
@@ -39,9 +39,23 @@ describe 'metatest' do
       let(:examples) {
         [{
             id: 0,
-            initial_board: "GBB/1.0\r\nsize 3 3\r\nhead 0 0\r\n",
             postconditions: {
               final_board: "GBB/1.0\r\nsize 3 3\r\nhead 1 0\r\n"
+            }
+         }]
+      }
+
+      it { expect(result[0][0]).to include :passed }
+    end
+
+    context 'when passes with check_head_position=false' do
+      let(:options) { { show_initial_board: false, check_head_position: false } }
+
+      let(:examples) {
+        [{
+            id: 0,
+            postconditions: {
+              final_board: "GBB/1.0\r\nsize 3 3\r\nhead 5 5\r\n"
             }
          }]
       }
@@ -53,7 +67,6 @@ describe 'metatest' do
       let(:examples) {
         [{
             id: 0,
-            initial_board: "GBB/1.0\r\nsize 3 3\r\nhead 0 0\r\n",
             postconditions: {
               final_board: "GBB/1.0\r\nsize 3 3\r\nhead 5 5\r\n"
             }
