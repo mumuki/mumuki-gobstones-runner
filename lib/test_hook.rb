@@ -48,8 +48,8 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
     examples.each_with_index.map { |example, index|
       {
         id: index,
-        postconditions: example.except_keys(preconditions)
-      }.merge example.only_keys(preconditions)
+        postconditions: example.except(*preconditions)
+      }.merge example.slice(*preconditions)
     }
   end
 
