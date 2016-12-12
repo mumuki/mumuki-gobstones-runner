@@ -1,5 +1,9 @@
 module Gobstones
   class Checker < Mumukit::Metatest::Checker
+    def initialize(options)
+      @options = options
+    end
+
     def check_final_board(result, expected)
       actual = result[:finalBoard][:table][:gbb]
 

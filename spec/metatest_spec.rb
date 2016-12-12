@@ -2,8 +2,9 @@ require_relative './spec_helper'
 
 describe 'metatest' do
   let(:result) { framework.test compilation, examples }
+  let(:options) { { show_initial_board: false, check_head_position: false } }
   let(:framework) do
-    Mumukit::Metatest::Framework.new checker: Gobstones::Checker.new,
+    Mumukit::Metatest::Framework.new checker: Gobstones::Checker.new(options),
                                      runner: Gobstones::MultipleExecutionsRunner.new
   end
   let(:dummy_view_board) do

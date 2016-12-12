@@ -1,6 +1,6 @@
 class GobstonesTestHook < Mumukit::Templates::FileHook
   include Mumukit::WithTempfile
-  attr_reader :examples
+  attr_reader :options, :examples
 
   structured true
   isolated false # // TODO: Subir container de Docker y probarlo
@@ -14,16 +14,17 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   end
 
   def compile_file_content(request)
-    test = parse_test(request)
-    @examples = to_examples(test)
+    test = parse_test request
+    @options = to_options test
+    @examples = to_examples test
 
     @examples
       .map { |example|
         {
-          initialBoard: example[:initial_board],
+          initialBoard: example[:preconditions][:initial_board],
           code: request.extra + "\n" + request.content,
           extraBoard: example[:postconditions][:final_board]
-          # // TODO ¿y los :arguments? Generar programa dummy que invoque al procedimiento o función que haga el alumno
+          # // TODO: ¿y los :arguments? Generar programa dummy que invoque al procedimiento o función que haga el alumno
         }
       }.to_json
   end
@@ -43,21 +44,21 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
 
   def to_examples(test)
     examples = test[:examples]
-    options = to_options test # // TODO: Darle bola a estas options
 
     examples.each_with_index.map { |example, index|
       {
         id: index,
+        preconditions: example.slice(*preconditions),
         postconditions: example.except(*preconditions)
-      }.merge example.slice(*preconditions)
+      }
     }
   end
 
   def to_options(test)
     [
-      :show_initial_board,
-      :check_head_position
-    ].map { |it| [it, test[it] || false] }.to_h
+      struct(key: :show_initial_board, default: true),
+      struct(key: :check_head_position, default: false)
+    ].map { |it| [it.key, test[it.key] || it.default] }.to_h
   end
 
   def preconditions
@@ -66,7 +67,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
 
   def test_with_framework(output, examples)
     Mumukit::Metatest::Framework.new({
-      checker: Gobstones::Checker.new,
+      checker: Gobstones::Checker.new(@options),
       runner: Gobstones::MultipleExecutionsRunner.new
     }).test output, @examples
   end

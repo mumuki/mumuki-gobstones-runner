@@ -27,6 +27,7 @@ EOF
 
     let(:test) {
 %q{
+check_head_position: true
 examples:
 - initial_board: |
     GBB/1.0
@@ -57,13 +58,19 @@ examples:
       let(:expected_example) {
         {
           id: 0,
-          initial_board: "GBB/1.0\nsize 3 3\nhead 0 0\n",
+          preconditions: {
+            initial_board: "GBB/1.0\nsize 3 3\nhead 0 0\n",
+          },
           postconditions: {
             final_board: "GBB/1.0\nsize 3 3\nhead 0 1\n"
           }
         }
       }
 
+      it { expect(runner.options).to eq({
+        show_initial_board: true,
+        check_head_position: true
+      }) }
       it { expect(runner.examples).to eq [expected_example] }
     end
   end
