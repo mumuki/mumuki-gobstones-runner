@@ -56,7 +56,7 @@ module Gobstones
           if status == :passed
             { final: result[:finalBoard] }
           else
-            { final: :boom, reason: result[:finalBoardError] } # // TODO: deduplicar esta lógica
+            { final: :boom.to_s, reason: result[:finalBoardError] } # // TODO: deduplicar esta lógica
           end
         )
       )

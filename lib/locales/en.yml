@@ -1,8 +1,10 @@
 en:
   actual_board: 'Actual final board'
-  check_error_failed_expected_boom: 'Se esperaba que el programa hiciera BOOM pero se obtuvo un tablero final.'
-  check_error_failed_another_reason: 'Se esperaba que el programa fallara por // TODO'
+  check_error_failed_expected_boom: 'The program was expected to BOOM but a final board was obtained.'
+  check_error_failed_another_reason: 'The program was expected to fail by "%{error_parameter}", but it failed by another reason.'
   check_final_board_failed:  'A different board was obtained'
+  code_no_stones: 'No stones left'
+  code_out_of_board: 'Out of board'
   expected_board: 'Expected final board'
   final_board: 'Final board'
   initial_board: 'Initial board'

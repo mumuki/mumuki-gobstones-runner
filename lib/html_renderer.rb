@@ -6,7 +6,8 @@ module Gobstones
 
     def render_success(result)
       bind_result(
-        boards: prepare_boards([:initial, :final], result)
+        boards: prepare_boards([:initial, :final], result),
+        reason: prepare_reason(result[:reason])
       )
     end
 
@@ -35,7 +36,7 @@ module Gobstones
     def render_error_check_error_failed_another_reason(result)
       bind_result(
         error: :check_error_failed_another_reason,
-        expected_code: result[:expected_code],
+        error_parameter: result[:expected_code],
         reason: prepare_reason(result[:reason])
       )
     end
@@ -43,8 +44,7 @@ module Gobstones
     private
 
     def prepare_reason(reason)
-      p reason # // TODO: Armar bien la razón
-      reason
+      reason[:message]
     end
 
     def prepare_boards(names, result)
@@ -53,10 +53,10 @@ module Gobstones
       }.map { |it|
         struct title: "#{it}_board".to_sym,
                board: (
-                  if result[it] != :boom.to_s
-                    adapt_to_view(result[it])
-                  else
+                  if result[it] == :boom.to_s
                     adapt_to_view(result[:initial], true)
+                  else
+                    adapt_to_view(result[it])
                   end
                )
       }

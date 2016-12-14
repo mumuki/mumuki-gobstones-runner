@@ -5,7 +5,7 @@
 <!-- // TODO: Agregar css -->
 
 <% if @result[:error] %>
-  <p><%=I18n.t @result[:error]%></p>
+  <p><%=I18n.t @result[:error], @result %></p>
 <% end %>
 
 <div>
@@ -24,7 +24,8 @@
     </div>
   <% end %>
 
-  <% if @result[:reason] %> <!-- // TODO: Mostrar esto bien -->
+  <% if @result[:reason] %>
+    <h1>BOOM</h1>
     <pre><%=@result[:reason]%></pre>
   <% end %>
 
