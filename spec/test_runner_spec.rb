@@ -29,7 +29,8 @@ EOF
 %q{
 check_head_position: true
 examples:
-- initial_board: |
+- title: Un nombre
+  initial_board: |
     GBB/1.0
     size 3 3
     head 0 0
@@ -58,6 +59,7 @@ examples:
       let(:expected_example) {
         {
           id: 0,
+          title: "Un nombre",
           preconditions: {
             initial_board: "GBB/1.0\nsize 3 3\nhead 0 0\n",
           },
@@ -69,7 +71,8 @@ examples:
 
       it { expect(runner.options).to eq({
         show_initial_board: true,
-        check_head_position: true
+        check_head_position: true,
+        subject: nil
       }) }
       it { expect(runner.examples).to eq [expected_example] }
     end

@@ -38,8 +38,8 @@ program {
   Mover(Norte)
 }}, expectations: [])
 
-    expect(response[:response_type]).to eq :structured
-    expect(response[:test_results].size).to eq 2
     expect(response[:status]).to eq :passed
+    expect(response[:test_results].size).to eq 2
+    expect(response[:response_type]).to eq :structured
   end
 end

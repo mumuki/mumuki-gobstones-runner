@@ -44,6 +44,7 @@ module Gobstones
     private
 
     def prepare_reason(reason)
+      return if not reason
       reason[:message]
     end
 
@@ -72,7 +73,7 @@ module Gobstones
     end
 
     def bind_result(result)
-      @result = result
+      @result = { boards: [] }.merge result
       template_file.result binding
     end
 

@@ -3,7 +3,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   attr_reader :options, :examples
 
   structured true
-  isolated false # // TODO: Subir imagen con la nueva versión de gs-weblang-cli
+  isolated true
 
   def tempfile_extension
     '.json'
@@ -23,15 +23,15 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
         expected_board = example[:postconditions][:final_board]
 
         # // TODO: Contemplar :subject, :arguments. Generar programa dummy que invoque al procedimiento o función que haga el alumno
-        request = {
+        batch = {
           initialBoard: example[:preconditions][:initial_board],
           code: request.extra + "\n" + request.content
         }
 
         if expected_board
-          request.merge extraBoard: expected_board
+          batch.merge extraBoard: expected_board
         else
-          request
+          batch
         end
       }.to_json
   end

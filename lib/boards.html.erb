@@ -40,7 +40,7 @@
 
 <div class="boards-container">
 
-  <% @result[:boards]&.each do |it| %>
+  <% @result[:boards].each do |it| %>
     <div class="board">
       <p class="title"><%=I18n.t it.title %></p>
       <p>
