@@ -1,6 +1,8 @@
 es:
   actual_board: 'Tablero final obtenido'
-  check_final_board_failed: 'Se obtuvo un tablero distinto al esperado'
+  check_error_failed_expected_boom: 'Se esperaba que el programa hiciera BOOM pero se obtuvo un tablero final.'
+  check_error_failed_another_reason: 'Se esperaba que el programa fallara por // TODO'
+  check_final_board_failed: 'Se obtuvo un tablero distinto al esperado.'
   expected_board: 'Tablero final esperado'
   final_board: 'Tablero final'
   initial_board: 'Tablero inicial'

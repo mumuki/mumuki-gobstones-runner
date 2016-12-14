@@ -55,7 +55,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
     examples.each_with_index.map { |example, index|
       {
         id: index,
-        title: example[:title], # // TODO: Pregunta: ¿Para qué debería usar esto?
+        title: example[:title], # // TODO: Usar esto para algo, creo que debería andar así nomás, pero atheneum no lo muestra
         preconditions: example.slice(*preconditions),
         postconditions: example.slice(*postconditions)
       }
