@@ -48,18 +48,11 @@ module Gobstones
     # // TODO postconditions que faltan: return
 
     def render_success_output(output)
-      status = output[:status]
       result = output[:result]
 
-      renderer.render_success(
-        { initial: result[:initialBoard] }.merge(
-          if status == :passed
-            { final: result[:finalBoard] }
-          else
-            { final: :boom.to_s, reason: result[:finalBoardError] } # // TODO: deduplicar esta lógica
-          end
-        )
-      )
+      renderer.render_success initial: result[:initialBoard],
+                              final: result[:finalBoard] || :boom.to_s,
+                              reason: result[:finalBoardError]
     end
 
     def render_error_output(output, error)
