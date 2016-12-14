@@ -18,7 +18,7 @@ module Gobstones
 
       actual = result[:finalBoard][:table][:gbb]
 
-      fail_with status: :check_final_board_failed,
+      fail_with status: :check_final_board_failed_different_boards,
                 result: {
                   initial: result[:initialBoard],
                   expected: result[:extraBoard],

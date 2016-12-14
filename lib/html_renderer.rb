@@ -11,9 +11,9 @@ module Gobstones
       )
     end
 
-    def render_error_check_final_board_failed(result)
+    def render_error_check_final_board_failed_different_boards(result)
       bind_result(
-        error: :check_final_board_failed,
+        error: :check_final_board_failed_different_boards,
         boards: prepare_boards([:initial, :expected, :actual], result)
       )
     end

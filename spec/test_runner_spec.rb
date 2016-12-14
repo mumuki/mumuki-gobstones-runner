@@ -1,6 +1,7 @@
 require_relative './spec_helper'
 
 describe 'running' do
+
   def req(content, extra, test = 'examples: [{}]')
     struct content: content.strip, extra: extra.strip, test: test
   end
@@ -8,6 +9,7 @@ describe 'running' do
   let(:runner) { GobstonesTestHook.new }
 
   describe '#compile_file_content' do
+
     let(:content) {
 <<EOF
 program {
@@ -50,6 +52,7 @@ examples:
     let!(:result) { runner.compile_file_content request }
 
     context 'generates a JSON with the batch request' do
+
       let(:expected_code) { "procedure PonerDosRojas() {\n  Poner(Rojo)\n  Poner(Rojo)\n}\nprogram {\n  PonerDosRojas()\n}"}
 
       let(:expected_compilation) {
@@ -67,9 +70,11 @@ examples:
       }
 
       it { expect(result).to eq expected_compilation }
+
     end
 
     context 'parses the examples' do
+
       let(:expected_examples) {
         [
           {
@@ -101,6 +106,9 @@ examples:
         subject: nil
       }) }
       it { expect(runner.examples).to eq expected_examples }
+
     end
+
   end
+
 end
