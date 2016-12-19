@@ -32,9 +32,7 @@
 
 <% if @result[:error] %>
   <p class="error-text">
-    <strong>
-      <%=I18n.t @result[:error], @result %>
-    </strong>
+    <%=I18n.t @result[:error], @result %>
   </p>
 <% end %>
 
