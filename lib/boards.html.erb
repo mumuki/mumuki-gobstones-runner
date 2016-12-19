@@ -1,7 +1,8 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.23/webcomponents.min.js"></script>
-<link href="https://cdn.rawgit.com/download/polymer-cdn/1.2.3.2/lib/polymer/polymer.html" rel="import">
-<link rel="import" href="https://raw.githubusercontent.com/gobstones/gs-board/master/dist/components/gs-board.html"></link>
-<!-- // TODO: Esto no funciona offline. Compilar todo en un solo archivo con vulcanize y embeberlo. Ver por qué así como está no carga el svg de las bolitas. -->
+<script>
+  <%= File.read("public/bower_components/webcomponentsjs/webcomponents.min.js") %>
+</script>
+
+<%= File.read("public/bower_components/gs-board/dist/out.html") %>
 
 <style>
 

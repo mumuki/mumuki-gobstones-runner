@@ -1,0 +1,22 @@
+{
+  "name": "mumuki-gobstones-runner",
+  "homepage": "https://github.com/mumuki/mumuki-gobstones-runner",
+  "authors": [
+    "Rodrigo Alfonso <rodri042@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "gs-board": "gobstones/gs-board#^1.1.5",
+    "webcomponentsjs": "^0.7.23"
+  }
+}
