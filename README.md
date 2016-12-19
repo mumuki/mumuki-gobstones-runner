@@ -11,18 +11,20 @@ git clone https://github.com/mumuki/mumuki-gobstones-runner
 cd mumuki-gobstones-runner
 ```
 
-## Install Ruby
+## Install Ruby and Bower
 
 ```bash
 rbenv install 2.3.1
 rbenv rehash
 gem install bundler
+npm install -g bower
 ```
 
 ## Install Dependencies
 
 ```bash
 bundle install
+bower install
 ```
 
 # Run tests
