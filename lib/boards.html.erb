@@ -1,8 +1,21 @@
 <script>
-  <%= File.read("public/bower_components/webcomponentsjs/webcomponents.min.js") %>
+  <%= File.read("bower_components/webcomponentsjs/webcomponents.min.js") %>
 </script>
 
-<%= File.read("public/bower_components/gs-board/dist/out.html") %>
+<script type="text/template" id="board-code">
+  <%= File.read("bower_components/gs-board/dist/out.html") %>
+</script>
+
+<script>
+  if (!window.GS_BOARD_LOADED) {
+    window.GS_BOARD_LOADED = true;
+    var boardCode = document.getElementById("board-code").innerHTML;
+
+    var element = document.createElement("div");
+    element.innerHTML = boardCode;
+    document.body.insertBefore(element, document.body.childNodes[0]);
+  }
+</script>
 
 <style>
 
