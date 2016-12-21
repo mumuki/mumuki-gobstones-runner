@@ -2,18 +2,47 @@
   <%= File.read("bower_components/webcomponentsjs/webcomponents.min.js") %>
 </script>
 
-<script type="text/template" id="board-code">
-  <%= File.read("bower_components/gs-board/dist/out.html") %>
-</script>
-
 <script>
-  if (!window.GS_BOARD_LOADED) {
-    window.GS_BOARD_LOADED = true;
-    var boardCode = document.getElementById("board-code").innerHTML;
+  function toArray(obj) {
+    var array = [];
+    for (var i = obj.length >>> 0; i--;)
+      array[i] = obj[i];
+    return array;
+  }
 
+  function insertAndExecute(html) {
     var element = document.createElement("div");
-    element.innerHTML = boardCode;
-    document.body.insertBefore(element, document.body.childNodes[0]);
+    element.innerHTML = html;
+
+    // Insert the html on the document
+    var firstChild = document.body.childNodes[0];
+    document.body.insertBefore(element, firstChild);
+
+    // Recursively force the execution of <script> tags
+    toArray(
+      element.getElementsByTagName("script")
+    ).filter(function(it) {
+      return !it.type || it.type.toLowerCase === "text/javascript";
+    }).forEach(evalScript);
+  }
+
+  function evalScript(son) {
+    // Clone the <script> dom element
+    var code = son.text || son.textContent || son.innerHTML || "";
+    var newSon = document.createElement("script");
+    newSon.innerHTML = code;
+
+    // Reinsert to the dom to force the browser to execute it
+    var father = son.parentNode;
+    var position = toArray(father.childNodes).indexOf(son);
+    father.removeChild(son);
+    father.insertBefore(newSon, father.childNodes[position]);
+  }
+
+  if (!window.GS_BOARD_LOADED) {
+    var boardCode = atob('<%= @board_code %>');
+    insertAndExecute(boardCode);
+    window.GS_BOARD_LOADED = true;
   }
 </script>
 

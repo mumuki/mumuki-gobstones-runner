@@ -1,7 +1,10 @@
+require "base64"
+
 module Gobstones
   class HtmlRenderer
     def initialize(options)
       @options = options
+      @board_code = Base64.strict_encode64(File.read("bower_components/gs-board/dist/out.html"))
     end
 
     def render_success(result)
