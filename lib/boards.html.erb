@@ -10,7 +10,7 @@
     return array;
   }
 
-  function insertAndExecute(html) {
+  function dynamicLoad(html) {
     var element = document.createElement("div");
     element.innerHTML = html;
 
@@ -23,10 +23,10 @@
       element.getElementsByTagName("script")
     ).filter(function(it) {
       return !it.type || it.type.toLowerCase === "text/javascript";
-    }).forEach(evalScript);
+    }).forEach(evalScriptNode);
   }
 
-  function evalScript(son) {
+  function evalScriptNode(son) {
     // Clone the <script> dom element
     var code = son.text || son.textContent || son.innerHTML || "";
     var newSon = document.createElement("script");
@@ -39,11 +39,15 @@
     father.insertBefore(newSon, father.childNodes[position]);
   }
 
-  if (!window.GS_BOARD_LOADED) {
-    var boardCode = atob('<%= @board_code %>');
-    insertAndExecute(boardCode);
-    window.GS_BOARD_LOADED = true;
+  function loadIfNotLoaded(flag, base64) {
+    if (!window[flag]) {
+      dynamicLoad(atob(base64));
+      window[flag] = true;
+    }
   }
+
+  loadIfNotLoaded("POLYMER_1_LOADED", '<%= @polymer_code %>');
+  loadIfNotLoaded("GS_BOARD_LOADED", '<%= @board_code %>');
 </script>
 
 <style>
