@@ -40,6 +40,7 @@ examples:
     GBB/1.0
     size 3 3
     head 0 1
+  return: 29
 - title: BOOM with 1x1
   initial_board: |
     GBB/1.0
@@ -84,7 +85,8 @@ examples:
               initial_board: "GBB/1.0\nsize 3 3\nhead 0 0\n",
             },
             postconditions: {
-              final_board: "GBB/1.0\nsize 3 3\nhead 0 1\n"
+              final_board: "GBB/1.0\nsize 3 3\nhead 0 1\n",
+              return: 29
             }
           },
           {

@@ -43,7 +43,7 @@ module Gobstones
       result = output[:result]
 
       assert_not_boom status, result
-      value = result[:exitStatus]
+      value = result[:finalBoard][:exitStatus]
 
       fail_with status: :check_return_failed_no_return,
                 result: {

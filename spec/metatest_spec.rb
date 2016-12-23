@@ -14,7 +14,7 @@ describe 'metatest' do
     } }
   end
 
-  let(:compilation_board) do
+  def compilation_board(exit_status = 29)
     [
       {
         status: "passed",
@@ -29,8 +29,9 @@ describe 'metatest' do
             table: {
               gbb: "GBB/1.0\r\nsize 3 3\r\nhead 1 0\r\n",
               json: []
-            }
-          }
+            },
+            exitStatus: exit_status
+          },
         }
       }
     ]
@@ -105,7 +106,7 @@ describe 'metatest' do
 
     end
 
-    context 'when the program returns a final board' do
+    context 'when the program does boom' do
 
       let(:compilation) { compilation_boom }
 
@@ -120,7 +121,7 @@ describe 'metatest' do
         }
 
         it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "A final board was expected but the program did BOOM" }
+        it { expect(result[0][0][2]).to include "The program did BOOM." }
       end
 
     end
@@ -129,22 +130,20 @@ describe 'metatest' do
 
   describe 'error postcondition' do
 
+    let(:examples) {
+      [{
+        id: 0,
+        postconditions: {
+          error: "no_stones"
+        }
+      }]
+    }
+
     context 'when the program returns a final board' do
-
       let(:compilation) { compilation_board }
-
-      let(:examples) {
-        [{
-          id: 0,
-          postconditions: {
-            error: "no_stones"
-          }
-        }]
-      }
 
       it { expect(result[0][0]).to include :failed }
       it { expect(result[0][0][2]).to include "The program was expected to BOOM but a final board was obtained." }
-
     end
 
     context 'when the program does boom' do
@@ -152,15 +151,6 @@ describe 'metatest' do
       let(:compilation) { compilation_boom }
 
       context 'with the same reason as expected' do
-        let(:examples) {
-          [{
-              id: 0,
-              postconditions: {
-                error: "no_stones"
-              }
-           }]
-        }
-
         it { expect(result[0][0]).to include :passed }
       end
 
@@ -178,6 +168,59 @@ describe 'metatest' do
         it { expect(result[0][0][2]).to include "The program was expected to fail by <strong>Out of board</strong>, but it failed by another reason." }
       end
 
+    end
+
+  end
+
+  describe 'return postcondition' do
+
+    let(:examples) {
+      [{
+        id: 0,
+        postconditions: {
+          return: 29
+        }
+      }]
+    }
+
+    context 'when the program returns a final board' do
+
+      let(:compilation) { compilation_board }
+
+      context 'when passes with equal value' do
+        it { expect(result[0][0]).to include :passed }
+      end
+
+      context 'when fails by no return value' do
+        let(:compilation) { compilation_board(nil) }
+
+        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][2]).to include "<strong>29</strong> was expected but no value was obtained." }
+      end
+
+      context 'when fails by different values' do
+        let(:examples) {
+          [{
+            id: 0,
+            postconditions: {
+              return: 11
+            }
+          }]
+        }
+
+        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][2]).to include "<strong>11</strong> was expected but <strong>29</strong> was obtained." }
+      end
+
+    end
+
+    context 'when the program does boom' do
+      let(:compilation) { compilation_boom }
+
+      context 'when fails because the program did boom' do
+        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][2]).to include "The program did BOOM." }
+      end
     end
 
   end
