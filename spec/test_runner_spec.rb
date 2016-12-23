@@ -103,6 +103,7 @@ examples:
       }
 
       it { expect(runner.options).to eq({
+        show_final_board: true,
         show_initial_board: true,
         check_head_position: true,
         subject: nil

@@ -27,6 +27,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
           initialBoard: example[:preconditions][:initial_board],
           code: code + "\n" + request.extra
         }
+        # // TODO: Testear esto
 
         if expected_board
           batch.merge extraBoard: expected_board
@@ -53,28 +54,31 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
     examples = test[:examples]
 
     examples.each_with_index.map do |example, index|
-      {
+      transform options, {
         id: index,
-        title: make_title(options, example),
+        title: example[:title], # // TODO: Sigue sin mostrarlo :(
         preconditions: example.slice(*preconditions),
         postconditions: example.slice(*postconditions)
       }
     end
   end
 
-  def make_title(options, example)
-    return_value = example[:return]
+  def transform(options, example)
+    return example unless options[:subject]
 
-    if options[:subject] and return_value
-      return "#{options[:subject]}() -> #{return_value}"
+    return_value = example[:return]
+    if return_value
+      example[:title] = "#{options[:subject]}() -> #{return_value}"
+      options[:show_final_board] = false
     end
 
-    example[:title] # // TODO: Sigue sin mostrarlo :(
+    example
   end
 
   def to_options(test)
     [
       struct(key: :show_initial_board, default: true),
+      struct(key: :show_final_board, default: true),
       struct(key: :check_head_position, default: false),
       struct(key: :subject, default: nil)
     ].map { |it| [it.key, test[it.key] || it.default] }.to_h
