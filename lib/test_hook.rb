@@ -52,14 +52,14 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   def to_examples(test)
     examples = test[:examples]
 
-    examples.each_with_index.map { |example, index|
+    examples.each_with_index.map do |example, index|
       {
         id: index,
         title: example[:title], # // TODO: Pregunta para el PR: ¿por qué atheneum no lo muestra? ¿debo hacer algo más con él?
         preconditions: example.slice(*preconditions),
         postconditions: example.slice(*postconditions)
       }
-    }
+    end
   end
 
   def to_options(test)

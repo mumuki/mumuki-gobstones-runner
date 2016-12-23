@@ -72,12 +72,9 @@ module Gobstones
 
     def clean(gbb)
       clean_gbb = gbb.gsub /\r|\n/, ""
+      decapitated_gbb = clean_gbb.gsub /head \d+ \d+/, ""
 
-      if @options[:check_head_position]
-        clean_gbb
-      else
-        clean_gbb.gsub /head \d+ \d+/, ""
-      end
+      @options[:check_head_position] ? clean_gbb : decapitated_gbb
     end
   end
 end
