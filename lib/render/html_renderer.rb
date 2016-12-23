@@ -65,7 +65,7 @@ module Gobstones
     end
 
     def visible_names(names)
-      @options[:show_initial_board] ? names : names - [:initial]
+      names.reject { |it| @options["show_#{it}_board"] == false }
     end
 
     def visible_board(result, name)
