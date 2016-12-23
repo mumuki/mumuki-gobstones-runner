@@ -4,9 +4,7 @@ module Gobstones
       execution = output[example[:id]]
       execution[:status] = execution[:status].to_sym
 
-      result = execution[:result]
-
-      raise Mumukit::Metatest::Errored, result unless is_success?(execution)
+      raise Mumukit::Metatest::Errored, error_message(execution) unless is_success?(execution)
       execution
     end
 
@@ -14,6 +12,12 @@ module Gobstones
 
     def is_success?(execution)
       [:passed, :runtime_error].include? execution[:status]
+    end
+
+    def error_message(execution)
+      error = execution[:result][:finalBoardError]
+      position = error[:on][:range][:start]
+      "[#{position[:row]}:#{position[:column]}]: #{error[:message]}"
     end
   end
 end
