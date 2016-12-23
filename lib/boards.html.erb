@@ -1,23 +1,62 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.23/webcomponents.min.js"></script>
-<link href="http://polygit.org/components/polymer/polymer.html" rel="import">
+<link href="https://cdn.rawgit.com/download/polymer-cdn/1.2.3.2/lib/polymer/polymer.html" rel="import">
 <link rel="import" href="https://raw.githubusercontent.com/gobstones/gs-board/master/dist/components/gs-board.html"></link>
-<!-- // TODO: Esto no funciona offline. A) Compilar todo en un solo archivo con vulcanize y embeberlo o B) Mover a un CDN configurable -->
-<!-- // TODO: Agregar css -->
-<!-- // TODO: Usar options[:show_initial_board] -->
+<!-- // TODO: Esto no funciona offline. Compilar todo en un solo archivo con vulcanize y embeberlo. Ver por qué así como está no carga el svg de las bolitas. -->
 
-<% if @result[:error] == :check_final_board_failed %>
-  <pre><%=I18n.t @result[:error]%></pre>
+<style>
+
+  .boards-container {
+    display: inline-flex;
+  }
+
+  .error-text {
+    color: #d9534f;
+  }
+
+  .boom-text {
+    margin-top: 20px;
+  }
+
+  .title {
+    color: #b4bcc2;
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9pt;
+  }
+
+  .board {
+    margin: 0 15px;
+  }
+
+</style>
+
+<% if @result[:error] %>
+  <p class="error-text">
+    <%=I18n.t @result[:error], @result %>
+  </p>
 <% end %>
 
-<div>
+<div class="boards-container">
 
   <% @result[:boards].each do |it| %>
-    <div>
-      <p><%=I18n.t it.title %></p>
+    <div class="board">
+      <p class="title"><%=I18n.t it.title %></p>
       <p>
-        <gs-board size='<%= it.board[:size] %>', header='<%= it.board[:header] %>', table='<%= it.board[:table] %>'></gs-board>
+        <gs-board
+          size='<%= it.board[:size] %>',
+          header='<%= it.board[:header] %>',
+          table='<%= it.board[:table] %>' <%=
+            if it.board[:boom] then 'boom' else '' end
+          %>></gs-board>
       </p>
     </div>
   <% end %>
 
 </div>
+
+<% if @result[:reason] %>
+  <div class="boom-text">
+    <strong>BOOM</strong>
+    <pre><%=@result[:reason]%></pre>
+  </div>
+<% end %>

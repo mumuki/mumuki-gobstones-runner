@@ -2,6 +2,7 @@ require 'active_support/all'
 require 'mumukit/bridge'
 
 describe 'Server' do
+
   let(:bridge) { Mumukit::Bridge::Runner.new('http://localhost:4568') }
 
   before(:all) do
@@ -38,8 +39,9 @@ program {
   Mover(Norte)
 }}, expectations: [])
 
-    expect(response[:response_type]).to eq :structured
-    expect(response[:test_results].size).to eq 2
     expect(response[:status]).to eq :passed
+    expect(response[:test_results].size).to eq 2
+    expect(response[:response_type]).to eq :structured
   end
+
 end

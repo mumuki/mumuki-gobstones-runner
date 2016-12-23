@@ -20,12 +20,19 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
 
     @examples
       .map { |example|
-        {
+        expected_board = example[:postconditions][:final_board]
+
+        # // TODO: Contemplar :subject, :arguments. Generar programa dummy que invoque al procedimiento o función que haga el alumno
+        batch = {
           initialBoard: example[:preconditions][:initial_board],
-          code: request.extra + "\n" + request.content,
-          extraBoard: example[:postconditions][:final_board]
-          # // TODO: ¿y los :arguments? Generar programa dummy que invoque al procedimiento o función que haga el alumno
+          code: request.extra + "\n" + request.content
         }
+
+        if expected_board
+          batch.merge extraBoard: expected_board
+        else
+          batch
+        end
       }.to_json
   end
 
@@ -45,24 +52,30 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   def to_examples(test)
     examples = test[:examples]
 
-    examples.each_with_index.map { |example, index|
+    examples.each_with_index.map do |example, index|
       {
         id: index,
+        title: example[:title], # // TODO: Pregunta para el PR: ¿por qué atheneum no lo muestra? ¿debo hacer algo más con él?
         preconditions: example.slice(*preconditions),
-        postconditions: example.except(*preconditions)
+        postconditions: example.slice(*postconditions)
       }
-    }
+    end
   end
 
   def to_options(test)
     [
       struct(key: :show_initial_board, default: true),
-      struct(key: :check_head_position, default: false)
+      struct(key: :check_head_position, default: false),
+      struct(key: :subject, default: nil)
     ].map { |it| [it.key, test[it.key] || it.default] }.to_h
   end
 
   def preconditions
     [:initial_board, :arguments]
+  end
+
+  def postconditions
+    [:final_board, :error, :return]
   end
 
   def test_with_framework(output, examples)
