@@ -16,16 +16,16 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   def compile_file_content(request)
     test = parse_test request
     @options = to_options test
-    @examples = to_examples test
+    @examples = to_examples test, @options
 
     @examples
       .map { |example|
         expected_board = example[:postconditions][:final_board]
 
-        # // TODO: Contemplar :subject, :arguments. Generar programa dummy que invoque al procedimiento o función que haga el alumno
+        code = Gobstones::ProgramBuilder.new(example).build(request.content)
         batch = {
           initialBoard: example[:preconditions][:initial_board],
-          code: request.content + "\n" + request.extra
+          code: code + "\n" + request.extra
         }
 
         if expected_board
@@ -49,17 +49,27 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
 
   private
 
-  def to_examples(test)
+  def to_examples(test, options)
     examples = test[:examples]
 
     examples.each_with_index.map do |example, index|
       {
         id: index,
-        title: example[:title], # // TODO: Pregunta para el PR: ¿por qué atheneum no lo muestra? ¿debo hacer algo más con él?
+        title: make_title(example, options),
         preconditions: example.slice(*preconditions),
         postconditions: example.slice(*postconditions)
       }
     end
+  end
+
+  def make_title(example, options)
+    return(
+      if options[:subject] and example[:return]
+        "#{options.subject}() -> #{example[:return]}"
+      else
+        example[:title] # // TODO: Sigue sin mostrarlo :(
+      end
+    )
   end
 
   def to_options(test)
