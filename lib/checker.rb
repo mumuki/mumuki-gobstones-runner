@@ -8,14 +8,7 @@ module Gobstones
       status = output[:status]
       result = output[:result]
 
-      fail_with status: :check_final_board_failed_unexpected_boom,
-                result: {
-                  initial: result[:initialBoard],
-                  expected: result[:extraBoard],
-                  actual: :boom,
-                  reason: result[:finalBoardError]
-                } if status == :runtime_error
-
+      assert_not_boom status, result
       actual = result[:finalBoard][:table][:gbb]
 
       fail_with status: :check_final_board_failed_different_boards,
@@ -45,7 +38,26 @@ module Gobstones
                 } if code != expected
     end
 
-    # // TODO postconditions que faltan: return
+    def check_return(output, expected)
+      status = output[:status]
+      result = output[:result]
+
+      assert_not_boom status, result
+      value = result[:exitStatus]
+
+      fail_with status: :check_return_failed_no_return,
+                result: {
+                  initial: result[:initialBoard],
+                  expected_value: expected
+                } if value.nil?
+
+      fail_with status: :check_return_failed_different_values,
+                result: {
+                  initial: result[:initialBoard],
+                  expected_value: expected,
+                  actual_value: value
+                } if value != expected
+    end
 
     def render_success_output(output)
       result = output[:result]
@@ -61,6 +73,16 @@ module Gobstones
     end
 
     private
+
+    def assert_not_boom(status, result)
+      fail_with status: :check_failed_unexpected_boom,
+                result: {
+                  initial: result[:initialBoard],
+                  expected: result[:extraBoard],
+                  actual: :boom,
+                  reason: result[:finalBoardError]
+                } if status == :runtime_error
+    end
 
     def fail_with(error)
       fail JSON.generate(error)

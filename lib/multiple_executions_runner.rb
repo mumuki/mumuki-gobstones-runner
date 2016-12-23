@@ -15,6 +15,10 @@ module Gobstones
     end
 
     def error_message(execution)
+      if execution[:status] != :compilation_error
+        return "<pre>#{execution.except(:result).to_json}</pre>"
+      end
+
       error = execution[:result][:finalBoardError]
       position = error[:on][:range][:start]
       "[#{position[:row]}:#{position[:column]}]: #{error[:message]}"

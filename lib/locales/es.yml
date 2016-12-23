@@ -1,9 +1,11 @@
 es:
   actual_board: 'Tablero final obtenido'
+  check_failed_unexpected_boom: 'El programa hizo BOOM.'
   check_final_board_failed_different_boards: 'Se obtuvo un tablero distinto al esperado.'
-  check_final_board_failed_unexpected_boom: 'Se espraba un tablero final pero el programa hizo BOOM.'
   check_error_failed_expected_boom: 'Se esperaba que el programa hiciera BOOM pero se obtuvo un tablero final.'
-  check_error_failed_another_reason: 'Se esperaba que el programa hiciera BOOM por <strong>%{error_parameter}</strong> pero falló por otro motivo.'
+  check_error_failed_another_reason: 'Se esperaba que el programa hiciera BOOM por <strong>%{expected_code}</strong> pero falló por otro motivo.'
+  check_return_failed_different_values: 'Se esperaba <strong>%{expected_value}</strong> pero se obtuvo <strong>%{actual_value}</strong>.'
+  check_return_failed_no_return: 'Se esperaba <strong>%{expected_value}</strong> pero no se obtuvo ningún valor.'
   code_no_stones: 'falta de bolitas disponibles'
   code_out_of_board: 'caída del tablero'
   expected_board: 'Tablero final esperado'

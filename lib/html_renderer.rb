@@ -18,7 +18,7 @@ module Gobstones
                   boards: prepare_boards([:initial, :expected, :actual], result)
     end
 
-    def render_error_check_final_board_failed_unexpected_boom(result)
+    def render_error_check_failed_unexpected_boom(result)
       bind_result error: :check_final_board_failed_unexpected_boom,
                   boards: prepare_boards([:initial, :expected, :actual], result),
                   reason: prepare_reason(result[:reason])
@@ -27,6 +27,21 @@ module Gobstones
     def render_error_check_error_failed_expected_boom(result)
       bind_result error: :check_error_failed_expected_boom,
                   boards: prepare_boards([:initial, :expected, :final], result)
+    end
+
+    def render_error_check_return_failed_no_return(result)
+      bind_result(
+        error: :check_return_failed_no_return,
+        expected_value: result[:expected_value]
+      )
+    end
+
+    def render_error_check_return_failed_different_values(result)
+      bind_result(
+        error: :check_return_failed_different_values,
+        expected_value: result[:expected_value],
+        actual_value: result[:actual_value]
+      )
     end
 
     def render_error_check_error_failed_another_reason(result)
