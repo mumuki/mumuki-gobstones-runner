@@ -27,7 +27,6 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
           initialBoard: example[:preconditions][:initial_board],
           code: code + "\n" + request.extra
         }
-        # // TODO: Testear esto
 
         if expected_board
           batch.merge extraBoard: expected_board
@@ -66,9 +65,9 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   def transform(options, example)
     return example unless options[:subject]
 
-    return_value = example[:return]
+    return_value = example[:postconditions][:return]
     if return_value
-      example[:title] = "#{options[:subject]}() -> #{return_value}"
+      example[:title] = "#{options[:subject]}() -> #{return_value}" unless example[:title]
       options[:show_final_board] = false
     end
 

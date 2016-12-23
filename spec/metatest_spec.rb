@@ -13,8 +13,8 @@ describe 'metatest' do
       json: []
     } }
   end
-
-  def compilation_board(exit_status = 29)
+  let(:exit_status) { 29 }
+  let(:compilation_board) {
     [
       {
         status: "passed",
@@ -35,7 +35,7 @@ describe 'metatest' do
         }
       }
     ]
-  end
+  }
 
   let(:compilation_boom) do
     [
@@ -199,7 +199,7 @@ describe 'metatest' do
       end
 
       context 'when fails by no return value' do
-        let(:compilation) { compilation_board(nil) }
+        let(:exit_status) { nil }
 
         it { expect(result[0][0]).to include :failed }
         it { expect(result[0][0][2]).to include "<strong>29</strong> was expected but no value was obtained." }

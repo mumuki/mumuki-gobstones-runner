@@ -8,8 +8,8 @@ module Gobstones
     def build(code)
       return code unless @options[:subject]
 
-      "program {" \
-      "  #{call_code}" \
+      "program {\n" \
+      "  #{call_code}\n" \
       "}"
     end
 

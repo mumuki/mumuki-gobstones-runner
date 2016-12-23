@@ -52,30 +52,7 @@ examples:
     let(:request) { req content, extra, test }
     let!(:result) { runner.compile_file_content request }
 
-    context 'generates a JSON with the batch request' do
-
-      let(:expected_code) { "program {\n  PonerDosRojas()\n}\nprocedure PonerDosRojas() {\n  Poner(Rojo)\n  Poner(Rojo)\n}"}
-
-      let(:expected_compilation) {
-        JSON.generate([
-          {
-            initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
-            code: expected_code,
-            extraBoard: "GBB/1.0\nsize 3 3\nhead 0 1\n"
-          },
-          {
-            initialBoard: "GBB/1.0\nsize 1 1\nhead 0 0\n",
-            code: expected_code
-          }
-        ])
-      }
-
-      it { expect(result).to eq expected_compilation }
-
-    end
-
     context 'parses the examples' do
-
       let(:expected_examples) {
         [
           {
@@ -103,12 +80,116 @@ examples:
       }
 
       it { expect(runner.options).to eq({
-        show_final_board: true,
         show_initial_board: true,
+        show_final_board: true,
         check_head_position: true,
         subject: nil
       }) }
       it { expect(runner.examples).to eq expected_examples }
+    end
+
+    context 'parses the examples when the subject is specified, adding a default title and disabling show_final_board' do
+      let(:test) {
+%q{
+subject: aName
+examples:
+- title:
+  initial_board: |
+    GBB/1.0
+    size 3 3
+    head 0 0
+  return: 29
+}}
+      let(:expected_examples) {
+        [
+          {
+            id: 0,
+            title: "aName() -> 29",
+            preconditions: {
+              initial_board: "GBB/1.0\nsize 3 3\nhead 0 0\n",
+            },
+            postconditions: {
+              return: 29
+            }
+          }
+        ]
+      }
+
+      it { expect(runner.options).to eq({
+        show_initial_board: true,
+        show_final_board: false,
+        check_head_position: false,
+        subject: "aName"
+      }) }
+      it { expect(runner.examples).to eq expected_examples }
+    end
+
+    context 'generates a JSON with the batch request' do
+
+      context 'when there is no subject' do
+        let(:expected_code) { "program {\n  PonerDosRojas()\n}\n" + extra.chop }
+        let(:expected_compilation) {
+          [
+            {
+              initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
+              code: expected_code,
+              extraBoard: "GBB/1.0\nsize 3 3\nhead 0 1\n"
+            },
+            {
+              initialBoard: "GBB/1.0\nsize 1 1\nhead 0 0\n",
+              code: expected_code
+            }
+          ].to_json
+        }
+
+        it { expect(result).to eq expected_compilation }
+      end
+
+      context 'when there is a subject' do
+
+        let(:expected_compilation) {
+          [
+            {
+              initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
+              code: expected_code
+            }
+          ].to_json
+        }
+
+        context 'when there is a function subject' do
+          let(:test) {
+%q{
+subject: aFunction
+examples:
+- initial_board: |
+    GBB/1.0
+    size 3 3
+    head 0 0
+  arguments: [1, 4, 6]
+  return: 29
+}}
+          let(:expected_code) { "program {\n  return aFunction(1,4,6)\n}\n" + extra.chop }
+
+          it { expect(result).to eq expected_compilation }
+        end
+
+        context 'when there is a procedure subject' do
+          let(:test) {
+%q{
+subject: AProcedure
+examples:
+- initial_board: |
+    GBB/1.0
+    size 3 3
+    head 0 0
+  arguments: [9]
+}}
+          let(:expected_code) { "program {\n  AProcedure(9)\n}\n" + extra.chop }
+
+          it { expect(result).to eq expected_compilation }
+        end
+
+      end
 
     end
 

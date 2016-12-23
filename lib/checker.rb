@@ -85,7 +85,7 @@ module Gobstones
     end
 
     def fail_with(error)
-      fail JSON.generate(error)
+      fail error.to_json
     end
 
     def renderer

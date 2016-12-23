@@ -3,7 +3,7 @@ class String
     JSON.parse(self, symbolize_names: true)
   end
 
-  def initial_is_lower
+  def initial_is_lower?
     self.initial.is_lower?
   end
 
