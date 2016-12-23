@@ -8,6 +8,7 @@ module Gobstones
     def build(code)
       return code unless @options[:subject]
 
+      "#{code}\n" \
       "program {\n" \
       "  #{call_code}\n" \
       "}"
@@ -19,7 +20,7 @@ module Gobstones
       subject = @options[:subject]
       invocation = "#{subject}(#{arguments})"
 
-      subject.initial_is_lower? ? "return #{invocation}" : invocation
+      subject.initial_is_lower? ? "return (#{invocation})" : invocation
     end
 
     def arguments

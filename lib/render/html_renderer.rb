@@ -58,14 +58,16 @@ module Gobstones
     end
 
     def prepare_boards(names, result)
-      visible_names(names).map do |it|
+      visible_names(names, result).map do |it|
         struct title: "#{it}_board".to_sym,
                board: visible_board(result, it)
       end
     end
 
-    def visible_names(names)
-      names.reject { |it| @options["show_#{it}_board"] == false }
+    def visible_names(names, result)
+      names.reject do |it|
+        not result[it] or @options["show_#{it}_board".to_sym] == false
+      end
     end
 
     def visible_board(result, name)
