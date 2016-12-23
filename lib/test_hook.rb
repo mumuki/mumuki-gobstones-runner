@@ -25,7 +25,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
         # // TODO: Contemplar :subject, :arguments. Generar programa dummy que invoque al procedimiento o función que haga el alumno
         batch = {
           initialBoard: example[:preconditions][:initial_board],
-          code: request.extra + "\n" + request.content
+          code: request.content + "\n" + request.extra
         }
 
         if expected_board

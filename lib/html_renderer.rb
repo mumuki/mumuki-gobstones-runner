@@ -53,7 +53,8 @@ module Gobstones
     private
 
     def prepare_reason(reason)
-      reason[:message] if reason
+      return if !reason
+      Gobstones::build_error(reason)
     end
 
     def prepare_boards(names, result)

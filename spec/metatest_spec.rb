@@ -45,7 +45,14 @@ describe 'metatest' do
           initialBoard: dummy_view_board,
           extraBoard: dummy_view_board,
           finalBoardError: {
-            on: { blah: :bleh },
+            on: {
+              range: {
+                start: {
+                  row: 1,
+                  column: 2
+                }
+              }
+            },
             message: "Blah",
             reason: {
               code: "no_stones"

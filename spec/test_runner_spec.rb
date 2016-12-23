@@ -54,7 +54,7 @@ examples:
 
     context 'generates a JSON with the batch request' do
 
-      let(:expected_code) { "procedure PonerDosRojas() {\n  Poner(Rojo)\n  Poner(Rojo)\n}\nprogram {\n  PonerDosRojas()\n}"}
+      let(:expected_code) { "program {\n  PonerDosRojas()\n}\nprocedure PonerDosRojas() {\n  Poner(Rojo)\n  Poner(Rojo)\n}"}
 
       let(:expected_compilation) {
         JSON.generate([
