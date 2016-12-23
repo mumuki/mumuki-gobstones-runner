@@ -1,11 +1,29 @@
 module Gobstones
   class ProgramBuilder
-    def initialize(example)
+    def initialize(options, example)
+      @options = options
       @example = example
     end
 
     def build(code)
-      return code
+      return code unless @options[:subject]
+
+      "program {" \
+      "  #{call_code}" \
+      "}"
+    end
+
+    private
+
+    def call_code()
+      subject = @options[:subject]
+      invocation = "#{subject}(#{arguments})"
+
+      subject.initial_is_lower? ? "return #{invocation}" : invocation
+    end
+
+    def arguments
+      (@example[:preconditions][:arguments] or []).join ","
     end
   end
 end

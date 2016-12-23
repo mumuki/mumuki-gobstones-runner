@@ -22,7 +22,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
       .map { |example|
         expected_board = example[:postconditions][:final_board]
 
-        code = Gobstones::ProgramBuilder.new(example).build(request.content)
+        code = Gobstones::ProgramBuilder.new(@options, example).build(request.content)
         batch = {
           initialBoard: example[:preconditions][:initial_board],
           code: code + "\n" + request.extra
@@ -55,21 +55,21 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
     examples.each_with_index.map do |example, index|
       {
         id: index,
-        title: make_title(example, options),
+        title: make_title(options, example),
         preconditions: example.slice(*preconditions),
         postconditions: example.slice(*postconditions)
       }
     end
   end
 
-  def make_title(example, options)
-    return(
-      if options[:subject] and example[:return]
-        "#{options.subject}() -> #{example[:return]}"
-      else
-        example[:title] # // TODO: Sigue sin mostrarlo :(
-      end
-    )
+  def make_title(options, example)
+    return_value = example[:return]
+
+    if options[:subject] and return_value
+      return "#{options[:subject]}() -> #{return_value}"
+    end
+
+    example[:title] # // TODO: Sigue sin mostrarlo :(
   end
 
   def to_options(test)
