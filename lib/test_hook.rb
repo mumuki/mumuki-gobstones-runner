@@ -18,22 +18,21 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
     @options = to_options test
     @examples = to_examples test, @options
 
-    @examples
-      .map { |example|
-        expected_board = example[:postconditions][:final_board]
+    @examples.map do |example|
+      expected_board = example[:postconditions][:final_board]
 
-        code = Gobstones::ProgramBuilder.new(@options, example).build(request.content)
-        batch = {
-          initialBoard: example[:preconditions][:initial_board],
-          code: code + "\n" + request.extra
-        }
+      code = Gobstones::ProgramBuilder.new(@options, example).build(request.content)
+      batch = {
+        initialBoard: example[:preconditions][:initial_board],
+        code: code + "\n" + request.extra
+      }
 
-        if expected_board
-          batch.merge extraBoard: expected_board
-        else
-          batch
-        end
-      }.to_json
+      if expected_board
+        batch.merge extraBoard: expected_board
+      else
+        batch
+      end
+    end.to_json
   end
 
   def post_process_file(file, result, status)
