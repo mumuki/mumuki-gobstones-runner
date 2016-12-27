@@ -51,11 +51,10 @@
       <p class="title"><%=I18n.t it.title %></p>
       <p>
         <gs-board
-          size='<%= it.board[:size] %>',
-          header='<%= it.board[:header] %>',
-          table='<%= it.board[:table] %>' <%=
-            if it.board[:boom] then 'boom' else '' end
-          %>></gs-board>
+          size='<%= it.board.size %>',
+          header='<%= it.board.header %>',
+          table='<%= it.board.table %>' <%= it.board.boom %>>
+        </gs-board>
       </p>
     </div>
   <% end %>

@@ -70,19 +70,10 @@ module Gobstones
       board = result[name]
 
       if board == 'boom'
-        adapt_to_view(result[:initial], true)
+        Board.new(result[:initial], boom: true)
       else
-        adapt_to_view(board)
+        Board.new(board)
       end
-    end
-
-    def adapt_to_view(board, boom = false)
-      return {
-        size: { x: board[:sizeX], y: board[:sizeY] }.to_json,
-        header: { x: board[:x], y: board[:y] }.to_json,
-        table: board[:table][:json].to_json,
-        boom: boom
-      }
     end
 
     def encode_board_html(file_name)
