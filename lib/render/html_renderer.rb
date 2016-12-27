@@ -66,7 +66,7 @@ module Gobstones
 
     def visible_names(names, result)
       names.reject do |it|
-        not result[it] or @options["show_#{it}_board".to_sym] == false
+        result[it].blank? || !@options["show_#{it}_board".to_sym]
       end
     end
 
