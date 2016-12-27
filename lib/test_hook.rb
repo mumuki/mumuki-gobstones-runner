@@ -27,11 +27,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
         code: code + "\n" + request.extra
       }
 
-      if expected_board
-        batch.merge extraBoard: expected_board
-      else
-        batch
-      end
+      expected_board ? batch.merge(extraBoard: expected_board) : batch
     end.to_json
   end
 
