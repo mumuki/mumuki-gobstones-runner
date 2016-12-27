@@ -30,18 +30,14 @@ module Gobstones
     end
 
     def render_error_check_return_failed_no_return(result)
-      bind_result(
-        error: :check_return_failed_no_return,
-        expected_value: result[:expected_value]
-      )
+      bind_result error: :check_return_failed_no_return,
+                  expected_value: result[:expected_value]
     end
 
     def render_error_check_return_failed_different_values(result)
-      bind_result(
-        error: :check_return_failed_different_values,
-        expected_value: result[:expected_value],
-        actual_value: result[:actual_value]
-      )
+      bind_result error: :check_return_failed_different_values,
+                  expected_value: result[:expected_value],
+                  actual_value: result[:actual_value]
     end
 
     def render_error_check_error_failed_another_reason(result)
@@ -73,7 +69,7 @@ module Gobstones
     def visible_board(result, name)
       board = result[name]
 
-      if board == :boom.to_s
+      if board == 'boom'
         adapt_to_view(result[:initial], true)
       else
         adapt_to_view(board)
