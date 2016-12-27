@@ -1,7 +1,11 @@
+require "base64"
+
 module Gobstones
   class HtmlRenderer
     def initialize(options)
       @options = options
+      @polymer_code = encode_board_html "polymer"
+      @board_code = encode_board_html "gs-board"
     end
 
     def render_success(result)
@@ -65,6 +69,10 @@ module Gobstones
         table: board[:table][:json].to_json,
         boom: boom
       }
+    end
+
+    def encode_board_html(file_name)
+      Base64.strict_encode64 File.read("bower_components/gs-board/dist/#{file_name}.html")
     end
 
     def bind_result(result)
