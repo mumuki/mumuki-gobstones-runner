@@ -4,14 +4,14 @@ class String
   end
 
   def initial_is_lower?
-    self.initial.is_lower?
+    initial.lower?
   end
 
   def initial
-    self[0, 1]
+    slice 0, 1
   end
 
-  def is_lower?
-    self == self.downcase
+  def lower?
+    self == downcase
   end
 end
