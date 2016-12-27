@@ -24,7 +24,7 @@ module Gobstones
     end
 
     def arguments
-      (@example[:preconditions][:arguments] or []).join ","
+      (@example[:preconditions][:arguments] || []).join ","
     end
   end
 end

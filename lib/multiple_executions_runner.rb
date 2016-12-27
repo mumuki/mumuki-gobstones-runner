@@ -15,12 +15,10 @@ module Gobstones
     end
 
     def error_message(execution)
-      if execution[:status] != :compilation_error
-        return format execution.except(:result).to_json
-      end
+      return format execution.except(:result).to_json if execution[:status] != :compilation_error
 
       error = execution[:result][:finalBoardError]
-      format Gobstones::build_error(error)
+      format Gobstones.build_error(error)
     end
 
     def format(error)
