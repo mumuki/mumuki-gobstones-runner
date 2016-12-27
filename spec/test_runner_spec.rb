@@ -82,8 +82,6 @@ examples:
       it { expect(runner.options).to eq({
         show_initial_board: true,
         show_final_board: true,
-        show_expected_board: true,
-        show_actual_board: true,
         check_head_position: true,
         subject: nil
       }) }
@@ -120,8 +118,6 @@ examples:
       it { expect(runner.options).to eq({
         show_initial_board: true,
         show_final_board: false,
-        show_expected_board: true,
-        show_actual_board: true,
         check_head_position: false,
         subject: "aName"
       }) }

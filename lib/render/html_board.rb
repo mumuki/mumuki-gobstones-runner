@@ -10,4 +10,5 @@ module Gobstones
       @table = board[:table][:json].to_json,
       @boom = boom ? "boom" : ""
     end
+  end
 end

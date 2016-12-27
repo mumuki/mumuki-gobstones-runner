@@ -77,8 +77,6 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
     [
       struct(key: :show_initial_board, default: true),
       struct(key: :show_final_board, default: true),
-      struct(key: :show_expected_board, default: true),
-      struct(key: :show_actual_board, default: true),
       struct(key: :check_head_position, default: false),
       struct(key: :subject, default: nil)
     ].map { |it| [it.key, test[it.key] || it.default] }.to_h

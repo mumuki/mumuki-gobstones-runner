@@ -19,7 +19,7 @@ module Gobstones
     end
 
     def render_error_check_failed_unexpected_boom(result)
-      bind_result error: :check_final_board_failed_unexpected_boom,
+      bind_result error: :check_failed_unexpected_boom,
                   boards: prepare_boards([:initial, :expected, :actual], result),
                   reason: prepare_reason(result[:reason])
     end
@@ -42,7 +42,7 @@ module Gobstones
 
     def render_error_check_error_failed_another_reason(result)
       bind_result error: :check_error_failed_another_reason,
-                  error_parameter: I18n.t("code_#{result[:expected_code]}"),
+                  expected_code: I18n.t("code_#{result[:expected_code]}"),
                   reason: prepare_reason(result[:reason])
     end
 
@@ -62,7 +62,8 @@ module Gobstones
 
     def visible_names(names, result)
       names.reject do |it|
-        result[it].blank? || !@options["show_#{it}_board".to_sym]
+        must_show = @options["show_#{it}_board".to_sym]
+        !must_show.nil? && !must_show
       end
     end
 
@@ -70,9 +71,9 @@ module Gobstones
       board = result[name]
 
       if board == 'boom'
-        Board.new(result[:initial], boom: true)
+        HtmlBoard.new(result[:initial], boom: true)
       else
-        Board.new(board)
+        HtmlBoard.new(board)
       end
     end
 
