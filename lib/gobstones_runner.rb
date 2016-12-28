@@ -10,9 +10,14 @@ Mumukit.configure do |config|
   config.structured = true
 end
 
+require_relative './gobstones'
 require_relative './extensions/string'
-require_relative './test_hook'
-require_relative './metadata_hook'
-require_relative './checker'
+require_relative './render/with_renderer'
+require_relative './render/html_board'
+require_relative './render/html_renderer'
+
 require_relative './multiple_executions_runner'
-require_relative './html_renderer'
+
+require_relative './metadata_hook'
+require_relative './test_hook'
+require_relative './checker'

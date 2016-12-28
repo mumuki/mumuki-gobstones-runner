@@ -4,16 +4,25 @@ module Gobstones
       execution = output[example[:id]]
       execution[:status] = execution[:status].to_sym
 
-      result = execution[:result]
-
-      raise Mumukit::Metatest::Errored, result unless is_success?(execution)
+      raise Mumukit::Metatest::Errored, error_message(execution) unless success?(execution)
       execution
     end
 
     private
 
-    def is_success?(execution)
+    def success?(execution)
       [:passed, :runtime_error].include? execution[:status]
+    end
+
+    def error_message(execution)
+      return format execution.except(:result).to_json if execution[:status] != :compilation_error
+
+      error = execution[:result][:finalBoardError]
+      format Gobstones.build_error(error)
+    end
+
+    def format(error)
+      "<pre>#{error}</pre>"
     end
   end
 end

@@ -4,8 +4,8 @@ module Gobstones
   class HtmlRenderer
     def initialize(options)
       @options = options
-      @polymer_code = encode_board_html "polymer"
-      @board_code = encode_board_html "gs-board"
+      @polymer_code = encode_board_html 'polymer'
+      @board_code = encode_board_html 'gs-board'
     end
 
     def render_success(result)
@@ -18,8 +18,8 @@ module Gobstones
                   boards: prepare_boards([:initial, :expected, :actual], result)
     end
 
-    def render_error_check_final_board_failed_unexpected_boom(result)
-      bind_result error: :check_final_board_failed_unexpected_boom,
+    def render_error_check_failed_unexpected_boom(result)
+      bind_result error: :check_failed_unexpected_boom,
                   boards: prepare_boards([:initial, :expected, :actual], result),
                   reason: prepare_reason(result[:reason])
     end
@@ -29,46 +29,52 @@ module Gobstones
                   boards: prepare_boards([:initial, :expected, :final], result)
     end
 
+    def render_error_check_return_failed_no_return(result)
+      bind_result error: :check_return_failed_no_return,
+                  expected_value: result[:expected_value]
+    end
+
+    def render_error_check_return_failed_different_values(result)
+      bind_result error: :check_return_failed_different_values,
+                  expected_value: result[:expected_value],
+                  actual_value: result[:actual_value]
+    end
+
     def render_error_check_error_failed_another_reason(result)
       bind_result error: :check_error_failed_another_reason,
-                  error_parameter: I18n.t("code_#{result[:expected_code]}"),
+                  expected_code: I18n.t("code_#{result[:expected_code]}"),
                   reason: prepare_reason(result[:reason])
     end
 
     private
 
     def prepare_reason(reason)
-      reason[:message] if reason
+      return unless reason
+      Gobstones::build_error(reason)
     end
 
     def prepare_boards(names, result)
-      visible_names(names).map do |it|
+      visible_names(names, result).map do |it|
         struct title: "#{it}_board".to_sym,
                board: visible_board(result, it)
       end
     end
 
-    def visible_names(names)
-      @options[:show_initial_board] ? names : names - [:initial]
+    def visible_names(names, result)
+      names.reject do |it|
+        must_show = @options["show_#{it}_board".to_sym]
+        !must_show.nil? && !must_show
+      end
     end
 
     def visible_board(result, name)
       board = result[name]
 
-      if board == :boom.to_s
-        adapt_to_view(result[:initial], true)
+      if board == 'boom'
+        HtmlBoard.new(result[:initial], boom: true)
       else
-        adapt_to_view(board)
+        HtmlBoard.new(board)
       end
-    end
-
-    def adapt_to_view(board, boom = false)
-      return {
-        size: { x: board[:sizeX], y: board[:sizeY] }.to_json,
-        header: { x: board[:x], y: board[:y] }.to_json,
-        table: board[:table][:json].to_json,
-        boom: boom
-      }
     end
 
     def encode_board_html(file_name)
