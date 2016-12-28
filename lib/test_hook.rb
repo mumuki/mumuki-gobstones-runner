@@ -89,7 +89,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
     Mumukit::Metatest::Framework.new(
       checker: Gobstones::Checker.new(@options),
       runner: Gobstones::MultipleExecutionsRunner.new
-    ).test output, @examples
+    ).test output, examples
   end
 
   def parse_test(request)
