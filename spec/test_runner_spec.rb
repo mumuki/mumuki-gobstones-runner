@@ -9,7 +9,6 @@ describe 'running' do
   let(:runner) { GobstonesTestHook.new }
 
   describe '#compile_file_content' do
-
     let(:content) {
 <<EOF
 program {
@@ -79,13 +78,11 @@ examples:
         ]
       }
 
-      it { expect(runner.options).to eq({
-        show_initial_board: true,
-        show_final_board: true,
-        check_head_position: true,
-        subject: nil
-      }) }
-      it { expect(runner.examples).to eq expected_examples }
+      it { expect(runner.batch.options).to eq show_initial_board: true,
+                                        show_final_board: true,
+                                        check_head_position: true,
+                                        subject: nil }
+      it { expect(runner.batch.examples).to eq expected_examples }
     end
 
     context 'parses the examples when the subject is specified, adding a default title and disabling show_final_board' do
@@ -115,13 +112,13 @@ examples:
         ]
       }
 
-      it { expect(runner.options).to eq({
+      it { expect(runner.batch.options).to eq({
         show_initial_board: true,
         show_final_board: false,
         check_head_position: false,
         subject: "aName"
       }) }
-      it { expect(runner.examples).to eq expected_examples }
+      it { expect(runner.batch.examples).to eq expected_examples }
     end
 
     context 'generates a JSON with the batch request' do
@@ -190,11 +187,7 @@ examples:
 
           it { expect(result).to eq expected_compilation }
         end
-
       end
-
     end
-
   end
-
 end
