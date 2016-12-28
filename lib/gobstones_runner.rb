@@ -13,6 +13,7 @@ end
 require_relative './builders/error_builder'
 require_relative './builders/program_builder'
 require_relative './extensions/string'
+require_relative './render/with_renderer'
 require_relative './render/html_board'
 require_relative './render/html_renderer'
 require_relative './test_hook'

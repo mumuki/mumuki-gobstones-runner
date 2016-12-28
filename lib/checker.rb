@@ -1,5 +1,7 @@
 module Gobstones
   class Checker < Mumukit::Metatest::Checker
+    include Gobstones::WithRenderer
+
     def initialize(options)
       @options = options
     end
@@ -59,19 +61,6 @@ module Gobstones
                 } if value != expected
     end
 
-    def render_success_output(output)
-      result = output[:result]
-
-      renderer.render_success initial: result[:initialBoard],
-                              final: result[:finalBoard] || :boom.to_s,
-                              reason: result[:finalBoardError]
-    end
-
-    def render_error_output(output, error)
-      report = error.parse_as_json
-      renderer.send "render_error_#{report[:status]}", report[:result]
-    end
-
     private
 
     def assert_not_boom(status, result)
@@ -88,13 +77,9 @@ module Gobstones
       fail error.to_json
     end
 
-    def renderer
-      @renderer ||= Gobstones::HtmlRenderer.new(@options)
-    end
-
     def clean(gbb)
-      clean_gbb = gbb.gsub /\r|\n/, ""
-      decapitated_gbb = clean_gbb.gsub /head \d+ \d+/, ""
+      clean_gbb = gbb.gsub /\r|\n/, ''
+      decapitated_gbb = clean_gbb.gsub /head \d+ \d+/, ''
 
       @options[:check_head_position] ? clean_gbb : decapitated_gbb
     end
