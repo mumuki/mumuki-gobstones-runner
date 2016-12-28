@@ -31,14 +31,13 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
     end.to_json
   end
 
-  def post_process_file(file, result, status)
+  def post_process_file(_file, result, status)
     output = result.parse_as_json
 
-    case status
-      when :passed
-        test_with_framework output, @examples
-      else
-        [output, status]
+    if status == :passed
+      test_with_framework output, @examples
+    else
+      [output, status]
     end
   end
 
@@ -50,7 +49,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
     examples.each_with_index.map do |example, index|
       transform options, {
         id: index,
-        title: example[:title], # // TODO: Sigue sin mostrarlo :(
+        title: example[:title], # TODO: Sigue sin mostrarlo :(
         preconditions: example.slice(*preconditions),
         postconditions: example.slice(*postconditions)
       }
@@ -87,10 +86,10 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   end
 
   def test_with_framework(output, examples)
-    Mumukit::Metatest::Framework.new({
+    Mumukit::Metatest::Framework.new(
       checker: Gobstones::Checker.new(@options),
       runner: Gobstones::MultipleExecutionsRunner.new
-    }).test output, @examples
+    ).test output, @examples
   end
 
   def parse_test(request)
