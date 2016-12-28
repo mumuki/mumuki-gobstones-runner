@@ -6,25 +6,31 @@ module Gobstones
     end
 
     def build(code)
-      return code unless @options[:subject]
-
-      "#{code}\n" \
-      "program {\n" \
-      "  #{call_code}\n" \
-      "}"
+      return code unless subject
+<<GBS
+#{code}
+program {
+   #{code_call}
+}
+GBS
     end
 
     private
 
-    def call_code()
-      subject = @options[:subject]
-      invocation = "#{subject}(#{arguments})"
-
+    def code_call
       subject.initial_is_lower? ? "return (#{invocation})" : invocation
     end
 
+    def subject
+      @options[:subject]
+    end
+
+    def invocation
+      "#{subject}(#{arguments})"
+    end
+
     def arguments
-      (@example[:preconditions][:arguments] || []).join ","
+      (@example[:preconditions][:arguments] || []).join ','
     end
   end
 end

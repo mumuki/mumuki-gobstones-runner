@@ -170,7 +170,7 @@ examples:
   arguments: [1, 4, 6]
   return: 29
 }}
-          let(:expected_code) { "things\nprogram {\n  return (aFunction(1,4,6))\n}\n" + extra.chop }
+          let(:expected_code) { "things\nprogram {\n   return (aFunction(1,4,6))\n}\n\n" + extra.chop }
 
           it { expect(result).to eq expected_compilation }
         end
@@ -186,7 +186,7 @@ examples:
     head 0 0
   arguments: [9]
 }}
-          let(:expected_code) { "things\nprogram {\n  AProcedure(9)\n}\n" + extra.chop }
+          let(:expected_code) { "things\nprogram {\n   AProcedure(9)\n}\n\n" + extra.chop }
 
           it { expect(result).to eq expected_compilation }
         end
