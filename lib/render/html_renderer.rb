@@ -4,8 +4,8 @@ module Gobstones
   class HtmlRenderer
     def initialize(options)
       @options = options
-      @polymer_code = encode_board_html "polymer"
-      @board_code = encode_board_html "gs-board"
+      @polymer_code = encode_board_html 'polymer'
+      @board_code = encode_board_html 'gs-board'
     end
 
     def render_success(result)
@@ -49,7 +49,7 @@ module Gobstones
     private
 
     def prepare_reason(reason)
-      return if !reason
+      return unless reason
       Gobstones::build_error(reason)
     end
 
