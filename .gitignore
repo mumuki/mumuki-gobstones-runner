@@ -3,4 +3,5 @@
 hs_*.log
 Gemfile.lock
 bower_components
+bin/mulang
 *.sublime-workspace

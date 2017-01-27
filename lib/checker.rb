@@ -78,7 +78,7 @@ module Gobstones
     end
 
     def clean(gbb)
-      clean_gbb = gbb.gsub /\r|\n/, ''
+      clean_gbb = gbb.gsub /\r|\n| Azul 0| Negro 0| Rojo 0| Verde 0/, ''
       decapitated_gbb = clean_gbb.gsub /head \d+ \d+/, ''
 
       @options[:check_head_position] ? clean_gbb : decapitated_gbb

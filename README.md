@@ -11,16 +11,29 @@ git clone https://github.com/mumuki/mumuki-gobstones-runner
 cd mumuki-gobstones-runner
 ```
 
-## Install Ruby and Bower
+## Install global dependencies
 
 ```bash
+# ruby
 rbenv install 2.3.1
 rbenv rehash
 gem install bundler
+
+# bower
 npm install -g bower
+
+# mulang
+wget https://github.com/mumuki/mulang/releases/download/v0.3.2/mulang
+mv mulang bin/
+chmod +x bin/mulang
+
+# rungs
+wget https://github.com/gobstones/gs-weblang-cli/releases/download/v1.3.3/rungs-ubuntu64 -O rungs
+chmod u+x rungs
+sudo mv rungs /usr/bin/rungs
 ```
 
-## Install Dependencies
+## Install local dependencies
 
 ```bash
 bundle install
