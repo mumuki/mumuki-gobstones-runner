@@ -1,7 +1,6 @@
 .idea
 **/*.class
 hs_*.log
-bin/
 Gemfile.lock
 bower_components
 bin/mulang
