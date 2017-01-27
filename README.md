@@ -23,7 +23,7 @@ gem install bundler
 npm install -g bower
 
 # mulang
-wget https://github.com/mumuki/mulang/releases/download/v0.3.0/mulang
+wget https://github.com/mumuki/mulang/releases/download/v0.3.2/mulang
 mv mulang bin/
 chmod +x bin/mulang
 

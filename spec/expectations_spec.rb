@@ -13,7 +13,7 @@ describe GobstonesExpectationsHook do
   let(:result) { compile_and_run(req(expectations, code)) }
 
   context 'basic expectations' do
-    let(:code) { 'foo := 1' }
+    let(:code) { 'program { foo := 1 }' }
     let(:expectations) do
       [{binding: 'foo', inspection: 'HasBinding'}]
     end
@@ -22,7 +22,7 @@ describe GobstonesExpectationsHook do
   end
 
   context 'multiple basic expectations' do
-    let(:code) { 'bar := 1' }
+    let(:code) { 'program { bar := 1 }' }
     let(:expectations) do
       [{binding: 'foo', inspection: 'Not:HasBinding'}, {binding: 'foo', inspection: 'HasUsage:bar'}]
     end
