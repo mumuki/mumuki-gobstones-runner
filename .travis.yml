@@ -16,7 +16,7 @@ before_install:
 - chmod +x bin/mulang
 - wget https://github.com/gobstones/gs-weblang-cli/releases/download/v1.3.3/rungs-ubuntu64 -O rungs
 - chmod u+x rungs
-- mv rungs /usr/bin/rungs
+- sudo mv rungs /usr/bin/rungs
 
 deploy:
   provider: rubygems
