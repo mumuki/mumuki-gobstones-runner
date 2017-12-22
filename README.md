@@ -23,12 +23,12 @@ gem install bundler
 npm install -g bower
 
 # mulang
-wget https://github.com/mumuki/mulang/releases/download/v0.3.2/mulang
+wget https://github.com/mumuki/mulang/releases/download/v3.4.0/mulang
 mv mulang bin/
 chmod +x bin/mulang
 
 # rungs
-wget https://github.com/gobstones/gs-weblang-cli/releases/download/v1.3.3/rungs-ubuntu64 -O rungs
+wget https://github.com/gobstones/gobstones-cli/releases/download/v1.3.3/rungs-ubuntu64 -O rungs
 chmod u+x rungs
 sudo mv rungs /usr/bin/rungs
 ```

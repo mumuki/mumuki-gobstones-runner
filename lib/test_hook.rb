@@ -9,7 +9,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   end
 
   def command_line(filename)
-    "gs-weblang-cli --batch #{filename}"
+    "gobstones-cli --batch #{filename}"
   end
 
   def compile_file_content(request)
