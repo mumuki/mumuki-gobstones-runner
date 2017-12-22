@@ -26,11 +26,6 @@ npm install -g bower
 wget https://github.com/mumuki/mulang/releases/download/v3.4.0/mulang
 mv mulang bin/
 chmod +x bin/mulang
-
-# rungs
-wget https://github.com/gobstones/gobstones-cli/releases/download/v1.3.3/rungs-ubuntu64 -O rungs
-chmod u+x rungs
-sudo mv rungs /usr/bin/rungs
 ```
 
 ## Install local dependencies
