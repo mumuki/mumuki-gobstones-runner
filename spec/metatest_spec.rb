@@ -9,7 +9,7 @@ describe 'metatest' do
                                      runner: Gobstones::MultipleExecutionsRunner.new
   end
   let(:dummy_view_board) do
-    { x: 0, y: 0, sizeX: 3, sizeY: 3, table: {
+    { head: { x: 0, y: 0 }, width: 3, height: 3, table: {
       json: []
     } }
   end
@@ -22,15 +22,14 @@ describe 'metatest' do
           extraBoard: dummy_view_board,
           initialBoard: dummy_view_board,
           finalBoard: {
-            x: 0,
-            y: 1,
-            sizeX: 3,
-            sizeY: 3,
+            head: { x: 0, y: 1 },
+            width: 3,
+            height: 3,
             table: {
               gbb: "GBB/1.0\r\nsize 3 3\r\nhead 1 0\r\n",
               json: []
             },
-            exitStatus: exit_status
+            returnValue: exit_status
           },
         }
       }

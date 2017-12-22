@@ -32,12 +32,12 @@ module Gobstones
                   final: result[:finalBoard]
                 } if status == :passed
 
-      code = result[:finalBoardError][:reason][:code]
+      reason_code = convert_known_reason_code result[:finalBoardError][:reason][:code]
       fail_with status: :check_error_failed_another_reason,
                 result: {
                   reason: result[:finalBoardError],
                   expected_code: expected
-                } if code != expected
+                } if reason_code != expected
     end
 
     def check_return(output, expected)
@@ -45,7 +45,7 @@ module Gobstones
       result = output[:result]
 
       assert_not_boom status, result
-      value = result[:finalBoard][:exitStatus]
+      value = result[:finalBoard][:returnValue]
 
       fail_with status: :check_return_failed_no_return,
                 result: {
@@ -82,6 +82,13 @@ module Gobstones
       decapitated_gbb = clean_gbb.gsub /head \d+ \d+/, ''
 
       @options[:check_head_position] ? clean_gbb : decapitated_gbb
+    end
+
+    def convert_known_reason_code(code)
+      return "no_stones" if code == "cannot-remove-stone"
+      return "out_of_board" if code == "cannot-move-to"
+
+      code
     end
   end
 end

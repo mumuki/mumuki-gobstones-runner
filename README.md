@@ -23,14 +23,9 @@ gem install bundler
 npm install -g bower
 
 # mulang
-wget https://github.com/mumuki/mulang/releases/download/v0.3.2/mulang
+wget https://github.com/mumuki/mulang/releases/download/v3.4.0/mulang
 mv mulang bin/
 chmod +x bin/mulang
-
-# rungs
-wget https://github.com/gobstones/gs-weblang-cli/releases/download/v1.3.3/rungs-ubuntu64 -O rungs
-chmod u+x rungs
-sudo mv rungs /usr/bin/rungs
 ```
 
 ## Install local dependencies
@@ -49,7 +44,7 @@ bundle exec rake
 # Run the server
 
 ```bash
-RACK_ENV=development bundle exec rackup -p 4567
+RACK_ENV=development bundle exec rackup -p 4000 --host 0.0.0.0
 ```
 
 # Deploy docker image

@@ -15,7 +15,7 @@ describe GobstonesExpectationsHook do
   context 'basic expectations' do
     let(:code) { 'program { foo := 1 }' }
     let(:expectations) do
-      [{binding: 'foo', inspection: 'HasBinding'}]
+      [{binding: '*', inspection: 'Assigns:foo'}]
     end
 
     it { expect(result).to eq([{expectation: expectations[0], result: true}]) }
@@ -24,7 +24,7 @@ describe GobstonesExpectationsHook do
   context 'multiple basic expectations' do
     let(:code) { 'program { bar := 1 }' }
     let(:expectations) do
-      [{binding: 'foo', inspection: 'Not:HasBinding'}, {binding: 'foo', inspection: 'HasUsage:bar'}]
+      [{binding: '*', inspection: 'Not:Assigns:foo'}, {binding: 'foo', inspection: 'Uses:bar'}]
     end
 
     it { expect(result).to eq([{expectation: expectations[0], result: true},
