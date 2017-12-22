@@ -8,7 +8,7 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
     'Mulang'
   end
 
-  def ast_command_line(filename)
+  def command_line(filename)
     "gobstones-cli --mulang_ast #{filename}"
   end
 
@@ -28,6 +28,6 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
 
   def run_get_ast!(source)
     file = write_tempfile! source
-    run_file! file, :ast_command_line
+    run_file! file
   end
 end
