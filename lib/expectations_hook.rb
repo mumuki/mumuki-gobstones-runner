@@ -18,7 +18,7 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
       raise Exception.new("Unable to get Mulang AST - Command failed with status: #{status}")
     end
 
-    ast
+    JSON.parse(ast)
   rescue => e
     raise Mumukit::CompilationError, e
   end
