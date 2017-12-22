@@ -49,7 +49,7 @@ bundle exec rake
 # Run the server
 
 ```bash
-RACK_ENV=development bundle exec rackup -p 4567
+RACK_ENV=development bundle exec rackup -p 4000 --host 0.0.0.0
 ```
 
 # Deploy docker image

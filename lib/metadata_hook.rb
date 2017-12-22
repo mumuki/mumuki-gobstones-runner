@@ -4,7 +4,7 @@ class GobstonesMetadataHook < Mumukit::Hook
       language: {
         name: 'gobstones',
         icon: {type: 'devicon', name: 'gobstones'},
-        version: 'v0.2.2',
+        version: 'v1.0.0',
         extension: 'gbs',
         ace_mode: 'gobstones',
         graphic: true

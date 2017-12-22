@@ -6,6 +6,7 @@ module Gobstones
       @options = options
       @polymer_code = encode_board_html 'polymer'
       @board_code = encode_board_html 'gs-board'
+      @boom_image = encode_image_png 'boom'
     end
 
     def render_success(result)
@@ -78,7 +79,13 @@ module Gobstones
     end
 
     def encode_board_html(file_name)
+      # // TODO: Sacar esto y hacer que lo baje el labo
       Base64.strict_encode64 File.read("bower_components/gs-board/dist/#{file_name}.html")
+    end
+
+    def encode_image_png(file_name)
+      base64 = Base64.strict_encode64 File.read("lib/assets/#{file_name}.png")
+      "data:image/png;base64,#{base64}"
     end
 
     def bind_result(result)

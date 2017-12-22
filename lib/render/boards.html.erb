@@ -50,11 +50,14 @@
     <div class="board">
       <p class="title"><%=I18n.t it.title %></p>
       <p>
-        <gs-board
-          size='<%= it.board.size %>',
-          header='<%= it.board.header %>',
-          table='<%= it.board.table %>' <%= it.board.boom %>>
-        </gs-board>
+        <% if it.board.boom %>
+          <img src="<%= @boom_image %>" />
+        <% else %>
+            <%= it.board.gbb %>
+          <gs-board>
+            <%= it.board.gbb %>
+          </gs-board>
+        <% end %>
       </p>
     </div>
   <% end %>

@@ -1,7 +1,9 @@
-class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
-  include_smells true
+# class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
+#   include_smells true
+#
+#   def language
+#     'Mulang'
+#   end
+# end
 
-  def language
-    'GobstonesAst'
-  end
-end
+# // TODO: Fix
