@@ -1,4 +1,5 @@
 class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
+  include Mumukit::Templates::WithIsolatedEnvironment
   include Mumukit::WithTempfile
 
   include_smells true
@@ -12,7 +13,7 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
   end
 
   def compile_content(source)
-    ast, status = isolated_run! write_tempfile!(source)
+    ast, status = run_get_ast! source
 
     if status != :passed
       raise Exception.new("Unable to get Mulang AST - Command failed with status: #{status}")
@@ -25,11 +26,8 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
 
   private
 
-  def isolated_run!(file)
-    env = Mumukit::IsolatedEnvironment.new
-    env.configure!(file) { |filename| ast_command_line(filename) }
-    env.run!
-  ensure
-    env.destroy!
+  def run_get_ast!(source)
+    file = write_tempfile! source
+    run_file! file, :ast_command_line
   end
 end
