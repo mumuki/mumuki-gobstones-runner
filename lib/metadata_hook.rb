@@ -9,7 +9,7 @@ class GobstonesMetadataHook < Mumukit::Hook
         ace_mode: 'gobstones',
         graphic: true
       },
-      assets: {
+      assets_urls: {
         js: [
           'assets/webcomponents.js'
         ],
