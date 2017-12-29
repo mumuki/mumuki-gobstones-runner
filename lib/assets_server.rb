@@ -1,8 +1,12 @@
 require 'sinatra/base'
+require 'sinatra/cross_origin'
 
 class Mumukit::Server::App < Sinatra::Base
+  register Sinatra::CrossOrigin
+
   def self.get_asset(route, path, type)
     get "/assets/#{route}" do
+      cross_origin
       send_file File.expand_path("bower_components/#{path}"), { type: type }
     end
   end
