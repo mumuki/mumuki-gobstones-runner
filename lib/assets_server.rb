@@ -12,6 +12,8 @@ class Mumukit::Server::App < Sinatra::Base
   end
 
   get_asset 'webcomponents.js', 'webcomponentsjs/webcomponents.min.js', 'application/javascript'
-  get_asset 'polymer.html', 'gs-board/dist/polymer.html', 'text/html'
+  get_asset 'polymer.html', 'polymer/polymer.html', 'text/html'
+  get_asset 'polymer-mini.html', 'polymer/polymer-mini.html', 'text/html'
+  get_asset 'polymer-micro.html', 'polymer/polymer-micro.html', 'text/html'
   get_asset 'gs-board.html', 'gs-board/dist/gs-board.html', 'text/html'
 end
