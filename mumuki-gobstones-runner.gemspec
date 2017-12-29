@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Rodrigo Alfonso']
   spec.email         = ['rodri042@gmail.com']
   spec.summary       = 'Gobstones Runner for Mumuki'
-  spec.homepage      = 'http://github.com/gobstones/mumuki-gobstones-server'
+  spec.homepage      = 'http://github.com/gobstones/mumuki-gobstones-runner'
   spec.license       = 'MIT'
 
   spec.files         = Dir['lib/**/**']
@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'mumukit', '~> 2.18.1'
+  spec.add_dependency 'sinatra', '~> 1.4'
 
   spec.add_development_dependency 'bundler', '~> 1.7'
   spec.add_development_dependency 'rake', '~> 10.0'
