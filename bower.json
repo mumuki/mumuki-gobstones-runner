@@ -16,7 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "gs-board": "gobstones/gs-board#^1.8.2",
+    "gs-board": "gobstones/gs-board#^1.8.3",
     "polymer": "Polymer/polymer#^1.3.0",
     "webcomponentsjs": "^0.7.23"
   }
