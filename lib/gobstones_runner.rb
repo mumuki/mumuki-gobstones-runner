@@ -12,6 +12,7 @@ end
 
 require_relative './gobstones'
 require_relative './extensions/string'
+require_relative './assets_server'
 require_relative './render/with_renderer'
 require_relative './render/html_board'
 require_relative './render/html_renderer'

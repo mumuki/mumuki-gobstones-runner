@@ -9,6 +9,15 @@ class GobstonesMetadataHook < Mumukit::Hook
         ace_mode: 'gobstones',
         graphic: true
       },
+      assets: {
+        js: [
+          'assets/webcomponents.js'
+        ],
+        html: [
+          'assets/polymer.html',
+          'assets/gs-board.html'
+        ]
+      },
       test_framework: {
         name: 'metatest',
         test_extension: 'yml'

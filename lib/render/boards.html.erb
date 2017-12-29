@@ -1,16 +1,3 @@
-<script>
-  <%= File.read("bower_components/webcomponentsjs/webcomponents.min.js") %>
-</script>
-
-<script>
-  <%= File.read("lib/render/dynamic_load_html.js") %>
-</script>
-
-<script>
-  loadIfNotLoaded("POLYMER_1_LOADED", '<%= @polymer_code %>');
-  loadIfNotLoaded("GS_BOARD_LOADED", '<%= @board_code %>');
-</script>
-
 <style>
 
   .boards-container {
