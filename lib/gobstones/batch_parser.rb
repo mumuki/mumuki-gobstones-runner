@@ -45,7 +45,15 @@ module Gobstones::BatchParser
         struct(key: :show_final_board, default: true),
         struct(key: :check_head_position, default: false),
         struct(key: :subject, default: nil)
-      ].map { |it| [it.key, test[it.key] || it.default] }.to_h
+      ].map { |it| [
+          it.key,
+          if test[it.key].nil?
+            it.default
+          else
+            test[it.key]
+          end
+        ]
+      }.to_h
     end
 
     def preconditions

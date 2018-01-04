@@ -11,14 +11,18 @@ module Gobstones
       result = output[:result]
 
       assert_not_boom status, result
-      actual = result[:finalBoard][:table][:gbb]
+
+      expected_board = result[:extraBoard]
+      actual_board = result[:finalBoard]
+      boards_match = board_json(expected_board).eql? board_json(actual_board)
+      headers_match = expected_board[:head].eql?(actual_board[:head]) || !@options[:check_head_position]
 
       fail_with status: :check_final_board_failed_different_boards,
                 result: {
                   initial: result[:initialBoard],
-                  expected: result[:extraBoard],
-                  actual: result[:finalBoard]
-                } if clean(actual) != clean(expected)
+                  expected: expected_board,
+                  actual: actual_board
+                } unless boards_match && headers_match
     end
 
     def check_error(output, expected)
@@ -77,11 +81,8 @@ module Gobstones
       fail error.to_json
     end
 
-    def clean(gbb)
-      clean_gbb = gbb.gsub /\r|\n| Azul 0| Negro 0| Rojo 0| Verde 0/, ''
-      decapitated_gbb = clean_gbb.gsub /head \d+ \d+/, ''
-
-      @options[:check_head_position] ? clean_gbb : decapitated_gbb
+    def board_json(board)
+      board[:table][:json]
     end
 
     def convert_known_reason_code(code)
