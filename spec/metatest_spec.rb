@@ -13,6 +13,9 @@ describe 'metatest' do
       json: [[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]]
     } }
   end
+  let(:dummy_gbb) do
+    'GBB/1.0\r\nsize 1 1\r\nhead 0 0\r\n'
+  end
   let(:exit_status) { 29 }
   let(:compilation_boom) do
     [
@@ -40,17 +43,17 @@ describe 'metatest' do
     ]
   end
 
-  def board_with_stones(headX, headY)
+  def board_with_stones(headX, headY, cell10 = {})
     {
       head: { x: headX, y: headY },
       width: 3,
       height: 3,
       table: {
-        gbb: "GBB/1.0\r\nsize 3 3\r\ncell 0 0 Negro 1 Verde 1\r\nhead #{headX} #{headY}\r\n",
+        gbb: dummy_gbb,
         json: [
           [{}, {}, {}],
           [{}, {}, {}],
-          [{ black: 1, green: 1 }, {}, {}]
+          [{ black: 1, green: 1 }, cell10, {}]
         ]
       },
       returnValue: exit_status
@@ -70,26 +73,22 @@ describe 'metatest' do
     ]
   end
 
-  def expected_board_gbb(compilation)
-    compilation[0][:result][:extraBoard][:table][:gbb]
-  end
-
   describe 'final_board postcondition' do
+
+    let(:examples) {
+      [{
+         id: 0,
+         postconditions: {
+           final_board: dummy_gbb
+         }
+       }]
+    }
 
     context 'when the program returns a final board' do
 
       context 'when passes with check_head_position=true' do
         let(:compilation) {
-          compilation_board board_with_stones(0, 1)
-        }
-
-        let(:examples) {
-          [{
-            id: 0,
-            postconditions: {
-              final_board: expected_board_gbb(compilation)
-            }
-          }]
+          compilation_board board_with_stones 0, 1
         }
 
         it { expect(result[0][0]).to include :passed }
@@ -102,30 +101,21 @@ describe 'metatest' do
 
         let(:options) { { show_initial_board: false, check_head_position: false } }
 
-        let(:examples) {
-          [{
-              id: 0,
-              postconditions: {
-                final_board: expected_board_gbb(compilation)
-              }
-           }]
-        }
-
         it { expect(result[0][0]).to include :passed }
       end
 
-      context 'when fails by different boards' do
+      context 'when fails by different boards (header)' do
         let(:compilation) {
           compilation_board board_with_stones 2, 2
         }
 
-        let(:examples) {
-          [{
-              id: 0,
-              postconditions: {
-                final_board: expected_board_gbb(compilation)
-              }
-           }]
+        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][2]).to include "Expected final board" }
+      end
+
+      context 'when fails by different boards (stones)' do
+        let(:compilation) {
+          compilation_board board_with_stones 0, 1, { blue: 9 }
         }
 
         it { expect(result[0][0]).to include :failed }
@@ -137,20 +127,8 @@ describe 'metatest' do
     context 'when the program does boom' do
       let(:compilation) { compilation_boom }
 
-      context 'when fails because the program did boom' do
-        let(:examples) {
-          [{
-              id: 0,
-              postconditions: {
-                final_board: expected_board_gbb(compilation)
-              }
-           }]
-        }
-
-        it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "The program did BOOM." }
-      end
-
+      it { expect(result[0][0]).to include :failed }
+      it { expect(result[0][0][2]).to include "The program did BOOM." }
     end
 
   end
