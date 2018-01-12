@@ -77,7 +77,7 @@ module Gobstones
     end
 
     def encode_image_png(file_name)
-      base64 = Base64.strict_encode64 File.read("lib/assets/#{file_name}.png")
+      base64 = Base64.strict_encode64 File.read(File.join(__dir__ , '..', 'assets', "#{file_name}.png"))
       "data:image/png;base64,#{base64}"
     end
 
