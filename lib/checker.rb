@@ -10,11 +10,11 @@ module Gobstones
       status = output[:status]
       result = output[:result]
 
-      is_timeout_and_nobody_cares = result[:finalBoardError] &&
+      is_expected_timeout = result[:finalBoardError] &&
                                     result[:finalBoardError][:reason][:code] == 'timeout' &&
                                     @options[:expect_endless_while]
 
-      return if is_timeout_and_nobody_cares
+      return if is_expected_timeout
       assert_not_boom status, result
 
       expected_board = result[:extraBoard]
