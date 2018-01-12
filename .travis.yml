@@ -11,9 +11,6 @@ before_install:
 - npm install -g bower
 - bower install
 - docker pull mumuki/mumuki-gobstones-worker
-- wget https://github.com/mumuki/mulang/releases/download/v3.4.0/mulang
-- mv mulang bin/
-- chmod +x bin/mulang
 
 deploy:
   provider: rubygems

@@ -7,7 +7,7 @@
 ## Clone the project
 
 ```
-git clone https://github.com/mumuki/mumuki-gobstones-runner 
+git clone https://github.com/mumuki/mumuki-gobstones-runner
 cd mumuki-gobstones-runner
 ```
 
@@ -21,11 +21,6 @@ gem install bundler
 
 # bower
 npm install -g bower
-
-# mulang
-wget https://github.com/mumuki/mulang/releases/download/v3.4.0/mulang
-mv mulang bin/
-chmod +x bin/mulang
 ```
 
 ## Install local dependencies
