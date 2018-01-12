@@ -54,7 +54,11 @@ procedure PonerUnaDeCada() {
     Poner (Verde)
 }',
       extra: '',
-      expectations: [{binding: 'PonerUnaDeCada', inspection: 'HasUsage'}],
+      expectations: [
+        {binding: 'program', inspection: 'Uses:PonerUnaDeCada'},
+        {binding: '*', inspection: 'Not:Declares:program'},
+        {binding: '*', inspection: 'Declares:PonerUnaDeCada'}
+      ],
       test: '
 check_head_position: true
 
@@ -82,12 +86,12 @@ examples:
      head 3 3')
 
     expect(response.except(:test_results)).to eq response_type: :structured,
-                                                 status: :passed,
+                                                 status: :passed_with_warnings,
                                                  feedback: '',
                                                  expectation_results: [
-                                                   {binding: 'PonerUnaDeCada', inspection: 'HasUsage', result: :passed}, # Should be failed
-                                                   {binding: 'program', inspection: 'Not:HasBinding', result: :passed},
-                                                   {binding: 'PonerUnaDeCada', inspection: 'HasBinding', result: :passed}],
+                                                   {binding: 'program', inspection: 'Uses:PonerUnaDeCada', result: :failed},
+                                                   {binding: '*', inspection: 'Not:Declares:program', result: :passed},
+                                                   {binding: '*', inspection: 'Declares:PonerUnaDeCada', result: :passed}],
                                                  result: ''
     expect(response[:test_results].size).to eq 2
   end
