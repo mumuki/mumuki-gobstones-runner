@@ -45,8 +45,6 @@ program {
   end
 
   it 'answers a valid hash when submission passes, in gobstones' do
-    # // TODO: Use the old mulang syntax
-
     response = bridge.run_tests!(
       content: '
 procedure PonerUnaDeCada() {
@@ -57,9 +55,9 @@ procedure PonerUnaDeCada() {
 }',
       extra: '',
       expectations: [
-        {binding: 'program', inspection: 'Uses:PonerUnaDeCada'},
-        {binding: '*', inspection: 'Not:Declares:program'},
-        {binding: '*', inspection: 'Declares:PonerUnaDeCada'}
+        {binding: 'program', inspection: 'HasUsage:PonerUnaDecada'},
+        {binding: 'program', inspection: 'Not:HasBinding'},
+        {binding: 'PonerUnaDeCada', inspection: 'HasBinding'}
       ],
       test: '
 check_head_position: true
@@ -91,48 +89,48 @@ examples:
                                                  status: :passed_with_warnings,
                                                  feedback: '',
                                                  expectation_results: [
-                                                   {binding: 'program', inspection: 'Uses:PonerUnaDeCada', result: :failed},
-                                                   {binding: '*', inspection: 'Not:Declares:program', result: :passed},
-                                                   {binding: '*', inspection: 'Declares:PonerUnaDeCada', result: :passed}],
+                                                   {binding: "program", inspection: "Uses:=PonerUnaDecada", result: :failed},
+                                                   {binding: "*", inspection: "Not:Declares:=program", result: :passed},
+                                                   {binding: "*", inspection: "Declares:=PonerUnaDeCada", result: :passed}
+                                                 ],
                                                  result: ''
     expect(response[:test_results].size).to eq 2
   end
 
-# // TODO: Use the old mulang syntax, swapping binding and target.
-# // TODO: Another problem is that currently "Declares:HastaElInfinite" is converted to "Declares"
-#   it 'answers a valid hash when submission is aborted and expected, in gobstones' do
-#     response = bridge.run_tests!(
-#       language: :gobstones,
-#       content: '
-# procedure HastaElInfinito() {
-#   while (puedeMover(Este)) {
-#     Poner(Rojo)
-#   }
-# }',
-#       extra: '',
-#       expectations: [
-#         {:binding=>"*", :inspection=>"Not:Declares:program"},
-#         {:binding=>"*", :inspection=>"Declares:HastaElInfinito"}
-#       ],
-#       test: '
-# subject: HastaElInfinito
-# expect_endless_while: true
-# examples:
-#  - initial_board: |
-#      GBB/1.0
-#      size 2 2
-#      head 0 0
-#    final_board: |
-#      GBB/1.0
-#      size 2 2
-#      head 0 0')
-#
-#     expect(response.except(:test_results)).to eq response_type: :structured,
-#                                                  status: :passed,
-#                                                  feedback: '',
-#                                                  expectation_results: [
-#                                                    {:binding=>"*", :inspection=>"Not:Declares:program", :result=>:passed},
-#                                                    {:binding=>"*", :inspection=>"Declares:HastaElInfinito", :result=>:passed}],
-#                                                  result: ''
-#   end
+  it 'answers a valid hash when submission is aborted and expected, in gobstones' do
+    response = bridge.run_tests!(
+      language: :gobstones,
+      content: '
+procedure HastaElInfinito() {
+  while (puedeMover(Este)) {
+    Poner(Rojo)
+  }
+}',
+      extra: '',
+      expectations: [
+        {binding: "program", inspection: "Not:HasBinding"},
+        {binding: "HastaElInfinito", inspection: "HasBinding"}
+      ],
+      test: '
+subject: HastaElInfinito
+expect_endless_while: true
+examples:
+ - initial_board: |
+     GBB/1.0
+     size 2 2
+     head 0 0
+   final_board: |
+     GBB/1.0
+     size 2 2
+     head 0 0')
+
+    expect(response.except(:test_results)).to eq response_type: :structured,
+                                                 status: :passed,
+                                                 feedback: '',
+                                                 expectation_results: [
+                                                   {binding: "*", inspection: "Not:Declares:=program", result: :passed},
+                                                   {binding: "*", inspection: "Declares:=HastaElInfinito", result: :passed}
+                                                 ],
+                                                 result: ''
+  end
 end
