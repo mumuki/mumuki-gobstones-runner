@@ -44,4 +44,56 @@ program {
     expect(response[:response_type]).to eq :structured
   end
 
+  it 'answers a valid hash when submission passes, in gobstones' do
+    response = bridge.run_tests!(
+      content: '
+procedure PonerUnaDeCada() {
+    Poner (Rojo)
+    Poner (Azul)
+    Poner (Negro)
+    Poner (Verde)
+}',
+      extra: '',
+      expectations: [
+        {binding: 'program', inspection: 'Uses:PonerUnaDeCada'},
+        {binding: '*', inspection: 'Not:Declares:program'},
+        {binding: '*', inspection: 'Declares:PonerUnaDeCada'}
+      ],
+      test: '
+check_head_position: true
+
+subject: PonerUnaDeCada
+
+examples:
+ - initial_board: |
+     GBB/1.0
+     size 4 4
+     head 0 0
+   final_board: |
+     GBB/1.0
+     size 4 4
+     cell 0 0 Azul 1 Rojo 1 Verde 1 Negro 1
+     head 0 0
+
+ - initial_board: |
+     GBB/1.0
+     size 5 5
+     head 3 3
+   final_board: |
+     GBB/1.0
+     size 5 5
+     cell 3 3 Azul 1 Rojo 1 Verde 1 Negro 1
+     head 3 3')
+
+    expect(response.except(:test_results)).to eq response_type: :structured,
+                                                 status: :passed_with_warnings,
+                                                 feedback: '',
+                                                 expectation_results: [
+                                                   {binding: 'program', inspection: 'Uses:PonerUnaDeCada', result: :failed},
+                                                   {binding: '*', inspection: 'Not:Declares:program', result: :passed},
+                                                   {binding: '*', inspection: 'Declares:PonerUnaDeCada', result: :passed}],
+                                                 result: ''
+    expect(response[:test_results].size).to eq 2
+  end
+
 end
