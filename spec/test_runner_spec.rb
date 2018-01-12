@@ -29,6 +29,7 @@ EOF
     let(:test) {
 %q{
 check_head_position: true
+expect_endless_while: true
 examples:
 - title: A name
   initial_board: |
@@ -81,6 +82,7 @@ examples:
       it { expect(runner.batch.options).to eq show_initial_board: true,
                                         show_final_board: true,
                                         check_head_position: true,
+                                        expect_endless_while: true,
                                         subject: nil }
       it { expect(runner.batch.examples).to eq expected_examples }
     end
@@ -116,6 +118,7 @@ examples:
         show_initial_board: true,
         show_final_board: false,
         check_head_position: false,
+        expect_endless_while: false,
         subject: "aName"
       }) }
       it { expect(runner.batch.examples).to eq expected_examples }
