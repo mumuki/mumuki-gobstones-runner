@@ -10,6 +10,11 @@ module Gobstones
       status = output[:status]
       result = output[:result]
 
+      is_expected_timeout = result[:finalBoardError] &&
+                                    result[:finalBoardError][:reason][:code] == 'timeout' &&
+                                    @options[:expect_endless_while]
+
+      return if is_expected_timeout
       assert_not_boom status, result
 
       expected_board = result[:extraBoard]
@@ -49,20 +54,21 @@ module Gobstones
       result = output[:result]
 
       assert_not_boom status, result
-      value = result[:finalBoard][:returnValue]
+      return_value = result[:finalBoard][:returnValue]
 
       fail_with status: :check_return_failed_no_return,
                 result: {
                   initial: result[:initialBoard],
                   expected_value: expected
-                } if value.nil?
+                } if return_value.nil?
 
+      final_value = return_value[:value]
       fail_with status: :check_return_failed_different_values,
                 result: {
                   initial: result[:initialBoard],
                   expected_value: expected,
-                  actual_value: value
-                } if value != expected
+                  actual_value: final_value
+                } if final_value != expected
     end
 
     private

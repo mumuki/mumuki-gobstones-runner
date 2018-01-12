@@ -16,7 +16,7 @@ describe 'metatest' do
   let(:dummy_gbb) do
     'GBB/1.0\r\nsize 1 1\r\nhead 0 0\r\n'
   end
-  let(:exit_status) { 29 }
+  let(:exit_status) { { type: "Number", value: 29 } }
   let(:compilation_boom) do
     [
       {

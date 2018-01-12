@@ -44,6 +44,7 @@ module Gobstones::BatchParser
         struct(key: :show_initial_board, default: true),
         struct(key: :show_final_board, default: true),
         struct(key: :check_head_position, default: false),
+        struct(key: :expect_endless_while, default: false),
         struct(key: :subject, default: nil)
       ].map { |it| [
           it.key,
