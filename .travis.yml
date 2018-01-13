@@ -8,8 +8,6 @@ rvm:
 services:
 - docker
 before_install:
-- npm install -g bower
-- bower install
 - docker pull mumuki/mumuki-gobstones-worker
 
 deploy:
