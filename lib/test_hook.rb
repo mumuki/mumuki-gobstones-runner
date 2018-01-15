@@ -13,7 +13,7 @@ class GobstonesTestHook < Mumukit::Templates::FileHook
   end
 
   def compile_file_content(request)
-    @batch = Gobstones::BatchParser.parse request
+    @batch = request.batch
     @batch.to_json
   end
 

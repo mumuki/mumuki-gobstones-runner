@@ -20,6 +20,7 @@ require_relative './render/html_renderer'
 require_relative './multiple_executions_runner'
 
 require_relative './metadata_hook'
+require_relative './precompile_hook'
 require_relative './test_hook'
 require_relative './expectations_hook'
 require_relative './checker'
