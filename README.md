@@ -14,20 +14,15 @@ cd mumuki-gobstones-runner
 ## Install global dependencies
 
 ```bash
-# ruby
 rbenv install 2.3.1
 rbenv rehash
 gem install bundler
-
-# bower
-npm install -g bower
 ```
 
 ## Install local dependencies
 
 ```bash
 bundle install
-bower install
 ```
 
 # Run tests

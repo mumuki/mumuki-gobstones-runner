@@ -1,3 +1,5 @@
+require 'gobstones/board'
+
 module Gobstones
 
 end
