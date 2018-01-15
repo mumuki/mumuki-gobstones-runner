@@ -28,7 +28,7 @@ class Gobstones::Batch
 
   def example_base_json(example)
     {initialBoard: example[:preconditions][:initial_board],
-     code: example_code(example) + "\n" + extra}
+     code: "#{example_code(example)}\n#{extra}"}
   end
 
   def example_code(example)
