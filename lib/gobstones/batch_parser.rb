@@ -20,7 +20,7 @@ module Gobstones::BatchParser
       examples.each_with_index.map do |example, index|
         parse_example options, {
           id: index,
-          title: example[:title], # TODO: Sigue sin mostrarlo :(
+          name: example[:title],
           preconditions: example.slice(*preconditions),
           postconditions: example.slice(*postconditions)
         }
@@ -32,7 +32,7 @@ module Gobstones::BatchParser
 
       return_value = example[:postconditions][:return]
       if return_value
-        example[:title] = "#{options[:subject]}() -> #{return_value}" unless example[:title]
+        example[:name] = "#{options[:subject]}() -> #{return_value}" unless example[:name]
         options[:show_final_board] = false
       end
 

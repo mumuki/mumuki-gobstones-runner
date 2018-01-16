@@ -59,7 +59,7 @@ examples:
         [
           {
             id: 0,
-            title: "A name",
+            name: "A name",
             preconditions: {
               initial_board: "GBB/1.0\nsize 3 3\nhead 0 0\n",
             },
@@ -70,7 +70,7 @@ examples:
           },
           {
             id: 1,
-            title: "BOOM with 1x1",
+            name: "BOOM with 1x1",
             preconditions: {
               initial_board: "GBB/1.0\nsize 1 1\nhead 0 0\n",
             },
@@ -105,7 +105,7 @@ examples:
         [
           {
             id: 0,
-            title: "aName() -> 29",
+            name: "aName() -> 29",
             preconditions: {
               initial_board: "GBB/1.0\nsize 3 3\nhead 0 0\n",
             },
