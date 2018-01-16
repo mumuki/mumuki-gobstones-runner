@@ -1,4 +1,4 @@
-class GobstonesTestHook < Mumukit::Defaults::PrecompileHook
+class GobstonesTestHook < Mumukit::Defaults::TestHook
   def run!(request)
     output, status = request.result
 
