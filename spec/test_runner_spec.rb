@@ -3,10 +3,12 @@ require_relative './spec_helper'
 describe 'running' do
 
   def req(content, extra, test = 'examples: [{}]')
-    struct content: content.strip, extra: extra.strip, test: test
+    runner.compile(
+      struct content: content.strip, extra: extra.strip, test: test
+    )
   end
 
-  let(:runner) { GobstonesTestHook.new }
+  let(:runner) { GobstonesPrecompileHook.new }
 
   describe '#compile_file_content' do
     let(:content) {
@@ -132,11 +134,13 @@ examples:
           [
             {
               initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
+              originalCode: content.chop,
               code: expected_code,
               extraBoard: "GBB/1.0\nsize 3 3\nhead 0 1\n"
             },
             {
               initialBoard: "GBB/1.0\nsize 1 1\nhead 0 0\n",
+              originalCode: content.chop,
               code: expected_code
             }
           ].to_json
@@ -146,13 +150,12 @@ examples:
       end
 
       context 'when there is a subject' do
-
         let(:content) { "things" }
-
         let(:expected_compilation) {
           [
             {
               initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
+              originalCode: content,
               code: expected_code
             }
           ].to_json
