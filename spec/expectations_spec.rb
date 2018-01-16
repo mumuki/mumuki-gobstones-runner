@@ -2,7 +2,14 @@ require_relative 'spec_helper'
 
 describe GobstonesExpectationsHook do
   def req(expectations, content)
-    OpenStruct.new(expectations: expectations, content: content)
+    GobstonesPrecompileHook.new.compile(
+      OpenStruct.new(expectations: expectations, content: content, test: %q{
+examples:
+- initial_board: |
+    GBB/1.0
+    size 1 1
+    head 0 0
+}))
   end
 
   def compile_and_run(request)

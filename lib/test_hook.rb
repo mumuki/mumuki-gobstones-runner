@@ -1,30 +1,11 @@
-class GobstonesTestHook < Mumukit::Templates::FileHook
-  attr_accessor :batch
-
-  structured true
-  isolated true
-
-  def tempfile_extension
-    '.json'
-  end
-
-  def command_line(filename)
-    "gobstones-cli --batch #{filename}"
-  end
-
-  def compile_file_content(request)
-    @batch = Gobstones::BatchParser.parse request
-    @batch.to_json
-  end
-
-  def post_process_file(_file, result, status)
-    output = result.parse_as_json
+class GobstonesTestHook < Mumukit::Defaults::TestHook
+  def run!(request)
+    output, status = request.result
 
     if status == :passed
-      @batch.run_tests! output
+      request.batch.run_tests! output
     else
-      [output, status]
+      request.result
     end
   end
-
 end

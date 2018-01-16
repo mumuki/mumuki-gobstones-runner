@@ -30,11 +30,13 @@ module Gobstones
 
     def render_error_check_return_failed_no_return(result)
       bind_result error: :check_return_failed_no_return,
+                  boards: prepare_boards([:initial], result),
                   expected_value: result[:expected_value]
     end
 
     def render_error_check_return_failed_different_values(result)
       bind_result error: :check_return_failed_different_values,
+                  boards: prepare_boards([:initial], result),
                   expected_value: result[:expected_value],
                   actual_value: result[:actual_value]
     end
