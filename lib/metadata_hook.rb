@@ -9,7 +9,7 @@ class GobstonesMetadataHook < Mumukit::Hook
         ace_mode: 'gobstones',
         graphic: true
       },
-      assets_urls: {
+      layout_assets_urls: {
         js: [
           'assets/webcomponents.js'
         ],
@@ -18,7 +18,7 @@ class GobstonesMetadataHook < Mumukit::Hook
           'assets/gs-board.html'
         ]
       },
-      custom_editor_assets_urls: {
+      editor_assets_urls: {
         js: [
           'assets/editor/editor.js'
         ],
