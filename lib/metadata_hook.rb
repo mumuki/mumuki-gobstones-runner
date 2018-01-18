@@ -9,13 +9,24 @@ class GobstonesMetadataHook < Mumukit::Hook
         ace_mode: 'gobstones',
         graphic: true
       },
-      assets_urls: {
+      layout_assets_urls: {
         js: [
           'assets/webcomponents.js'
         ],
         html: [
           'assets/polymer.html',
           'assets/gs-board.html'
+        ]
+      },
+      editor_assets_urls: {
+        js: [
+          'assets/editor/editor.js'
+        ],
+        html: [
+          'assets/editor/editor.html',
+        ],
+        css: [
+          'assets/editor/editor.css'
         ]
       },
       test_framework: {
