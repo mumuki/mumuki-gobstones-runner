@@ -44,6 +44,27 @@ program {
     expect(response[:response_type]).to eq :structured
   end
 
+
+
+  it 'answers a valid hash when submission passes and boards do not have a GBB spec' do
+    response = bridge.run_tests!(test: %q{
+examples:
+- initial_board: |
+    size 3 3
+    head 0 0
+  final_board: |
+      size 3 3
+      head 0 1}, extra: '', content: %q{
+program {
+  Mover(Norte)
+}}, expectations: [])
+
+    expect(response[:status]).to eq :passed
+    expect(response[:response_type]).to eq :structured
+  end
+
+
+
   it 'answers a valid hash when submission passes, in gobstones' do
     response = bridge.run_tests!(
       content: '
@@ -118,6 +139,7 @@ examples:
      size 2 2
      head 0 0
    final_board: |
+     GBB/1.0
      size 2 2
      head 0 0')
 
