@@ -57,7 +57,6 @@ procedure PonerUnaDeCada() {
       expectations: [
         {binding: 'program', inspection: 'HasUsage:PonerUnaDecada'},
         {binding: 'program', inspection: 'Not:HasBinding'},
-        {binding: 'PonerUnaDeCada', inspection: 'HasBinding'}
       ],
       test: '
 check_head_position: true
@@ -109,7 +108,6 @@ procedure HastaElInfinito() {
       extra: '',
       expectations: [
         {binding: "program", inspection: "Not:HasBinding"},
-        {binding: "HastaElInfinito", inspection: "HasBinding"}
       ],
       test: '
 subject: HastaElInfinito
