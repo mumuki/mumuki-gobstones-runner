@@ -13,16 +13,15 @@ class GobstonesPrecompileHook < Mumukit::Templates::FileHook
   end
 
   def compile(request)
-    request.test = add_missing_headers(request.test)
+    add_missing_headers! request
     file = super request
 
     struct request.to_h.merge batch: @batch,
                               result: run!(file)
   end
 
-  def add_missing_headers(test)
-    regexp = /(.*(initial_board|final_board).*\n)(?!.*GBB\/1\.0.*)/
-    test.gsub(regexp, "\\1    GBB/1.0\\3\n")
+  def add_missing_headers!(request)
+    request.test.gsub! /(.*(initial_board|final_board).*\n)(?!.*GBB\/1\.0.*)/, "\\1    GBB/1.0\\3\n"
   end
 
   def compile_file_content(request)
