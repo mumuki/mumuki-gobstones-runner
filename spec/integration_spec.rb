@@ -118,7 +118,6 @@ examples:
      size 2 2
      head 0 0
    final_board: |
-     GBB/1.0
      size 2 2
      head 0 0')
 
