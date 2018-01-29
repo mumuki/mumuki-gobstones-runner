@@ -187,4 +187,25 @@ examples:
      expect(response[:status]).to eq :passed
      expect(response[:response_type]).to eq :structured
   end
+
+  it 'answers a valid hash when the return checker has to compare a numeric value and it is defined in the test as string' do
+    response = bridge.run_tests!(
+      content: "function numero(){\nvalor:=cifra()\nMover(Este)\nvalor:=(valor*100)+(cifra()*10)\nMover(Este)\nvalor:=(valor+cifra())\nreturn(valor)\n}",
+      test: "subject: numero\n\nexamples:\n - initial_board: |\n     GBB/1.0\n     size 3 1\n     cell 0 0 Rojo 1\n     cell 1 0 Rojo 3\n     cell 2 0 Rojo 2\n     head 0 0\n   return: '132'\n\n - initial_board: |\n     GBB/1.0\n     size 3 1\n     cell 0 0 Rojo 6\n     cell 1 0 Rojo 7\n     cell 2 0 Rojo 8\n     head 0 0\n   return: '678'",
+      expectations: [
+        {
+          binding: "numero",
+          inspection: "HasDeclaration"
+        },
+        {
+          binding: "numero",
+          inspection: "HasUsage:cifra"
+        }
+      ],
+      extra: "function cifra() {\n  return (nroBolitas(Rojo))\n}"
+    )
+
+    expect(response[:status]).to eq :passed
+    expect(response[:response_type]).to eq :structured
+  end
 end

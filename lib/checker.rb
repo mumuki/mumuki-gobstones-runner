@@ -63,12 +63,20 @@ module Gobstones
                 } if return_value.nil?
 
       final_value = adapt_value return_value
+      final_expected_value = expected
+
+      if return_value[:type] == 'Number'
+        final_value = final_value.to_s
+        final_expected_value = final_expected_value.to_s
+        # TODO: This is not ok but it's here for retrocompatibility issues.
+      end
+
       fail_with status: :check_return_failed_different_values,
                 result: {
                   initial: result[:initialBoard],
                   expected_value: expected,
                   actual_value: final_value
-                } if final_value != expected
+                } if final_value != final_expected_value
     end
 
     private

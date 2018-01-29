@@ -169,7 +169,7 @@ describe 'metatest' do
         }
 
         it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "The program was expected to fail by <strong>Out of board</strong>, but it failed by another reason." }
+        it { expect(result[0][0][2]).to include "The program was expected to fail by <strong>out of board</strong>, but it failed by another reason." }
       end
 
     end
