@@ -160,4 +160,16 @@ examples:
     expect(response[:status]).to eq :passed
     expect(response[:response_type]).to eq :structured
   end
+
+  it 'answers a valid hash when the expected boom type is unassigned_variable and the initial board is not defined' do
+    response = bridge.run_tests!(
+      content: "function boomBoomKid() {\n  return (unaVariableQueNoExiste)\n}",
+      test: "subject: boomBoomKid\n\nshow_initial_board: false\n\nexamples:\n - error: unassigned_variable",
+      expectations: [],
+      extra: ""
+    )
+
+    expect(response[:status]).to eq :passed
+    expect(response[:response_type]).to eq :structured
+  end
 end

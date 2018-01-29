@@ -95,6 +95,7 @@ module Gobstones
       return "no_stones" if code == "cannot-remove-stone"
       return "out_of_board" if code == "cannot-move-to"
       return "wrong_argument_type" if code == "primitive-argument-type-mismatch"
+      return "unassigned_variable" if code == "undefined-variable"
 
       code
     end
