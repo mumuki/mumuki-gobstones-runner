@@ -102,8 +102,9 @@ module Gobstones
     def convert_known_reason_code(code)
       return "no_stones" if code == 'cannot-remove-stone'
       return "out_of_board" if code == 'cannot-move-to'
-      return "wrong_argument_type" if code == 'primitive-argument-type-mismatch'
       return "unassigned_variable" if code == 'undefined-variable'
+      return "wrong_argument_type" if code.include? 'type-mismatch'
+      return "wrong_arguments_quantity" if code.include? 'arity-mismatch'
 
       code
     end

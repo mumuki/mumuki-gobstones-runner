@@ -10,6 +10,7 @@ en:
   code_out_of_board: 'out of board'
   code_wrong_argument_type: 'wrong arguments type'
   code_unassigned_variable: 'unassigned variable'
+  code_wrong_arguments_quantity: 'wrong arguments quantity'
   expected_board: 'Expected final board'
   final_board: 'Final board'
   initial_board: 'Initial board'

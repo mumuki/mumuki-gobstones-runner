@@ -208,4 +208,25 @@ examples:
     expect(response[:status]).to eq :passed
     expect(response[:response_type]).to eq :structured
   end
+
+  it 'answers a valid hash when the error checker is waiting for a wrong_arguments_quantity error' do
+    response = bridge.run_tests!(
+      content: "program{ \nDibujarLinea3(Verde)\n}",
+      test: %q{
+check_head_position: true
+
+examples:
+- initial_board: |
+    GBB/1.0
+    size 3 3
+    head 0 0
+  error: wrong_arguments_quantity
+},
+      expectations: [ ],
+      extra: "procedure DibujarLinea3(color, direccion) {\n Poner(color)\n Mover(direccion)\n Poner(color)\n Mover(direccion)\n Poner(color)\n}"
+    )
+
+    expect(response[:status]).to eq :passed
+    expect(response[:response_type]).to eq :structured
+  end
 end
