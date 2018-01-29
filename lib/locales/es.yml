@@ -8,6 +8,7 @@ es:
   check_return_failed_no_return: 'Se esperaba <strong>%{expected_value}</strong> pero no se obtuvo ningún valor.'
   code_no_stones: 'falta de bolitas disponibles'
   code_out_of_board: 'caída del tablero'
+  code_wrong_argument_type: 'problema de tipos en los argumentos'
   expected_board: 'Tablero final esperado'
   final_board: 'Tablero final'
   initial_board: 'Tablero inicial'

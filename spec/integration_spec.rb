@@ -44,8 +44,6 @@ program {
     expect(response[:response_type]).to eq :structured
   end
 
-
-
   it 'answers a valid hash when submission passes and boards do not have a GBB spec' do
     response = bridge.run_tests!(test: %q{
 examples:
@@ -63,9 +61,7 @@ program {
     expect(response[:response_type]).to eq :structured
   end
 
-
-
-  it 'answers a valid hash when submission passes, in gobstones' do
+  it 'answers a valid hash when submission passes, with expectations' do
     response = bridge.run_tests!(
       content: '
 procedure PonerUnaDeCada() {
@@ -117,7 +113,7 @@ examples:
     expect(response[:test_results].size).to eq 2
   end
 
-  it 'answers a valid hash when submission is aborted and expected, in gobstones' do
+  it 'answers a valid hash when submission is aborted and expected' do
     response = bridge.run_tests!(
       language: :gobstones,
       content: '
@@ -151,5 +147,17 @@ examples:
                                                    {binding: "*", inspection: "Declares:=HastaElInfinito", result: :passed}
                                                  ],
                                                  result: ''
+  end
+
+  it 'answers a valid hash when the expected boom type is wrong_arguments_type' do
+    response = bridge.run_tests!(
+      language: :gobstones,
+      content: "program {\nDibujarLinea3(Este, Verde)\nMover(Este)\nDibujarLinea3(Norte, Rojo)\nMover(Norte)\nDibujarLinea3(Oeste, Negro)\nMover(Oeste)\nDibujarLinea3(Sur, Azul)\n}",
+      extra: "procedure DibujarLinea3(color, direccion) {\n  Poner(color)\n  Mover(direccion)\n  Poner(color)\n  Mover(direccion)\n  Poner(color)\n }",
+      expectations: [],
+      test: "check_head_position: true\n\nexamples:\n - title: '¡BOOM!'\n   initial_board: |\n     GBB/1.0\n     size 3 3\n     head 0 0\n   error: wrong_argument_type")
+
+    expect(response[:status]).to eq :passed
+    expect(response[:response_type]).to eq :structured
   end
 end

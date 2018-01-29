@@ -8,6 +8,7 @@ en:
   check_return_failed_no_return: '<strong>%{expected_value}</strong> was expected but no value was obtained.'
   code_no_stones: 'No stones left'
   code_out_of_board: 'Out of board'
+  code_wrong_argument_type: 'Wrong arguments type'
   expected_board: 'Expected final board'
   final_board: 'Final board'
   initial_board: 'Initial board'
