@@ -62,7 +62,7 @@ module Gobstones
                   expected_value: expected
                 } if return_value.nil?
 
-      final_value = return_value[:value]
+      final_value = adapt_value return_value
       fail_with status: :check_return_failed_different_values,
                 result: {
                   initial: result[:initialBoard],
@@ -92,12 +92,21 @@ module Gobstones
     end
 
     def convert_known_reason_code(code)
-      return "no_stones" if code == "cannot-remove-stone"
-      return "out_of_board" if code == "cannot-move-to"
-      return "wrong_argument_type" if code == "primitive-argument-type-mismatch"
-      return "unassigned_variable" if code == "undefined-variable"
+      return "no_stones" if code == 'cannot-remove-stone'
+      return "out_of_board" if code == 'cannot-move-to'
+      return "wrong_argument_type" if code == 'primitive-argument-type-mismatch'
+      return "unassigned_variable" if code == 'undefined-variable'
 
       code
+    end
+
+    def adapt_value(return_value)
+      type = return_value[:type]
+      value = return_value[:value]
+
+      return value.to_s.capitalize if type == 'Bool'
+
+      value
     end
   end
 end

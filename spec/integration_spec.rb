@@ -115,7 +115,6 @@ examples:
 
   it 'answers a valid hash when submission is aborted and expected' do
     response = bridge.run_tests!(
-      language: :gobstones,
       content: '
 procedure HastaElInfinito() {
   while (puedeMover(Este)) {
@@ -151,7 +150,6 @@ examples:
 
   it 'answers a valid hash when the expected boom type is wrong_arguments_type' do
     response = bridge.run_tests!(
-      language: :gobstones,
       content: "program {\nDibujarLinea3(Este, Verde)\nMover(Este)\nDibujarLinea3(Norte, Rojo)\nMover(Norte)\nDibujarLinea3(Oeste, Negro)\nMover(Oeste)\nDibujarLinea3(Sur, Azul)\n}",
       extra: "procedure DibujarLinea3(color, direccion) {\n  Poner(color)\n  Mover(direccion)\n  Poner(color)\n  Mover(direccion)\n  Poner(color)\n }",
       expectations: [],
@@ -171,5 +169,22 @@ examples:
 
     expect(response[:status]).to eq :passed
     expect(response[:response_type]).to eq :structured
+  end
+
+  it 'answers a valid hash when the return checker has to compare a return value of True' do
+    response = bridge.run_tests!(
+      content: "function esLibreCostados(){\nreturn(puedeMover(Este)&&puedeMover(Oeste))\n\n}",
+      test: "subject: esLibreCostados\n\nexamples:\n - initial_board: |\n     GBB/1.0\n     size 3 2\n     head 0 0\n   return: 'False'\n \n - initial_board: |\n     GBB/1.0\n     size 3 2\n     head 1 0\n   return: 'True'",
+      expectations: [
+        {
+          binding: "esLibreCostados",
+          inspection: "HasUsage:puedeMover"
+        }
+      ],
+      extra: "",
+    )
+
+     expect(response[:status]).to eq :passed
+     expect(response[:response_type]).to eq :structured
   end
 end
