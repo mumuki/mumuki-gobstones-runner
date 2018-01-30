@@ -20,4 +20,8 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
 
     [expectations, exceptions]
   end
+
+  def default_smell_exceptions
+    LOGIC_SMELLS + FUNCTIONAL_SMELLS + OBJECT_ORIENTED_SMELLS
+  end
 end
