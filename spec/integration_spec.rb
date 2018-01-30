@@ -229,4 +229,24 @@ examples:
     expect(response[:status]).to eq :passed
     expect(response[:response_type]).to eq :structured
   end
+
+  # See https://github.com/mumuki/mulang/issues/144. Caused by not excluding the proper smells
+  it 'checks an inspection over a function correctly' do
+    response = bridge.run_tests!(
+      {
+        content: "function rojoEsDominante(){\nreturn (nroBolitas(Rojo)\u003enroBolitasTotal()-nroBolitas(Rojo))\n}",
+        test: "subject: rojoEsDominante\n\nexamples:\n - initial_board: |\n     GBB/1.0\n     size 2 2\n     cell 0 0 Azul 3 Negro 2 Rojo 4 Verde 3\n     head 0 0\n   return: 'False'\n \n - initial_board: |\n     GBB/1.0\n     size 2 2\n     cell 0 0 Azul 3 Negro 2 Rojo 10 Verde 3\n     head 0 0\n   return: 'True'",
+        expectations: [
+          {
+            binding: "rojoEsDominante",
+            inspection: "HasUsage:todasMenos"
+          }
+        ],
+        extra: "function nroBolitasTotal() {\n  return (nroBolitas(Azul) + nroBolitas(Negro) + nroBolitas(Rojo) + nroBolitas(Verde))\n}\n\nfunction todasMenos(color) {\n    return (nroBolitasTotal() - nroBolitas(color))\n}",
+      }
+    )
+    expect(response[:status]).to eq :passed_with_warnings
+    expect(response[:response_type]).to eq :structured
+
+  end
 end
