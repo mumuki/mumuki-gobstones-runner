@@ -10,9 +10,6 @@ class GobstonesMetadataHook < Mumukit::Hook
         graphic: true
       },
       layout_assets_urls: {
-        js: [
-          'assets/webcomponents.js'
-        ],
         html: [
           'assets/polymer.html',
           'assets/gs-board.html'

@@ -26,7 +26,6 @@ class Mumukit::Server::App < Sinatra::Base
     get_asset route, File.expand_path(path), type
   end
 
-  get_board_asset  'webcomponents.js',     'javascripts/vendor/webcomponents.min.js',   'application/javascript'
   get_local_asset  'editor/editor.js',     'lib/render/editor/editor.js',               'application/javascript'
   get_board_asset  'polymer.html',         'htmls/vendor/polymer.html',                 'text/html'
   get_board_asset  'polymer-mini.html',    'htmls/vendor/polymer-mini.html',            'text/html'
