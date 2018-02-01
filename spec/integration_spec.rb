@@ -230,6 +230,28 @@ examples:
     expect(response[:response_type]).to eq :structured
   end
 
+  it 'answers a well formed error when the content has no program definition' do
+    response = bridge.run_tests!(
+      content: "",
+      test: %q{
+check_head_position: true
+
+examples:
+- initial_board: |
+    GBB/1.0
+    size 3 3
+    head 0 0
+  error: wrong_arguments_quantity
+},
+      expectations: [ ],
+      extra: ""
+    )
+
+    expect(response[:status]).to eq :errored
+    expect(response[:response_type]).to eq :unstructured
+    expect(response[:result]).to eq "<pre>[0:0]: No program definition was found</pre>"
+  end
+
   # See https://github.com/mumuki/mulang/issues/144. Caused by not excluding the proper smells
   it 'checks an inspection over a function correctly' do
     response = bridge.run_tests!(

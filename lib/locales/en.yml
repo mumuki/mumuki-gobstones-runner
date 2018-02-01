@@ -14,3 +14,4 @@ en:
   expected_board: 'Expected final board'
   final_board: 'Final board'
   initial_board: 'Initial board'
+  no_program_found: 'No program definition was found'
