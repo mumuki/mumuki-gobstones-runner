@@ -271,4 +271,20 @@ examples:
     expect(response[:response_type]).to eq :structured
 
   end
+
+  it 'answers a valid hash when locale is pt' do
+    response = bridge.run_tests!(
+      {
+        content: "program {\n  Colocar(Vermelho)    \n}",
+        test: "examples:\r\n - initial_board: |\r\n     GBB/1.0\r\n     size 3 3\r\n     head 0 0\r\n   final_board: |\r\n     GBB/1.0\r\n     size 3 3\r\n     cell 0 0 Rojo 1\r\n     head 0 0",
+        expectations: [
+        ],
+        locale: "pt",
+        extra: "",
+      }
+    )
+    expect(response[:status]).to eq :passed
+    expect(response[:response_type]).to eq :structured
+
+  end
 end
