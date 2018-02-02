@@ -9,11 +9,16 @@ class GobstonesPrecompileHook < Mumukit::Templates::FileHook
   end
 
   def command_line(filename)
-    "gobstones-cli --batch #{filename}"
+    "gobstones-cli --batch #{filename} #{locale_argument}"
+  end
+
+  def locale_argument
+    "--language #{@locale}" if @locale
   end
 
   def compile(request)
     add_missing_headers! request
+    @locale = request[:locale]
     file = super request
 
     struct request.to_h.merge batch: @batch,

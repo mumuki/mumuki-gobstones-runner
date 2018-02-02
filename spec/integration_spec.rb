@@ -271,4 +271,99 @@ examples:
     expect(response[:response_type]).to eq :structured
 
   end
+
+  it 'answers a valid hash when locale is pt, with directions' do
+    response = bridge.run_tests!({
+        content: "program {\n  Mover(Sul); Mover(Leste)   \n}",
+        test: "
+        check_head_position: true
+        examples:
+         - initial_board: |
+             GBB/1.0
+             size 3 3
+             head 0 2
+           final_board: |
+             GBB/1.0
+             size 3 3
+             head 1 1",
+        expectations: [ ],
+        locale: "pt",
+        extra: "",
+      })
+    expect(response[:status]).to eq :passed
+    expect(response[:response_type]).to eq :structured
+  end
+
+  it 'answers a valid hash when locale is pt and submission is wrong, with directions' do
+    response = bridge.run_tests!({
+        content: "program {\n  Mover(Sul); Mover(Leste)   \n}",
+        test: "
+        check_head_position: true
+        examples:
+         - initial_board: |
+             GBB/1.0
+             size 3 3
+             head 0 2
+           final_board: |
+             GBB/1.0
+             size 3 3
+             head 0 0",
+        expectations: [ ],
+        locale: "pt",
+        extra: "",
+      })
+    expect(response[:status]).to eq :failed
+    expect(response[:response_type]).to eq :structured
+  end
+
+  it 'answers a valid hash when locale is pt, with colors' do
+    response = bridge.run_tests!(
+      {
+        content: "program {\n  Colocar(Vermelho)    \n}",
+        test: "
+         examples:
+         - initial_board: |
+             GBB/1.0
+             size 3 3
+             head 0 0
+           final_board: |
+             GBB/1.0
+             size 3 3
+             cell 0 0 Rojo 1
+             head 0 0",
+        expectations: [ ],
+        locale: "pt",
+        extra: "",
+      }
+    )
+    expect(response[:status]).to eq :passed
+    expect(response[:response_type]).to eq :structured
+  end
+
+
+  it 'fails when locale is pt and the content of the submission is wrong' do
+    response = bridge.run_tests!(
+      {
+        content: "program {\n  Colocar(Preto)    \n}",
+        test: "
+         examples:
+         - initial_board: |
+             GBB/1.0
+             size 3 3
+             head 0 0
+           final_board: |
+             GBB/1.0
+             size 3 3
+             cell 0 0 Rojo 1
+             head 0 0",
+        expectations: [
+        ],
+        locale: "pt",
+        extra: "",
+      }
+    )
+    expect(response[:status]).to eq :failed
+    expect(response[:response_type]).to eq :structured
+
+  end
 end
