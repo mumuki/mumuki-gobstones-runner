@@ -6,6 +6,7 @@ class Mumukit::Server::App < Sinatra::Base
 
   configure do
     enable :cross_origin
+    set :allow_origin, '*'
   end
 
   def self.get_asset(route, absolute_path, type)
