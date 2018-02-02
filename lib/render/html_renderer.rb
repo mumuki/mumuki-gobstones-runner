@@ -8,7 +8,9 @@ module Gobstones
     end
 
     def render_success(result)
-      bind_result boards: prepare_boards([:initial, :final], result),
+      boards = [:initial, :final]
+      boards.reject!{ |it| it === :initial } unless @options[:show_initial_board]
+      bind_result boards: prepare_boards(boards, result),
                   reason: prepare_reason(result[:reason])
     end
 
