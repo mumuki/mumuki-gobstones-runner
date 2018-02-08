@@ -35,16 +35,12 @@ class GobstonesMetadataHook < Mumukit::Hook
 
   def template
     <<YAML
-# El siguiente es un ejemplo de cómo generar test para Gobstones utilizando formato YAML.
-
-    # OPTIONS
-
+    ##  OPTIONS
     # show_initial_board: true
     # show_final_board: true
     # check_head_position: false
     # expect_endless_while: false
-    # subject: functionOrProcedure
-      
+    # subject: functionOrProcedure 
     examples:
       - title: 'Example board title'
       # arguments:
@@ -59,9 +55,7 @@ class GobstonesMetadataHook < Mumukit::Hook
         size 3 3
         cell 0 0 Rojo 1 Verde 1 Negro 1 Azul 1
         head 0 0
-       
-    # ERRORS (when passing an error is not necessary to provide a final board)
-
+    ## EXPECTED ERRORS
     # error: no_stones
     # error: out_of_board
     # error: wrong_argument_type
