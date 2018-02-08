@@ -120,7 +120,7 @@ Where:
         In this case the head will start at (3,2)
 
 
-  * FINAL_BOARD has the same structure as the INITIAL_BOARD with the exception that HEAD_POSITION isn't required unless check_head_position options is set to true. (In fact it isn't required but the test will always fail if it isn't provided)
+  * FINAL_BOARD has the same structure as the INITIAL_BOARD with the exception that HEAD_POSITION is required only when check_head_position option is set to true. (In fact it isn't required but the test will always fail if it isn't provided)
 
   * ERROR isn't required. It represents an expected error, so the test will pass only if the given error occurs. Only one ERROR can be provided in a test. When providing an ERROR, FINAL_BOARD isn't required (or needed). INITIAL_BOARD is required only on those errors that need to draw the board for being executed (no_stones and out_of_board).
 
