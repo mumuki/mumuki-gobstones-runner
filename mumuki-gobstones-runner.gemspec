@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = 'mumuki-gobstones-runner'
-  spec.version       = '1.5.0'
+  spec.version       = '1.5.1'
   spec.authors       = ['Rodrigo Alfonso']
   spec.email         = ['rodri042@gmail.com']
   spec.summary       = 'Gobstones Runner for Mumuki'
