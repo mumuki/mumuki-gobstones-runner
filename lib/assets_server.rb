@@ -24,7 +24,7 @@ class Mumukit::Server::App < Sinatra::Base
   end
 
   def self.get_local_asset(route, path, type)
-    get_asset route, File.expand_path(path), type
+    get_asset route, File.join(__dir__, '..' , path), type
   end
 
   get_local_asset  'editor/editor.js',     'lib/render/editor/editor.js',               'application/javascript'
