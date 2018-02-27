@@ -8,9 +8,9 @@ module Gobstones
     end
 
     def render_success(result)
-      boards = [:initial, :final]
-      boards.reject!{ |it| it === :initial } unless @options[:show_initial_board]
-      bind_result boards: prepare_boards(boards, result),
+      board_types = [:initial, :final]
+      board_types.reject!{ |it| it === :initial } unless @options[:show_initial_board]
+      bind_result boards: prepare_boards(board_types, result),
                   reason: prepare_reason(result[:reason])
     end
 
@@ -56,22 +56,22 @@ module Gobstones
       Gobstones::build_error(reason)
     end
 
-    def prepare_boards(names, result)
-      visible_names(names, result).map do |it|
+    def prepare_boards(board_types, result)
+      visible_board_types(board_types, result).map do |it|
         struct title: "#{it}_board".to_sym,
                board: visible_board(result, it)
       end
     end
 
-    def visible_names(names, result)
-      names.reject do |it|
+    def visible_board_types(board_types, result)
+      board_types.select do |it|
         must_show = @options["show_#{it}_board".to_sym]
-        !must_show.nil? && !must_show
+        result[it] && (must_show.nil? || must_show)
       end
     end
 
-    def visible_board(result, name)
-      board = result[name]
+    def visible_board(result, board_types)
+      board = result[board_types]
 
       if board == 'boom'
         HtmlBoard.new(result[:initial], boom: true)

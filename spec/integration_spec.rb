@@ -364,6 +364,38 @@ examples:
     )
     expect(response[:status]).to eq :failed
     expect(response[:response_type]).to eq :structured
+  end
 
+  it 'responds a properly structured response when there are unexpected booms and no expected final boards' do
+    response = bridge.run_tests!(
+      {
+        content: "
+          function hayBolitasLejosAl(direccion, color, distancia) {
+            MoverN(distancia, direcion)
+            return (True)
+          }
+          ",
+        test: "
+          subject: hayBolitasLejosAl
+
+          examples:
+           - arguments:
+             - Norte
+             - Rojo
+             - 2
+             initial_board: |
+               GBB/1.0
+               size 3 3
+               cell 0 2 Rojo 1
+               head 0 0
+             return: 'True'",
+        expectations: [
+        ],
+        extra: "procedure MoverN(n, direccion) { repeat (n) { Mover(direccion) } }"
+      }
+    )
+
+    expect(response[:response_type]).to eq :structured
+    expect(response[:status]).to eq :failed
   end
 end
