@@ -1,10 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'version_hook'
 
 Gem::Specification.new do |spec|
   spec.name          = 'mumuki-gobstones-runner'
-  spec.version       = '1.5.1'
+  spec.version       = GobstonesVersionHook::VERSION
   spec.authors       = ['Rodrigo Alfonso']
   spec.email         = ['rodri042@gmail.com']
   spec.summary       = 'Gobstones Runner for Mumuki'
