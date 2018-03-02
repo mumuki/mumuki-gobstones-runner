@@ -4,7 +4,6 @@ module Gobstones
   class HtmlRenderer
     def initialize(options)
       @options = options
-      @boom_image = encode_image_png 'boom'
     end
 
     def render_success(result)
