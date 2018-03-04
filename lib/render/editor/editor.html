@@ -1,0 +1,21 @@
+<link href="./gs-element-blockly.html" rel="import" />
+
+<dom-module id="blockly-container">
+  <template>
+    <gs-element-blockly id="blocklyElement"></gs-element-blockly>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'blockly-container',
+      ready: function() {
+        setTimeout(() => {
+          this.$.blocklyElement.workspace.addChangeListener(() => {
+            $("#custom-editor-value")[0].value = this.$.blocklyElement.generateCode();
+          });
+        });
+      }
+    });
+  </script>
+</dom-module>
+
