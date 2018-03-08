@@ -9,6 +9,7 @@
   <script>
     Polymer({
       is: 'blockly-container',
+
       ready: function() {
         const initialize = () => {
           setTimeout(() => {
@@ -20,7 +21,7 @@
             }
 
             const updateFields = () => {
-              $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode({ withRegions: true });
+              $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode({ withRegions: true, clearErrors: false });
               $("#mu-custom-editor-metadata")[0].value = this.$.blocklyElement.workspaceXml;
             };
 
@@ -46,6 +47,7 @@
       listeners: {
         "gbs-run-request": "_onRunRequest"
       },
+
       _onRunRequest: function(event) {
         const { detail: controller } = event;
 
@@ -53,6 +55,8 @@
         const blockly = $("gs-element-blockly")[0];
         const initialBoard = $(".mu-kids-gbs-board-initial gs-board")[0];
         const finalBoard = $(".mu-kids-gbs-board-final gs-board")[0];
+
+        this._clearErrors(blockly, finalBoard);
 
         controller.start({
           initialState: {
@@ -66,14 +70,36 @@
             teacher: "" // TODO: Support teacher library
           }
         }, {
-          onResult: ({ table, head }, fullState = {}) => {
-            const { regionStack } = fullState;
-            const region = regionStack.filter(it => it).slice(-1)[0];
-
+          onResult: (state, fullState) => {
+            const region = this._getLastRegion(fullState);
             if (region) blockly.highlightBlock(region);
-            finalBoard.update(table, head);
+
+            this._updateBoard(state, finalBoard, blockly);
           }
         });
+      },
+
+      _updateBoard: function(state, finalBoard, blockly) {
+        const { error, table, head } = state;
+
+        finalBoard.boom = error != null;
+
+        if (error) {
+          const region = this._getLastRegion(error.on);
+          if (region) blockly.showBlockError(region, error.message);
+        } else {
+          finalBoard.update(table, head);
+        }
+      },
+
+      _clearErrors: function(blockly, finalBoard) {
+        blockly.workspace.removeBlockErrors();
+        finalBoard.boom = false;
+      },
+
+      _getLastRegion: function(context = {}) {
+        const { regionStack } = context;
+        return regionStack && regionStack.filter(it => it).slice(-1)[0];
       }
     });
   </script>
