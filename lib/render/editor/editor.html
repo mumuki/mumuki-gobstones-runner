@@ -11,6 +11,12 @@
       is: 'blockly-container',
 
       ready: function() {
+
+        const updateFields = () => {
+          $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode({ withRegions: true, clearErrors: false });
+          $("#mu-custom-editor-metadata")[0].value = this.$.blocklyElement.workspaceXml;
+        };
+
         const initialize = () => {
           setTimeout(() => {
             if (!this.$.blocklyElement || !this.$.blocklyElement.workspace) return initialize();
@@ -19,11 +25,6 @@
             if (metadata) {
               this.$.blocklyElement.workspaceXml = metadata;
             }
-
-            const updateFields = () => {
-              $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode({ withRegions: true, clearErrors: false });
-              $("#mu-custom-editor-metadata")[0].value = this.$.blocklyElement.workspaceXml;
-            };
 
             this.$.blocklyElement.workspace.addChangeListener(updateFields);
             updateFields();
