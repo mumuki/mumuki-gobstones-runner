@@ -10,20 +10,26 @@
     Polymer({
       is: 'blockly-container',
       ready: function() {
-        setTimeout(() => {
-          var metadata = $("#mu-custom-editor-metadata")[0].value;
-          if (metadata) {
-            this.$.blocklyElement.workspaceXml = metadata;
-          }
+        const initialize = () => {
+          setTimeout(() => {
+            if (!this.$.blocklyElement || !this.$.blocklyElement.workspace) return initialize();
 
-          const updateFields = () => {
-            $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode();
-            $("#mu-custom-editor-metadata")[0].value = this.$.blocklyElement.workspaceXml;
-          };
+            var metadata = $("#mu-custom-editor-metadata")[0].value;
+            if (metadata) {
+              this.$.blocklyElement.workspaceXml = metadata;
+            }
 
-          this.$.blocklyElement.workspace.addChangeListener(updateFields);
-          updateFields();
-        });
+            const updateFields = () => {
+              $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode();
+              $("#mu-custom-editor-metadata")[0].value = this.$.blocklyElement.workspaceXml;
+            };
+
+            this.$.blocklyElement.workspace.addChangeListener(updateFields);
+            updateFields();
+          }, 50);
+        };
+
+        initialize();
       }
     });
   </script>
