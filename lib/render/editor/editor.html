@@ -51,7 +51,8 @@
       _onRunRequest: function(event) {
         const { detail: controller } = event;
 
-        const code = $("#mu-custom-editor-value")[0].value;
+        const code = $("#mu-custom-editor-value")[0].value || "";
+        const extraCode = $("#mu-custom-editor-extra")[0].value || "";
         const blockly = $("gs-element-blockly")[0];
         const initialBoard = $(".mu-kids-gbs-board-initial gs-board")[0];
         const finalBoard = $(".mu-kids-gbs-board-final gs-board")[0];
@@ -66,8 +67,8 @@
           },
           code: {
             main: code,
-            library: "", // TODO: Support library
-            teacher: "" // TODO: Support teacher library
+            library: "",
+            teacher: extraCode
           }
         }, {
           onResult: (state, fullState) => {
