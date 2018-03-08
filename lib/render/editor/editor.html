@@ -53,11 +53,10 @@
 
         const code = $("#mu-custom-editor-value")[0].value || "";
         const extraCode = $("#mu-custom-editor-extra")[0].value || "";
-        const blockly = $("gs-element-blockly")[0];
         const initialBoard = $(".mu-kids-gbs-board-initial gs-board")[0];
         const finalBoard = $(".mu-kids-gbs-board-final gs-board")[0];
 
-        this._clearErrors(blockly, finalBoard);
+        this._clearErrors(finalBoard);
 
         controller.start({
           initialState: {
@@ -73,34 +72,50 @@
         }, {
           onResult: (state, fullState) => {
             const region = this._getLastRegion(fullState);
-            if (region) blockly.highlightBlock(region);
+            if (region) this._highlight(region);
 
-            this._updateBoard(state, finalBoard, blockly);
+            this._updateBoard(state, finalBoard);
+          },
+          onCompilationError: (error) => {
+            const { region } = error.on;
+            if (region) this._showError(region, error);
           }
         });
       },
 
-      _updateBoard: function(state, finalBoard, blockly) {
+      _updateBoard: function(state, finalBoard) {
         const { error, table, head } = state;
 
         finalBoard.boom = error != null;
 
         if (error) {
           const region = this._getLastRegion(error.on);
-          if (region) blockly.showBlockError(region, error.message);
+          if (region) this._showError(region, error);
         } else {
           finalBoard.update(table, head);
         }
       },
 
-      _clearErrors: function(blockly, finalBoard) {
-        blockly.workspace.removeBlockErrors();
+      _highlight: function(region) {
+        this._getBlockly().highlightBlock(region);
+      },
+
+      _showError: function(region, error) {
+        this._getBlockly().showBlockError(region, error.message);
+      },
+
+      _clearErrors: function(finalBoard) {
+        this._getBlockly().workspace.removeBlockErrors();
         finalBoard.boom = false;
       },
 
       _getLastRegion: function(context = {}) {
         const { regionStack } = context;
         return regionStack && regionStack.filter(it => it).slice(-1)[0];
+      },
+
+      _getBlockly: function() {
+        return $("gs-element-blockly")[0];
       }
     });
   </script>
