@@ -58,6 +58,8 @@
 
         this._clearErrors(finalBoard);
 
+        // TODO: start XHR call to submit the solution
+
         controller.start({
           initialState: {
             size: initialBoard.size,
@@ -67,7 +69,7 @@
           code: {
             main: code,
             library: "",
-            teacher: extraCode
+            teacher: extraCode // TODO: parse and tell Blockly the available procedures
           }
         }, {
           onResult: (state, fullState) => {
