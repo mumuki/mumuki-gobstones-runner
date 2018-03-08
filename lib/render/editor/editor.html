@@ -15,10 +15,53 @@
           if (metadata) {
             this.$.blocklyElement.workspaceXml = metadata;
           }
-          this.$.blocklyElement.workspace.addChangeListener(() => {
+
+          const updateFields = () => {
             $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode();
             $("#mu-custom-editor-metadata")[0].value = this.$.blocklyElement.workspaceXml;
-          });
+          };
+
+          this.$.blocklyElement.workspace.addChangeListener(updateFields);
+          updateFields();
+        });
+      }
+    });
+  </script>
+</dom-module>
+
+<dom-module id="kids-submit-button">
+  <template>
+    <gobstones-code-runner></gobstones-code-runner>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'kids-submit-button',
+      listeners: {
+        "gbs-run-request": "_onRunRequest"
+      },
+      _onRunRequest: function(event) {
+        const { detail: controller } = event;
+
+        const code = $("#mu-custom-editor-value")[0].value;
+        const initialBoard = $(".gbs-initial-state")[0];
+        const finalBoard = $(".gbs-final-state")[0];
+
+        controller.start({
+          initialState: {
+            size: initialBoard.size,
+            table: initialBoard.table,
+            header: initialBoard.header
+          },
+          code: {
+            main: code,
+            library: "", // TODO: Support library
+            teacher: "" // TODO: Support teacher library
+          }
+        }, {
+          onResult: ({ table, head }) => {
+            finalBoard.update(table, head);
+          }
         });
       }
     });
