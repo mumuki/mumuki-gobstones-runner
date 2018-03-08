@@ -10,8 +10,13 @@
       is: 'blockly-container',
       ready: function() {
         setTimeout(() => {
+          var metadata = $("#mu-custom-editor-metadata")[0].value;
+          if (metadata) {
+            this.$.blocklyElement.workspaceXml = metadata;
+          }
           this.$.blocklyElement.workspace.addChangeListener(() => {
-            $("#custom-editor-value")[0].value = this.$.blocklyElement.generateCode();
+            $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode();
+            $("#mu-custom-editor-metadata")[0].value = this.$.blocklyElement.workspaceXml;
           });
         });
       }
