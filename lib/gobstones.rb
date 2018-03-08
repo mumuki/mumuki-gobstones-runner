@@ -1,5 +1,6 @@
 require 'gobstones/board'
 require 'gobstones/blockly'
+require 'gobstones/code-runner'
 
 module Gobstones
 
