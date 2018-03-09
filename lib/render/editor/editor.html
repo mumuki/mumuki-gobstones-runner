@@ -1,14 +1,14 @@
 <link href="./gs-element-blockly.html" rel="import" />
 <link href="./gobstones-code-runner.html" rel="import" />
 
-<dom-module id="blockly-container">
+<dom-module id="mu-gobstones-custom-editor">
   <template>
     <gs-element-blockly id="blocklyElement"></gs-element-blockly>
   </template>
 
   <script>
     Polymer({
-      is: 'blockly-container',
+      is: 'mu-gobstones-custom-editor',
 
       ready: function() {
 
@@ -20,7 +20,6 @@
         const initialize = () => {
           setTimeout(() => {
             if (!this.$.blocklyElement || !this.$.blocklyElement.workspace) return initialize();
-
             var metadata = $("#mu-custom-editor-metadata")[0].value;
             if (metadata) {
               this.$.blocklyElement.workspaceXml = metadata;
@@ -55,7 +54,7 @@
         const code = $("#mu-custom-editor-value")[0].value || "";
         const extraCode = $("#mu-custom-editor-extra")[0].value || "";
         const initialBoard = $(".mu-kids-gbs-board-initial gs-board")[0];
-        const finalBoard = $(".mu-kids-gbs-board-final gs-board")[0];
+        const finalBoard = $(".mu-kids-gbs-board-expected gs-board")[0];
 
         this._clearErrors(finalBoard);
 
