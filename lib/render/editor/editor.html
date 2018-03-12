@@ -10,11 +10,14 @@
     Polymer({
       is: 'mu-gobstones-custom-editor',
 
-      ready: function() {
+      attached: function() {
 
         const updateFields = () => {
           $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode({ withRegions: true, clearErrors: false });
           $("#mu-custom-editor-metadata")[0].value = this.$.blocklyElement.workspaceXml;
+          if(typeof angular !== 'undefined'){
+            angular.element($("#mu-custom-editor-metadata")[0]).triggerHandler("change");
+          }
         };
 
         const initialize = () => {
@@ -24,7 +27,6 @@
             if (metadata) {
               this.$.blocklyElement.workspaceXml = metadata;
             }
-
             this.$.blocklyElement.workspace.addChangeListener(updateFields);
             updateFields();
           }, 50);
