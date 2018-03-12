@@ -5,3 +5,18 @@
 .blocklyZoom {
   display: none;
 }
+
+.blocklyText {
+  fill: white !important;
+  stroke-width: 0.6px !important;
+  stroke: white !important;
+}
+
+
+.blocklyEditableText > rect {
+  fill-opacity: 0;
+}
+
+.blocklyEditableText > text > tspan {
+  fill: white !important;
+}
