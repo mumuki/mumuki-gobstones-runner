@@ -12,6 +12,30 @@
 
       attached: function() {
 
+        const setBlocklyColors = () => {
+          if (typeof Blockly === 'undefined' || !Blockly.GOBSTONES_COLORS) return setTimeout(setBlocklyColors, 50);
+          Blockly.HSV_SATURATION = 0.64;
+          Blockly.HSV_VALUE = 1;
+
+          Blockly.MUMUKI_COLORS = {
+            pink: 346,
+            blue: 204,
+            yellow: 40,
+          }
+
+          Blockly.GOBSTONES_COLORS.program =            Blockly.MUMUKI_COLORS.pink;
+          Blockly.GOBSTONES_COLORS.interactiveProgram = Blockly.MUMUKI_COLORS.pink;
+          Blockly.GOBSTONES_COLORS.interactiveBinding = Blockly.MUMUKI_COLORS.pink;
+
+          Blockly.GOBSTONES_COLORS.controlStructure =   Blockly.MUMUKI_COLORS.yellow;
+          Blockly.GOBSTONES_COLORS.primitiveCommand =   Blockly.MUMUKI_COLORS.yellow;
+          Blockly.GOBSTONES_COLORS.complete =           Blockly.MUMUKI_COLORS.yellow;
+          Blockly.GOBSTONES_COLORS.expression =         Blockly.MUMUKI_COLORS.yellow;
+          Blockly.GOBSTONES_COLORS.assignation =        Blockly.MUMUKI_COLORS.yellow;
+
+          Blockly.GOBSTONES_COLORS.literalExpression =  Blockly.MUMUKI_COLORS.blue;
+        }
+        
         const updateFields = () => {
           $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode({ withRegions: true, clearErrors: false });
           $("#mu-custom-editor-metadata")[0].value = this.$.blocklyElement.workspaceXml;
@@ -32,6 +56,7 @@
           }, 50);
         };
 
+        setBlocklyColors();
         initialize();
       }
     });
