@@ -19,3 +19,10 @@
 .blocklyEditableText > text > tspan {
   fill: black !important;
 }
+
+.blocklyHighlightedConnectionPath,
+.blocklySelected > .blocklyPath {
+  stroke: white;
+  stroke-width: 3px;
+  stroke-opacity: 0.5;
+}
