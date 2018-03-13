@@ -7,16 +7,15 @@
 }
 
 .blocklyText {
-  fill: white !important;
-  stroke-width: 0.6px !important;
-  stroke: white !important;
+  fill: black !important;
+  stroke-width: 0.10px !important;
+  stroke: black !important;
 }
-
 
 .blocklyEditableText > rect {
   fill-opacity: 0;
 }
 
 .blocklyEditableText > text > tspan {
-  fill: white !important;
+  fill: black !important;
 }

@@ -20,8 +20,11 @@
           Blockly.MUMUKI_COLORS = {
             pink: 346,
             blue: 204,
-            yellow: 40,
-          }
+            yellow: 40
+          };
+
+          Blockly.Msg.MATH_HUE =                        Blockly.MUMUKI_COLORS.blue;
+          Blockly.GOBSTONES_COLORS.literalExpression =  Blockly.MUMUKI_COLORS.blue;
 
           Blockly.GOBSTONES_COLORS.program =            Blockly.MUMUKI_COLORS.pink;
           Blockly.GOBSTONES_COLORS.interactiveProgram = Blockly.MUMUKI_COLORS.pink;
@@ -33,9 +36,8 @@
           Blockly.GOBSTONES_COLORS.expression =         Blockly.MUMUKI_COLORS.yellow;
           Blockly.GOBSTONES_COLORS.assignation =        Blockly.MUMUKI_COLORS.yellow;
 
-          Blockly.GOBSTONES_COLORS.literalExpression =  Blockly.MUMUKI_COLORS.blue;
         }
-        
+
         const updateFields = () => {
           $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode({ withRegions: true, clearErrors: false });
           $("#mu-custom-editor-metadata")[0].value = this.$.blocklyElement.workspaceXml;
