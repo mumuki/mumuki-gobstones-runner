@@ -84,6 +84,7 @@
       },
 
       getTeacherCode: function() {
+        if(!$("#mu-custom-editor-extra")[0]) return undefined;
         const xml = $("#mu-custom-editor-extra")[0].value || ""
         this.$.blocklyTmp.workspaceXml = xml;
         return this.$.blocklyTmp.generateCode();
