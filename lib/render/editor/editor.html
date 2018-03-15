@@ -4,6 +4,7 @@
 <dom-module id="mu-gobstones-custom-editor">
   <template>
     <gs-element-blockly id="blocklyElement"></gs-element-blockly>
+    <gs-element-blockly id="blocklyTmp" style="visibility: hidden"></gs-element-blockly>
   </template>
 
   <script>
@@ -11,7 +12,6 @@
       is: 'mu-gobstones-custom-editor',
 
       attached: function() {
-
         const setBlocklyColors = () => {
           if (typeof Blockly === 'undefined' || !Blockly.GOBSTONES_COLORS) return setTimeout(setBlocklyColors, 50);
           Blockly.HSV_SATURATION = 0.64;
@@ -39,27 +39,54 @@
         }
 
         const updateFields = () => {
-          $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode({ withRegions: true, clearErrors: false });
-          $("#mu-custom-editor-metadata")[0].value = this.$.blocklyElement.workspaceXml;
-          if(typeof angular !== 'undefined'){
+          const blockly = this.getBlockly();
+
+          $("#mu-custom-editor-value")[0].value = blockly.generateCode({ withRegions: true, clearErrors: false });
+          $("#mu-custom-editor-metadata")[0].value = blockly.workspaceXml;
+          if (typeof angular !== 'undefined'){
             angular.element($("#mu-custom-editor-metadata")[0]).triggerHandler("change");
           }
         };
 
         const initialize = () => {
           setTimeout(() => {
-            if (!this.$.blocklyElement || !this.$.blocklyElement.workspace) return initialize();
+            const blockly = this.getBlockly();
+
+            if (!blockly || !blockly.workspace) return initialize();
+
+            const teacherCode = this.getTeacherCode();
+            if (teacherCode) {
+              const actions = new Parser().getActionsFromSource(teacherCode);
+              blockly.primitiveProcedures = actions.procedureDeclarations;
+              blockly.primitiveFunctions = actions.functionDeclarations;
+            }
+
             var metadata = $("#mu-custom-editor-metadata")[0].value;
             if (metadata) {
-              this.$.blocklyElement.workspaceXml = metadata;
+              blockly.workspaceXml = metadata;
             }
-            this.$.blocklyElement.workspace.addChangeListener(updateFields);
+
+            blockly.workspace.addChangeListener(updateFields);
             updateFields();
           }, 50);
         };
 
         setBlocklyColors();
         initialize();
+      },
+
+      getBlockly: function() {
+        return this.$.blocklyElement;
+      },
+
+      getStudentCode: function() {
+        return $("#mu-custom-editor-value")[0].value || "";
+      },
+
+      getTeacherCode: function() {
+        const xml = $("#mu-custom-editor-extra")[0].value || ""
+        this.$.blocklyTmp.workspaceXml = xml;
+        return this.$.blocklyTmp.generateCode();
       }
     });
   </script>
@@ -90,8 +117,9 @@
       _onRunRequest: function(event) {
         const { detail: controller } = event;
 
-        const code = $("#mu-custom-editor-value")[0].value || "";
-        const extraCode = $("#mu-custom-editor-extra")[0].value || "";
+        const editor = this._getEditor();
+        const code = editor.getStudentCode();
+        const teacherCode = editor.getTeacherCode();
         const finalBoard = this._getTargetBoard();
 
         this._clearErrors(finalBoard);
@@ -103,7 +131,7 @@
           code: {
             main: code,
             library: "",
-            teacher: extraCode // TODO: parse and tell Blockly the available procedures
+            teacher: teacherCode
           }
         }, {
           onResult: (state, fullState) => {
@@ -151,7 +179,11 @@
       },
 
       _getBlockly: function() {
-        return $("gs-element-blockly")[0];
+        return this._getEditor().getBlockly();
+      },
+
+      _getEditor: function() {
+        return $("mu-gobstones-custom-editor")[0];
       },
 
       _getTargetBoard: function() {
