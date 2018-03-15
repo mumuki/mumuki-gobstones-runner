@@ -77,24 +77,29 @@
         "gbs-run-request": "_onRunRequest"
       },
 
+      ready: function() {
+        const initialBoard = this._getTargetBoard();
+
+        this.initialState = {
+          size: initialBoard.size,
+          table: initialBoard.table,
+          header: initialBoard.header
+        };
+      },
+
       _onRunRequest: function(event) {
         const { detail: controller } = event;
 
         const code = $("#mu-custom-editor-value")[0].value || "";
         const extraCode = $("#mu-custom-editor-extra")[0].value || "";
-        const initialBoard = $(".mu-kids-gbs-board-initial gs-board")[0];
-        const finalBoard = $(".mu-kids-gbs-board-expected gs-board")[0];
+        const finalBoard = this._getTargetBoard();
 
         this._clearErrors(finalBoard);
 
         // TODO: start XHR call to submit the solution
 
         controller.start({
-          initialState: {
-            size: initialBoard.size,
-            table: initialBoard.table,
-            header: initialBoard.header
-          },
+          initialState: this.initialState,
           code: {
             main: code,
             library: "",
@@ -147,6 +152,10 @@
 
       _getBlockly: function() {
         return $("gs-element-blockly")[0];
+      },
+
+      _getTargetBoard: function() {
+        return $(".mu-kids-gbs-board-initial gs-board")[0];
       }
     });
   </script>
