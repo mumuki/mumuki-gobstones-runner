@@ -206,11 +206,13 @@
         this._cleanState();
         this._cleanErrors(finalBoard);
 
-        const promise = new mumuki.bridge.Laboratory().runTests(code).then((results) => {
-          if (promise !== this.serverPromise) return;
+        const promise = new mumuki.bridge.Laboratory()
+          .runTests(code, teacherCode)
+          .then((results) => {
+            if (promise !== this.serverPromise) return;
 
-          this._onRemoteExecutionStop(results)
-        });
+            this._onRemoteExecutionStop(results)
+          });
         this.serverPromise = promise;
 
         controller.start({
@@ -253,9 +255,6 @@
 
       _onExecutionStop: function(data) {
         this._cleanState();
-
-        $(".submission-results").html(data.html);
-        // TODO: ^^^--- Esto debería hacerlo el showKidsResults, así como también ocultar o mostrar el botón de "siguiente ejercicio" dependiendo de si lo hizo bien o no.
 
         mumuki.showKidsResult(data);
       },
