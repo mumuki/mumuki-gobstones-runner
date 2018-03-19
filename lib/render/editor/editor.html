@@ -240,6 +240,7 @@
         const reason = event.detail;
 
         if (reason === "end") this._onLocalExecutionStop();
+        else this.serverPromise = undefined;
       },
 
       _onLocalExecutionStop: function() {
