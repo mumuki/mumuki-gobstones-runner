@@ -35,7 +35,6 @@
           Blockly.GOBSTONES_COLORS.complete =           Blockly.MUMUKI_COLORS.yellow;
           Blockly.GOBSTONES_COLORS.expression =         Blockly.MUMUKI_COLORS.yellow;
           Blockly.GOBSTONES_COLORS.assignation =        Blockly.MUMUKI_COLORS.yellow;
-
         }
 
         const updateFields = () => {
@@ -95,16 +94,95 @@
   </script>
 </dom-module>
 
-<dom-module id="kids-submit-button">
+<dom-module id="waiting-spinner">
+  <style>
+    .spinner {
+      width: 60px;
+      height: 60px;
+    }
+
+    .double-bounce1, .double-bounce2 {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: #ff4081;
+      opacity: 0.6;
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+      animation: sk-bounce 2.0s infinite ease-in-out;
+    }
+
+    .double-bounce2 {
+      -webkit-animation-delay: -1.0s;
+      animation-delay: -1.0s;
+    }
+
+    @-webkit-keyframes sk-bounce {
+      0%, 100% { -webkit-transform: scale(0.0) }
+      50% { -webkit-transform: scale(1.0) }
+    }
+
+    @keyframes sk-bounce {
+      0%, 100% {
+        transform: scale(0.0);
+        -webkit-transform: scale(0.0);
+      } 50% {
+        transform: scale(1.0);
+        -webkit-transform: scale(1.0);
+      }
+    }
+  </style>
+
   <template>
-    <gobstones-code-runner></gobstones-code-runner>
+    <div class="spinner">
+      <div class="double-bounce1"></div>
+      <div class="double-bounce2"></div>
+    </div>
   </template>
 
   <script>
     Polymer({
-      is: 'kids-submit-button',
+      is: "waiting-spinner"
+    });
+  </script>
+</dom-module>
+
+<dom-module id="kids-submit-button">
+  <style>
+    .hidden { visibility: hidden; }
+    .visible { visibility: visible; }
+    .spinner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translate(-2px, -2px);
+    }
+  </style>
+
+  <template>
+    <div style="position: relative">
+      <gobstones-code-runner id="runner" class$="{{_getSubmitCss(isWaiting)}}"></gobstones-code-runner>
+      <waiting-spinner class$="spinner {{_getSpinnerCss(isWaiting)}}"></waiting-spinner>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: "kids-submit-button",
       listeners: {
-        "gbs-run-request": "_onRunRequest"
+        "gbs-run-request": "_onRunRequest",
+        "gbs-stop": "_onStop"
+      },
+      properties: {
+        serverPromise: Object,
+        serverResponse: Object,
+        isWaiting: {
+          type: Boolean,
+          value: false
+        }
       },
 
       ready: function() {
@@ -125,9 +203,15 @@
         const teacherCode = editor.getTeacherCode();
         const finalBoard = this._getTargetBoard();
 
-        this._clearErrors(finalBoard);
+        this._cleanState();
+        this._cleanErrors(finalBoard);
 
-        // TODO: start XHR call to submit the solution
+        const promise = new mumuki.bridge.Laboratory().runTests(code).then((results) => {
+          if (promise !== this.serverPromise) return;
+
+          this._onRemoteExecutionStop(results)
+        });
+        this.serverPromise = promise;
 
         controller.start({
           initialState: this.initialState,
@@ -148,6 +232,32 @@
             if (region) this._showError(region, error);
           }
         });
+      },
+
+      _onStop: function(event) {
+        const reason = event.detail;
+
+        if (reason === "end") this._onLocalExecutionStop();
+      },
+
+      _onLocalExecutionStop: function() {
+        if (!this.serverResponse) this.isWaiting = true;
+        else this._onExecutionStop(this.serverResponse);
+      },
+
+      _onRemoteExecutionStop: function(serverResponse) {
+        this.serverResponse = serverResponse;
+
+        if (!this.$.runner.isRunning) this._onExecutionStop(serverResponse);
+      },
+
+      _onExecutionStop: function(data) {
+        this._cleanState();
+
+        $(".submission-results").html(data.html);
+        // TODO: ^^^--- Esto debería hacerlo el showKidsResults, así como también ocultar o mostrar el botón de "siguiente ejercicio" dependiendo de si lo hizo bien o no.
+
+        mumuki.showKidsResult(data);
       },
 
       _updateBoard: function(state, finalBoard) {
@@ -171,7 +281,13 @@
         this._getBlockly().showBlockError(region, error.message);
       },
 
-      _clearErrors: function(finalBoard) {
+      _cleanState: function() {
+        this.serverPromise = undefined;
+        this.serverResponse = undefined;
+        this.isWaiting = false;
+      },
+
+      _cleanErrors: function(finalBoard) {
         this._getBlockly().workspace.removeBlockErrors();
         finalBoard.boom = false;
       },
@@ -191,6 +307,14 @@
 
       _getTargetBoard: function() {
         return $(".mu-kids-gbs-board-initial gs-board")[0];
+      },
+
+      _getSubmitCss: function(isWaiting) {
+        return isWaiting ? "hidden" : "visible";
+      },
+
+      _getSpinnerCss: function(isWaiting) {
+        return isWaiting ? "visible" : "hidden";
       }
     });
   </script>
