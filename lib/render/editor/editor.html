@@ -82,12 +82,14 @@
         return $("#mu-custom-editor-value")[0].value || "";
       },
 
-      getTeacherCode: function() {
-        const extra = $("#mu-custom-editor-extra")[0];
-        if (!extra) return;
+      getStudentXml: function() {
+        return $("#mu-custom-editor-metadata")[0].value || "";
+      },
 
-        const xml = extra.value || ""
-        this.$.blocklyTmp.workspaceXml = xml;
+      getTeacherCode: function() {
+        const teacherXml = $("#mu-custom-editor-extra")[0].value;
+        if (!teacherXml) return;
+        this.$.blocklyTmp.workspaceXml = teacherXml;
         return this.$.blocklyTmp.generateCode();
       }
     });
@@ -201,13 +203,15 @@
         const editor = this._getEditor();
         const code = editor.getStudentCode();
         const teacherCode = editor.getTeacherCode();
+        const xml = editor.getStudentXml();
         const finalBoard = this._getTargetBoard();
+        const solution = {content: code, content_metadata: xml, extra_metadata: teacherCode};
 
         this._cleanState();
         this._cleanErrors(finalBoard);
 
         const promise = new mumuki.bridge.Laboratory()
-          .runTests(code, teacherCode)
+          .runTests(solution)
           .then((results) => {
             if (promise !== this.serverPromise) return;
 
