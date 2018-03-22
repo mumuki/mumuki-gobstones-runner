@@ -55,9 +55,11 @@
 
             const teacherCode = this.getTeacherCode();
             if (teacherCode) {
-              const actions = new Parser().getActionsFromSource(teacherCode);
-              blockly.primitiveProcedures = actions.procedureDeclarations;
-              blockly.primitiveFunctions = actions.functionDeclarations;
+              setTimeout(() => {
+                const actions = new Parser().getActionsFromSource(teacherCode);
+                blockly.primitiveProcedures = actions.procedureDeclarations;
+                blockly.primitiveFunctions = actions.functionDeclarations;
+              });
             }
 
             var metadata = $("#mu-custom-editor-metadata")[0].value;
