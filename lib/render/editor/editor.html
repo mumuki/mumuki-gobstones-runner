@@ -205,13 +205,12 @@
         const teacherCode = editor.getTeacherCode();
         const xml = editor.getStudentXml();
         const finalBoard = this._getTargetBoard();
-        const solution = {content: code, content_metadata: xml, extra_metadata: teacherCode};
 
         this._cleanState();
         this._cleanErrors(finalBoard);
 
         const promise = new mumuki.bridge.Laboratory()
-          .runTests(solution)
+          .runTests(code)
           .then((results) => {
             if (promise !== this.serverPromise) return;
 
