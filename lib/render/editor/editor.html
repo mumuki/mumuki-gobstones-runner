@@ -3,8 +3,8 @@
 
 <dom-module id="mu-gobstones-custom-editor">
   <template>
-    <gs-element-blockly id="blocklyElement"></gs-element-blockly>
-    <gs-element-blockly id="blocklyTmp" style="display: none"></gs-element-blockly>
+    <gs-element-blockly id="blocklyElement" media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
+    <gs-element-blockly id="blocklyTmp" style="display: none" media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
   </template>
 
   <script>
@@ -325,7 +325,6 @@
 </dom-module>
 
 <dom-module id="gs-attire">
-
   <script>
     Polymer({
       is: 'gs-attire',
@@ -341,8 +340,33 @@
         this._setAttire();
       },
       _setAttire: function() {
-        $.get(this.attireUrl, function(attire) {
-          GobstonesBoard && GobstonesBoard.setDefaultAttire({ attire });
+        $.getJSON(this.attireUrl, function(attire) {
+          GobstonesBoard && GobstonesBoard.setDefaultAttire(attire);
+        });
+      }
+    });
+  </script>
+</dom-module>
+
+<dom-module id="gs-toolbox">
+  <script>
+    Polymer({
+      is: 'gs-toolbox',
+      properties: {
+        toolboxUrl: Object,
+        observer: '_toolboxChanged'
+      },
+
+      attached: function() {
+        this._setToolbox();
+      },
+      _toolboxChanged: function() {
+        this._setToolbox();
+      },
+      _setToolbox: function() {
+        $.get(this.toolboxUrl, function(toolboxXml) {
+          const blockly = $("mu-gobstones-custom-editor")[0].getBlockly();
+          blockly.setDefaultToolbox(toolboxXml);
         });
       }
     });
