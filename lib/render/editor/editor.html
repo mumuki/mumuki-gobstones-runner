@@ -202,6 +202,8 @@
           table: initialBoard.table,
           header: initialBoard.header
         };
+
+        this._resetBoardOnClose(this.initialState, initialBoard);
       },
 
       _onRunRequest: function(event) {
@@ -209,7 +211,7 @@
 
         const editor = this._getEditor();
         const code = editor.getStudentCode();
-        const teacherCode = editor.getTeacherCode();
+        const teacherCode = editor.getTeacherCode() || "";
         const xml = editor.getStudentXml();
         const finalBoard = this._getTargetBoard();
         const solution = { content: code, content_metadata: xml };
@@ -326,6 +328,15 @@
 
       _getSpinnerCss: function(isWaiting) {
         return isWaiting ? "visible" : "hidden";
+      },
+
+      _resetBoardOnClose: function(initialState, initialBoard){
+        const modal = mumuki.getKidsResultsModal();
+
+        modal.on("hidden.bs.modal", function () {
+          initialBoard.update(initialState.table, initialState.header);
+          initialBoard.boom = false;
+        });
       }
     });
   </script>
