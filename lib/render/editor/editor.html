@@ -45,6 +45,11 @@
           if (typeof angular !== 'undefined'){
             angular.element($("#mu-custom-editor-metadata")[0]).triggerHandler("change");
           }
+
+          const submit = $("kids-submit-button")[0];
+          if (submit && submit.$.runner.isRunning) {
+            submit.$.runner.stop();
+          }
         };
 
         const initialize = () => {
