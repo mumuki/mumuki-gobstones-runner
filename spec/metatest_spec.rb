@@ -43,6 +43,8 @@ describe 'metatest' do
     ]
   end
 
+  before { allow(Mumukit).to receive(:runner_url) { 'http://gobstones.runners.mumuki.io' } }
+
   def board_with_stones(headX, headY, cell10 = {})
     {
       head: { x: headX, y: headY },
