@@ -40,13 +40,14 @@
         const updateFields = () => {
           const blockly = this.getBlockly();
 
-          if($("#mu-custom-editor-value")[0]){
-            $("#mu-custom-editor-value")[0].value = blockly.generateCode({ withRegions: true, clearErrors: false });
+          if ($("#mu-custom-editor-value")[0]) {
+            $("#mu-custom-editor-value")[0].value = blockly.workspaceXml;
           }
-          $("#mu-custom-editor-metadata")[0].value = blockly.workspaceXml;
-          if (typeof angular !== 'undefined'){
-            angular.element($("#mu-custom-editor-metadata")[0]).triggerHandler("change");
-          }
+
+          // TODO: Revisar esto
+          // if (typeof angular !== 'undefined'){
+          //   angular.element($("#mu-custom-editor-metadata")[0]).triggerHandler("change");
+          // }
 
           const submit = $("kids-submit-button")[0];
           if (submit && submit.$.runner.isRunning) {
@@ -69,9 +70,10 @@
               });
             }
 
-            var metadata = $("#mu-custom-editor-metadata")[0].value;
-            if (metadata) {
-              blockly.workspaceXml = metadata;
+            // TODO: No lo está levantando con la última solución submiteada
+            var value = $("#mu-custom-editor-value")[0].value;
+            if (value) {
+              blockly.workspaceXml = value;
             }
 
             blockly.workspace.addChangeListener(updateFields);
@@ -88,11 +90,13 @@
       },
 
       getStudentCode: function() {
-        return $("#mu-custom-editor-value")[0].value || "";
+        return this
+          .getBlockly()
+          .generateCode({ withRegions: true, clearErrors: false });
       },
 
       getStudentXml: function() {
-        return $("#mu-custom-editor-metadata")[0].value || "";
+        return $("#mu-custom-editor-value")[0].value || "";
       },
 
       getTeacherCode: function() {
@@ -212,11 +216,11 @@
         const { detail: controller } = event;
 
         const editor = this._getEditor();
+        const xml = editor.getStudentXml();
         const code = editor.getStudentCode();
         const teacherCode = editor.getTeacherCode() || "";
-        const xml = editor.getStudentXml();
         const finalBoard = this._getTargetBoard();
-        const solution = { content: code, content_metadata: xml };
+        const solution = { content: xml };
 
         this._cleanState();
         this._cleanErrors(finalBoard);

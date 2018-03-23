@@ -1,4 +1,4 @@
 FROM node:6.10.3
 MAINTAINER Rodrigo Alfonso
 
-RUN npm install -g gobstones-cli@1.4.3
+RUN npm install -g gobstones-cli@1.5.0
