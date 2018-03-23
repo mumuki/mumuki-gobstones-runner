@@ -38,7 +38,7 @@
       <p class="title"><%=I18n.t it.title %></p>
       <p>
         <% if it.board.boom %>
-          <img src="<%= @boom_image %>" />
+          <img src=<%= "#{Mumukit.runner_url}/boom.png" %> />
         <% else %>
           <gs-board>
             <%= it.board.gbb %>

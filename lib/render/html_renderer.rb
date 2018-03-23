@@ -4,7 +4,6 @@ module Gobstones
   class HtmlRenderer
     def initialize(options)
       @options = options
-      @boom_image = encode_image_png 'boom'
     end
 
     def render_success(result)
@@ -78,11 +77,6 @@ module Gobstones
       else
         HtmlBoard.new(board)
       end
-    end
-
-    def encode_image_png(file_name)
-      base64 = Base64.strict_encode64 File.read(Gobstones::Board.assets_path_for("htmls/components/#{file_name}.png"))
-      "data:image/png;base64,#{base64}"
     end
 
     def bind_result(result)
