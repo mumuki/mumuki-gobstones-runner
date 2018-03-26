@@ -39,15 +39,13 @@
 
         const updateFields = () => {
           const blockly = this.getBlockly();
-
-          if ($("#mu-custom-editor-value")[0]) {
-            $("#mu-custom-editor-value")[0].value = blockly.workspaceXml;
+          const editorValue = $("#mu-custom-editor-value")[0];
+          if (editorValue) {
+            editorValue.value = blockly.workspaceXml;
           }
-
-          // TODO: Revisar esto
-          // if (typeof angular !== 'undefined'){
-          //   angular.element($("#mu-custom-editor-metadata")[0]).triggerHandler("change");
-          // }
+          if (typeof angular !== 'undefined'){
+            angular.element(editorValue).triggerHandler("change");
+          }
 
           const submit = $("kids-submit-button")[0];
           if (submit && submit.$.runner.isRunning) {
@@ -70,7 +68,6 @@
               });
             }
 
-            // TODO: No lo está levantando con la última solución submiteada
             var value = $("#mu-custom-editor-value")[0].value;
             if (value) {
               blockly.workspaceXml = value;
