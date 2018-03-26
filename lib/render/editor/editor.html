@@ -3,13 +3,19 @@
 
 <dom-module id="mu-gobstones-custom-editor">
   <template>
-    <gs-element-blockly id="blocklyElement" media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
+    <gs-element-blockly read-only="{{readOnly}}" id="blocklyElement" media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
     <gs-element-blockly id="blocklyTmp" style="display: none" media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
   </template>
 
   <script>
     Polymer({
       is: 'mu-gobstones-custom-editor',
+      properties: {
+        readOnly: {
+          type: Boolean,
+          value: false
+        }
+      },
 
       attached: function() {
         const setBlocklyColors = () => {
@@ -95,7 +101,6 @@
       getStudentXml: function() {
         return $("#mu-custom-editor-value")[0].value || "";
       },
-
       getTeacherCode: function() {
         const teacherXml = $("#mu-custom-editor-extra")[0];
         if (!teacherXml || !teacherXml.value) return;
