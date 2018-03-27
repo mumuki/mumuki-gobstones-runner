@@ -203,15 +203,21 @@
       },
 
       ready: function() {
-        const initialBoard = this._getTargetBoard();
 
-        this.initialState = {
-          size: initialBoard.size,
-          table: initialBoard.table,
-          header: initialBoard.header
-        };
+        const setInitialState = () => {
+          const initialBoard = this._getTargetBoard();
+          if(!initialBoard.size) return setTimeout(setInitialState, 50);
 
-        this._resetBoardOnClose(this.initialState, initialBoard);
+          this.initialState = {
+            size: initialBoard.size,
+            table: initialBoard.table,
+            header: initialBoard.header
+          };
+
+          this._resetBoardOnClose(this.initialState, initialBoard);
+        }
+
+        setInitialState();
       },
 
       _onRunRequest: function(event) {
