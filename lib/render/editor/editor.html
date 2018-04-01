@@ -1,26 +1,405 @@
 <link href="./gs-element-blockly.html" rel="import" />
+<link href="./gobstones-code-runner.html" rel="import" />
 
-<dom-module id="blockly-container">
+<dom-module id="mu-gobstones-custom-editor">
   <template>
-    <gs-element-blockly id="blocklyElement"></gs-element-blockly>
+    <gs-element-blockly read-only="{{readOnly}}" id="blocklyElement" media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
+    <gs-element-blockly id="blocklyTmp" style="display: none" media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
   </template>
 
   <script>
     Polymer({
-      is: 'blockly-container',
-      ready: function() {
-        setTimeout(() => {
-          var metadata = $("#mu-custom-editor-metadata")[0].value;
-          if(metadata){
-            this.$.blocklyElement.workspaceXml = metadata;
+      is: 'mu-gobstones-custom-editor',
+      properties: {
+        readOnly: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      attached: function() {
+        const setBlocklyColors = () => {
+          if (typeof Blockly === 'undefined' || !Blockly.GOBSTONES_COLORS) return setTimeout(setBlocklyColors, 50);
+          Blockly.HSV_SATURATION = 0.64;
+          Blockly.HSV_VALUE = 1;
+
+          Blockly.MUMUKI_COLORS = {
+            pink: 346,
+            blue: 204,
+            yellow: 40
+          };
+
+          Blockly.Msg.MATH_HUE =                        Blockly.MUMUKI_COLORS.blue;
+          Blockly.GOBSTONES_COLORS.literalExpression =  Blockly.MUMUKI_COLORS.blue;
+
+          Blockly.GOBSTONES_COLORS.program =            Blockly.MUMUKI_COLORS.pink;
+          Blockly.GOBSTONES_COLORS.interactiveProgram = Blockly.MUMUKI_COLORS.pink;
+          Blockly.GOBSTONES_COLORS.interactiveBinding = Blockly.MUMUKI_COLORS.pink;
+
+          Blockly.GOBSTONES_COLORS.controlStructure =   Blockly.MUMUKI_COLORS.yellow;
+          Blockly.GOBSTONES_COLORS.primitiveCommand =   Blockly.MUMUKI_COLORS.yellow;
+          Blockly.GOBSTONES_COLORS.complete =           Blockly.MUMUKI_COLORS.yellow;
+          Blockly.GOBSTONES_COLORS.expression =         Blockly.MUMUKI_COLORS.yellow;
+          Blockly.GOBSTONES_COLORS.assignation =        Blockly.MUMUKI_COLORS.yellow;
+        }
+
+        const updateFields = () => {
+          const blockly = this.getBlockly();
+          const editorValue = $("#mu-custom-editor-value")[0];
+          if (editorValue) {
+            editorValue.value = blockly.workspaceXml;
           }
-          this.$.blocklyElement.workspace.addChangeListener(() => {
-            $("#mu-custom-editor-value")[0].value = this.$.blocklyElement.generateCode();
-            $("#mu-custom-editor-metadata")[0].value = this.$.blocklyElement.workspaceXml;
+          if (typeof angular !== 'undefined'){
+            angular.element(editorValue).triggerHandler("change");
+          }
+
+          const submit = $("kids-submit-button")[0];
+          if (submit && submit.$.runner.isRunning) {
+            submit.$.runner.stop();
+          }
+        };
+
+        const initialize = () => {
+          setTimeout(() => {
+            const blockly = this.getBlockly();
+
+            if (!blockly || !blockly.workspace) return initialize();
+
+            const teacherCode = this.getTeacherCode();
+            if (teacherCode) {
+              setTimeout(() => {
+                const actions = new Parser().getActionsFromSource(teacherCode);
+                blockly.primitiveProcedures = actions.procedureDeclarations;
+                blockly.primitiveFunctions = actions.functionDeclarations;
+              });
+            }
+
+            var value = $("#mu-custom-editor-value")[0].value;
+            if (value) {
+              blockly.workspaceXml = value;
+            }
+
+            blockly.workspace.addChangeListener(updateFields);
+            updateFields();
+          }, 50);
+        };
+
+        setBlocklyColors();
+        initialize();
+      },
+
+      getBlockly: function() {
+        return this.$.blocklyElement;
+      },
+
+      getStudentCode: function() {
+        return this
+          .getBlockly()
+          .generateCode({ withRegions: true, clearErrors: false });
+      },
+
+      getStudentXml: function() {
+        return $("#mu-custom-editor-value")[0].value || "";
+      },
+      getTeacherCode: function() {
+        const teacherXml = $("#mu-custom-editor-extra")[0];
+        if (!teacherXml || !teacherXml.value) return;
+        this.$.blocklyTmp.workspaceXml = teacherXml.value;
+        return this.$.blocklyTmp.generateCode();
+      }
+    });
+  </script>
+</dom-module>
+
+<dom-module id="waiting-spinner">
+  <style>
+    .spinner {
+      width: 60px;
+      height: 60px;
+    }
+
+    .double-bounce1, .double-bounce2 {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: #ff4081;
+      opacity: 0.6;
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+      animation: sk-bounce 2.0s infinite ease-in-out;
+    }
+
+    .double-bounce2 {
+      -webkit-animation-delay: -1.0s;
+      animation-delay: -1.0s;
+    }
+
+    @-webkit-keyframes sk-bounce {
+      0%, 100% { -webkit-transform: scale(0.0) }
+      50% { -webkit-transform: scale(1.0) }
+    }
+
+    @keyframes sk-bounce {
+      0%, 100% {
+        transform: scale(0.0);
+        -webkit-transform: scale(0.0);
+      } 50% {
+        transform: scale(1.0);
+        -webkit-transform: scale(1.0);
+      }
+    }
+  </style>
+
+  <template>
+    <div class="spinner">
+      <div class="double-bounce1"></div>
+      <div class="double-bounce2"></div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: "waiting-spinner"
+    });
+  </script>
+</dom-module>
+
+<dom-module id="kids-submit-button">
+  <style>
+    .hidden { visibility: hidden; }
+    .visible { visibility: visible; }
+    .spinner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translate(-2px, -2px);
+    }
+  </style>
+
+  <template>
+    <div style="position: relative">
+      <gobstones-code-runner id="runner" class$="{{_getSubmitCss(isWaiting)}}"></gobstones-code-runner>
+      <waiting-spinner class$="spinner {{_getSpinnerCss(isWaiting)}}"></waiting-spinner>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: "kids-submit-button",
+      listeners: {
+        "gbs-run-request": "_onRunRequest",
+        "gbs-stop": "_onStop"
+      },
+      properties: {
+        serverPromise: Object,
+        serverResponse: Object,
+        isWaiting: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      ready: function() {
+
+        const setInitialState = () => {
+          const initialBoard = this._getTargetBoard();
+          if(!initialBoard.size) return setTimeout(setInitialState, 50);
+
+          this.initialState = {
+            size: initialBoard.size,
+            table: initialBoard.table,
+            header: initialBoard.header
+          };
+
+          this._resetBoardOnClose(this.initialState, initialBoard);
+        }
+
+        setInitialState();
+      },
+
+      _onRunRequest: function(event) {
+        const { detail: controller } = event;
+
+        const editor = this._getEditor();
+        const xml = editor.getStudentXml();
+        const code = editor.getStudentCode();
+        const teacherCode = editor.getTeacherCode() || "";
+        const finalBoard = this._getTargetBoard();
+        const solution = { content: xml };
+
+        this._cleanState();
+        this._cleanErrors(finalBoard);
+
+        const promise = new mumuki.bridge.Laboratory()
+          .runTests(solution)
+          .then((results) => {
+            if (promise !== this.serverPromise) return;
+
+            this._onRemoteExecutionStop(results)
           });
+        this.serverPromise = promise;
+
+        controller.start({
+          initialState: this.initialState,
+          code: {
+            main: code,
+            library: "",
+            teacher: teacherCode
+          }
+        }, {
+          onResult: (state, fullState) => {
+            const region = this._getLastRegion(fullState);
+            if (region) this._highlight(region);
+
+            this._updateBoard(state, finalBoard);
+          },
+          onCompilationError: (error) => {
+            const { region } = error.on;
+            if (region) this._showError(region, error);
+          }
+        });
+      },
+
+      _onStop: function(event) {
+        const reason = event.detail;
+
+        if (reason === "end") this._onLocalExecutionStop();
+        else this.serverPromise = undefined;
+      },
+
+      _onLocalExecutionStop: function() {
+        if (!this.serverResponse) this.isWaiting = true;
+        else this._onExecutionStop(this.serverResponse);
+      },
+
+      _onRemoteExecutionStop: function(serverResponse) {
+        this.serverResponse = serverResponse;
+
+        if (!this.$.runner.isRunning) this._onExecutionStop(serverResponse);
+      },
+
+      _onExecutionStop: function(data) {
+        this._cleanState();
+        mumuki.showKidsResult(data);
+      },
+
+      _updateBoard: function(state, finalBoard) {
+        const { error, table, head } = state;
+
+        finalBoard.boom = error != null;
+
+        if (error) {
+          const region = this._getLastRegion(error.on);
+          if (region) this._showError(region, error);
+        } else {
+          finalBoard.update(table, head);
+        }
+      },
+
+      _highlight: function(region) {
+        this._getBlockly().highlightBlock(region);
+      },
+
+      _showError: function(region, error) {
+        this._getBlockly().showBlockError(region, error.message);
+      },
+
+      _cleanState: function() {
+        this.serverPromise = undefined;
+        this.serverResponse = undefined;
+        this.isWaiting = false;
+      },
+
+      _cleanErrors: function(finalBoard) {
+        this._getBlockly().workspace.removeBlockErrors();
+        finalBoard.boom = false;
+      },
+
+      _getLastRegion: function(context = {}) {
+        const { regionStack } = context;
+        return regionStack && regionStack.filter(it => it).slice(-1)[0];
+      },
+
+      _getBlockly: function() {
+        return this._getEditor().getBlockly();
+      },
+
+      _getEditor: function() {
+        return $("mu-gobstones-custom-editor")[0];
+      },
+
+      _getTargetBoard: function() {
+        return $(".mu-kids-gbs-board-initial gs-board")[0];
+      },
+
+      _getSubmitCss: function(isWaiting) {
+        return isWaiting ? "hidden" : "visible";
+      },
+
+      _getSpinnerCss: function(isWaiting) {
+        return isWaiting ? "visible" : "hidden";
+      },
+
+      _resetBoardOnClose: function(initialState, initialBoard){
+        const modal = mumuki.getKidsResultsModal();
+
+        modal.on("hidden.bs.modal", function () {
+          initialBoard.update(initialState.table, initialState.header);
+          initialBoard.boom = false;
         });
       }
     });
   </script>
 </dom-module>
 
+<dom-module id="gs-attire">
+  <script>
+    Polymer({
+      is: 'gs-attire',
+      properties: {
+        attireUrl: Object,
+        observer: '_attireChanged'
+      },
+
+      attached: function() {
+        this._setAttire();
+      },
+      _attireChanged: function() {
+        this._setAttire();
+      },
+      _setAttire: function() {
+        $.getJSON(this.attireUrl, function(attire) {
+          GobstonesBoard && GobstonesBoard.setDefaultAttire(attire);
+        });
+      }
+    });
+  </script>
+</dom-module>
+
+<dom-module id="gs-toolbox">
+  <script>
+    Polymer({
+      is: 'gs-toolbox',
+      properties: {
+        toolboxUrl: Object,
+        observer: '_toolboxChanged'
+      },
+
+      attached: function() {
+        this._setToolbox();
+      },
+      _toolboxChanged: function() {
+        this._setToolbox();
+      },
+      _setToolbox: function() {
+        $.get(this.toolboxUrl, function(toolboxXml) {
+          const blockly = $("mu-gobstones-custom-editor")[0].getBlockly();
+          blockly.setDefaultToolbox(toolboxXml);
+        });
+      }
+    });
+  </script>
+</dom-module>

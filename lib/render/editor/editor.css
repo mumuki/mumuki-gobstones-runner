@@ -1,12 +1,28 @@
-#blocklyDiv {
-  height: 400px !important;
-  width: 555px !important;
-}
-
 .blocklyTrash {
   display: none;
 }
 
 .blocklyZoom {
   display: none;
+}
+
+.blocklyText {
+  fill: black !important;
+  stroke-width: 0.10px !important;
+  stroke: black !important;
+}
+
+.blocklyEditableText > rect {
+  fill-opacity: 0;
+}
+
+.blocklyEditableText > text > tspan {
+  fill: black !important;
+}
+
+.blocklyHighlightedConnectionPath,
+.blocklySelected > .blocklyPath {
+  stroke: white;
+  stroke-width: 3px;
+  stroke-opacity: 0.5;
 }

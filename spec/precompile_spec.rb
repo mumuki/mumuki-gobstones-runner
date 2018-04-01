@@ -129,19 +129,21 @@ examples:
     context 'generates a JSON with the batch request' do
 
       context 'when there is no subject' do
-        let(:expected_code) { "program {\n  PonerDosRojas()\n}\n" + extra.chop }
+        let(:expected_code) { "program {\n  PonerDosRojas()\n}" }
         let(:expected_compilation) {
           [
             {
               initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
               originalCode: content.chop,
               code: expected_code,
+              extraCode: extra.chop,
               extraBoard: "GBB/1.0\nsize 3 3\nhead 0 1\n"
             },
             {
               initialBoard: "GBB/1.0\nsize 1 1\nhead 0 0\n",
               originalCode: content.chop,
-              code: expected_code
+              code: expected_code,
+              extraCode: extra.chop
             }
           ].to_json
         }
@@ -156,7 +158,8 @@ examples:
             {
               initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
               originalCode: content,
-              code: expected_code
+              code: expected_code,
+              extraCode: extra.chop
             }
           ].to_json
         }
@@ -173,7 +176,7 @@ examples:
   arguments: [1, 4, 6]
   return: 29
 }}
-          let(:expected_code) { "things\nprogram {\n   return (aFunction(1,4,6))\n}\n\n" + extra.chop }
+          let(:expected_code) { "things\nprogram {\n   return (aFunction(1,4,6))\n}\n" }
 
           it { expect(result).to eq expected_compilation }
         end
@@ -189,7 +192,7 @@ examples:
     head 0 0
   arguments: [9]
 }}
-          let(:expected_code) { "things\nprogram {\n   AProcedure(9)\n}\n\n" + extra.chop }
+          let(:expected_code) { "things\nprogram {\n   AProcedure(9)\n}\n" }
 
           it { expect(result).to eq expected_compilation }
         end
