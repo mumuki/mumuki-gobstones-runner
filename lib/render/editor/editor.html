@@ -284,6 +284,7 @@
       _onExecutionStop: function(data) {
         this._cleanState();
         mumuki.showKidsResult(data);
+        mumuki.updateProgressBarAndShowModal(data);
       },
 
       _updateBoard: function(state, finalBoard) {
