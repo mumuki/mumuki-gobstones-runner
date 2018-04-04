@@ -228,7 +228,7 @@
         const code = editor.getStudentCode();
         const teacherCode = editor.getTeacherCode() || "";
         const finalBoard = this._getTargetBoard();
-        const solution = { content: xml };
+        const solution = {solution: {content: xml} };
 
         this._cleanState();
         this._cleanErrors(finalBoard);
