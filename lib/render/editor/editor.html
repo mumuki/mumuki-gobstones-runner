@@ -47,7 +47,7 @@
           Blockly.CUSTOM_COLORS.complete = Blockly.MUMUKI_COLORS.yellow;
           Blockly.CUSTOM_COLORS.expression = Blockly.MUMUKI_COLORS.yellow;
           Blockly.CUSTOM_COLORS.assignation = Blockly.MUMUKI_COLORS.yellow;
-        }
+        };
 
         const updateFields = () => {
           const blockly = this.getBlockly();
@@ -65,11 +65,49 @@
           }
         };
 
+        const setTrashPosition = () => {
+          var width = $('#blocklyDiv').width() - 68;
+          var height = $('#blocklyDiv').height() - 210;
+          $('.blocklyTrash').css("transform", `translate(${width}px, ${height}px)`);
+          $('.blocklyTrash').css("display", "unset");
+        };
+
+        var setTrashTimeout;
+
+        const localOnResize = () => {
+          clearTimeout(setTrashTimeout);
+          setTrashTimeout = setTimeout(() => {
+            setTrashPosition();
+          });
+        };
+
+        const triggerResizeOnContextModalClose = () => {
+          $('#kids-context').on('hidden.bs.modal', function () {
+            $(window).trigger("resize");
+          })
+        };
+
+        const trashcanReposition = (blockly) => {
+          blockly.workspace.trashcan.bottom_ = 150; //Setting vertical position programmatically to adjust the draggable area
+          $(window).resize((e) => localOnResize());
+          triggerResizeOnContextModalClose();
+        };
+
+        const triggerInitialResize = (blockly) => {
+          if(typeof angular !== "undefined"){
+            blockly._onresize();
+          } else {
+            $(window).trigger("resize");
+          }
+        };
+
         const initialize = () => {
           setTimeout(() => {
             const blockly = this.getBlockly();
 
             if (!blockly || !blockly.workspace) return initialize();
+
+            trashcanReposition(blockly);
 
             const teacherCode = this.getTeacherCode();
             if (teacherCode) {
@@ -91,8 +129,7 @@
               }
             }
 
-            blockly._onresize();
-
+            triggerInitialResize(blockly);
             blockly.workspace.addChangeListener(updateFields);
             updateFields();
           }, 50);
