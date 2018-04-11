@@ -141,6 +141,6 @@ Currently the runner doesn't support a subject when the solution is sent in xml 
 
 Because of the layout and the pedagogic considerations, there are certain operations supported by the runner that doesn't make sense to use in kids mode:
 
-* show_initial_board and show_final_board: Because of kids layout, the boards are always being displayed.
-* check_head_position: For the kids this may be a bit difficult to understand and there is no pedagogic benefit in using it.
+* `show_initial_board` and `show_final_board`: Because of kids layout, the boards are always being displayed.
+* `check_head_position`: For the kids this may be a bit difficult to understand and there is no pedagogic benefit in using it.
 
