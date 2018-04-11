@@ -14,6 +14,10 @@
         readOnly: {
           type: Boolean,
           value: false
+        },
+        startEmpty: {
+          type: Boolean,
+          default: false
         }
       },
 
@@ -77,6 +81,10 @@
             var value = $("#mu-custom-editor-value")[0].value;
             if (value) {
               blockly.workspaceXml = value;
+            } else {
+              if(this.startEmpty){
+                blockly.workspaceXml = "<xml></xml>";
+              }
             }
 
             blockly.workspace.addChangeListener(updateFields);
