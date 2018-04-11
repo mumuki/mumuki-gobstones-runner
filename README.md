@@ -133,9 +133,13 @@ Where:
 
 # Kids tests considerations
 
+## Common scenario
+
+Generally, in kids, we'll only be checking if the final board matches the initial board. `boom` operations are supported and used.
+
 ## Unsupported operations
 
-Currently the runner doesn't support a subject when the solution is sent in xml format
+Currently the runner doesn't support a `subject` when the solution is sent in xml format
 
 ## Operations that doesn't make sense
 
@@ -143,4 +147,4 @@ Because of the layout and the pedagogic considerations, there are certain operat
 
 * `show_initial_board` and `show_final_board`: Because of kids layout, the boards are always being displayed.
 * `check_head_position`: For the kids this may be a bit difficult to understand and there is no pedagogic benefit in using it.
-
+* `title` for boards: The title is set in laboratory, so a custom title won't be display initially. It'll only appear when the success pop-up appears.
