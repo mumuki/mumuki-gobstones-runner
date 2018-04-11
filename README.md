@@ -130,3 +130,17 @@ Where:
      * out_of_board: This error occurs when a move is made that falls out of the board.
      * wrong_argument_type: This error occurs when a function is called with the incorrect type of argument. For example: `Mover(Rojo)`
      * unassigned_variable: This error occurs when a variable is used without previous declaration.
+
+# Kids tests considerations
+
+## Unsupported operations
+
+Currently the runner doesn't support a subject when the solution is sent in xml format
+
+## Operations that doesn't make sense
+
+Because of the layout and the pedagogic considerations, there are certain operations supported by the runner that doesn't make sense to use in kids mode:
+
+* show_initial_board and show_final_board: Because of kids layout, the boards are always being displayed.
+* check_head_position: For the kids this may be a bit difficult to understand and there is no pedagogic benefit in using it.
+
