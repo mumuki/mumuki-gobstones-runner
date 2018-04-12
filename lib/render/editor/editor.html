@@ -266,7 +266,7 @@
       _onStop: function(event) {
         const reason = event.detail;
 
-        if (reason === "end"){
+        if (reason === "end") {
           this._onLocalExecutionStop();
           this._toggleInitialState();
           this.$.runner.isDirty = true;
@@ -346,14 +346,15 @@
       _getSpinnerCss: function(isWaiting) {
         return isWaiting ? "visible" : "hidden";
       },
-      _resetBoard: function(){
+      
+      _resetBoard: function() {
         const initialState = this.initialState;
         const initialBoard = this._getTargetBoard();
         initialBoard.update(initialState.table, initialState.header);
         initialBoard.boom = false;
       },
 
-      _onResetState: function(){
+      _onResetState: function() {
         this._getBlockly().workspace.removeBlockErrors();
         this._resetBoard();
         this._toggleInitialState();
