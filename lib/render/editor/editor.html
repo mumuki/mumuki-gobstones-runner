@@ -78,6 +78,9 @@
               });
             }
 
+            var default_value = $("#mu-custom-editor-default-value")[0].value;
+            blockly.initialXml = default_value || blockly.workspaceXml;
+
             var value = $("#mu-custom-editor-value")[0].value;
             if (value) {
               blockly.workspaceXml = value;
@@ -109,12 +112,14 @@
       getStudentXml: function() {
         return $("#mu-custom-editor-value")[0].value || "";
       },
+
       getTeacherCode: function() {
         const teacherXml = $("#mu-custom-editor-extra")[0];
         if (!teacherXml || !teacherXml.value) return;
         this.$.blocklyTmp.workspaceXml = teacherXml.value;
         return this.$.blocklyTmp.generateCode();
       }
+
     });
   </script>
 </dom-module>
@@ -171,6 +176,41 @@
   <script>
     Polymer({
       is: "waiting-spinner"
+    });
+  </script>
+</dom-module>
+
+
+<dom-module id="kids-reset-button">
+
+  <template>
+    <style>
+    </style>
+
+    <div>
+      <paper-fab id="gbsResetButton"
+                 icon="av:replay"
+                 on-click="_onButtonClick"
+      ></paper-fab>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'kids-reset-button',
+
+      _onButtonClick: function() {
+        const blockly = this._getBlockly();
+        blockly.workspaceXml = blockly.initialXml;
+      },
+
+      _getBlockly: function() {
+        return this._getEditor().getBlockly();
+      },
+
+      _getEditor: function() {
+        return $("mu-gobstones-custom-editor")[0];
+      }
     });
   </script>
 </dom-module>
