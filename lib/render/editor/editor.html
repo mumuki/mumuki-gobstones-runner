@@ -91,6 +91,8 @@
               }
             }
 
+            blockly._onresize();
+
             blockly.workspace.addChangeListener(updateFields);
             updateFields();
           }, 50);
