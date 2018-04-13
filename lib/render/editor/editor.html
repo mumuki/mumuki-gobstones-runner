@@ -35,10 +35,8 @@
             yellow: 40
           };
 
-          console.log('ANTES', Blockly.CUSTOM_COLORS.literalExpression);
           Blockly.Msg.MATH_HUE = Blockly.MUMUKI_COLORS.blue;
           Blockly.CUSTOM_COLORS.literalExpression = Blockly.MUMUKI_COLORS.blue;
-          console.log('DESPUES', Blockly.CUSTOM_COLORS.literalExpression);
 
           Blockly.CUSTOM_COLORS.program = Blockly.MUMUKI_COLORS.pink;
           Blockly.CUSTOM_COLORS.interactiveProgram = Blockly.MUMUKI_COLORS.pink;
@@ -82,8 +80,7 @@
               });
             }
 
-            var default_value = $("#mu-custom-editor-default-value")[0].value;
-            blockly.initialXml = default_value || blockly.workspaceXml;
+            this._setInitialXml(blockly);
 
             var value = $("#mu-custom-editor-value")[0].value;
             if (value) {
@@ -122,6 +119,15 @@
         if (!teacherXml || !teacherXml.value) return;
         this.$.blocklyTmp.workspaceXml = teacherXml.value;
         return this.$.blocklyTmp.generateCode();
+      },
+
+      _setInitialXml: function (blockly) {
+        const editorDefaultContent = $("#mu-custom-editor-default-value")[0];
+        if(editorDefaultContent && editorDefaultContent.value) {
+          blockly.initialXml = editorDefaultContent.value;
+        } else {
+          blockly.initialXml = blockly.workspaceXml;
+        }
       }
 
     });
