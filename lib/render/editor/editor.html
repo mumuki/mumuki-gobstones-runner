@@ -239,7 +239,8 @@
       is: "kids-submit-button",
       listeners: {
         "gbs-run-request": "_onRunRequest",
-        "gbs-stop": "_onStop"
+        "gbs-stop": "_onStop",
+        "gbs-reset-state": "_onResetState"
       },
       properties: {
         serverPromise: Object,
@@ -261,8 +262,6 @@
             table: initialBoard.table,
             header: initialBoard.header
           };
-
-          this._resetBoardOnClose(this.initialState, initialBoard);
         }
 
         setInitialState();
@@ -315,7 +314,11 @@
       _onStop: function(event) {
         const reason = event.detail;
 
-        if (reason === "end") this._onLocalExecutionStop();
+        if (reason === "end") {
+          this._onLocalExecutionStop();
+          this._toggleInitialState();
+          this.$.runner.isDirty = true;
+        }
         else this.serverPromise = undefined;
       },
 
@@ -391,14 +394,23 @@
       _getSpinnerCss: function(isWaiting) {
         return isWaiting ? "visible" : "hidden";
       },
+      
+      _resetBoard: function() {
+        const initialState = this.initialState;
+        const initialBoard = this._getTargetBoard();
+        initialBoard.update(initialState.table, initialState.header);
+        initialBoard.boom = false;
+      },
 
-      _resetBoardOnClose: function(initialState, initialBoard){
-        const modal = mumuki.getKidsResultsModal();
+      _onResetState: function() {
+        this._getBlockly().workspace.removeBlockErrors();
+        this._resetBoard();
+        this._toggleInitialState();
+      },
 
-        modal.on("hidden.bs.modal", function () {
-          initialBoard.update(initialState.table, initialState.header);
-          initialBoard.boom = false;
-        });
+      _toggleInitialState: function () {
+        $("#mu-initial-state-text").toggle();
+        $("#mu-actual-state-text").toggle();
       }
     });
   </script>
