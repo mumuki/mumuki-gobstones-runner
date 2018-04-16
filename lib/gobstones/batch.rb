@@ -27,10 +27,12 @@ class Gobstones::Batch
   end
 
   def example_base_json(example)
-    {initialBoard: example[:preconditions][:initial_board],
-     originalCode: content,
-     code: example_code(example),
-     extraCode: extra}
+    json = {initialBoard: example[:preconditions][:initial_board],
+            code: example_code(example),
+            extraCode: extra}
+
+    json[:originalCode] = content if json[:code] != content
+    json
   end
 
   def example_code(example)

@@ -134,14 +134,12 @@ examples:
           [
             {
               initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
-              originalCode: content.chop,
               code: expected_code,
               extraCode: extra.chop,
               extraBoard: "GBB/1.0\nsize 3 3\nhead 0 1\n"
             },
             {
               initialBoard: "GBB/1.0\nsize 1 1\nhead 0 0\n",
-              originalCode: content.chop,
               code: expected_code,
               extraCode: extra.chop
             }
@@ -157,9 +155,9 @@ examples:
           [
             {
               initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
-              originalCode: content,
               code: expected_code,
-              extraCode: extra.chop
+              extraCode: extra.chop,
+              originalCode: content
             }
           ].to_json
         }

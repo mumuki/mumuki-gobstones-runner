@@ -398,4 +398,70 @@ examples:
     expect(response[:response_type]).to eq :structured
     expect(response[:status]).to eq :failed
   end
+
+  it 'can accept Blockly XML as content' do
+    response = bridge.run_tests!(
+      content: '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="Program" id="xB~]3G#lp3SsK`Ys{VS^" deletable="false" x="30" y="30"><mutation timestamp="1523891789396"></mutation><statement name="program"><block type="Asignacion" id="FW1Q]83JP$a0!!$wYxyd"><field name="varName">unColor</field><value name="varValue"><block type="ColorSelector" id="l4c.8v[N.mvxPf$Zx^VW"><field name="ColorDropdown">Negro</field></block></value><next><block type="Poner" id="C1cG`0n#kyzHT5WF88~L"><value name="COLOR"><block type="variables_get" id="jv[rAEP5uKPbN{RN[.I|"><mutation var="unColor"></mutation><field name="VAR">unColor</field></block></value><next><block type="Mover" id="RqKR#pt]B~yQuOg4(u$p"><value name="DIRECCION"><block type="DireccionSelector" id="t?xv9#gqOXx$iKiVH]S;"><field name="DireccionDropdown">Norte</field></block></value></block></next></block></next></block></statement></block></xml>',
+      extra: '',
+      expectations: [
+        {binding: 'program', inspection: 'HasUsage:unColor'},
+        {binding: 'program', inspection: 'Not:HasUsage:otraCosa'}
+      ],
+      test: '
+check_head_position: true
+
+examples:
+ - initial_board: |
+     GBB/1.0
+     size 4 4
+     head 0 0
+   final_board: |
+     GBB/1.0
+     size 4 4
+     cell 0 0 Azul 0 Rojo 0 Verde 0 Negro 1
+     head 0 1
+    ')
+
+    expect(response.except(:test_results)).to eq response_type: :structured,
+                                                 status: :passed,
+                                                 feedback: '',
+                                                 expectation_results: [
+                                                   {binding: "program", inspection: "Uses:=unColor", result: :passed},
+                                                   {binding: "program", inspection: "Not:Uses:=otraCosa", result: :passed}
+                                                 ],
+                                                 result: ''
+  end
+
+  it 'can accept Blockly XML as extra AND content, using primitive actions' do
+    response = bridge.run_tests!(
+      content: '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="Program" id="PuD+$,0HT^k)5IUPdU!?" deletable="false" x="150" y="-160"><mutation timestamp="1523892212925"></mutation><statement name="program"><block type="RepeticionSimple" id="YeG}Q75;8ra*Wp3:EU2q"><value name="count"><block type="dobleDe_" id="3/`k,b:TE+S9Y9qKDX~p"><value name="arg1"><block type="math_number" id="[op/fExN+uq4:U]0NqoH"><field name="NUM">3</field></block></value></block></value><statement name="block"><block type="PonerTres_" id="MGSh1,-~Pi}EJ7{pZ;mX"><value name="arg1"><block type="ColorSelector" id="veM!Uyw2$}S=hJtas!Cs"><field name="ColorDropdown">Azul</field></block></value></block></statement></block></statement></block></xml>',
+      extra: '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="procedures_defnoreturn" id="h#T:7OUn=gaPXqUplXe]" x="80" y="-207"><mutation><arg name="color"></arg></mutation><field name="NAME">PonerTres_</field><field name="ARG0">color</field><statement name="STACK"><block type="Poner" id="YcB^xSAiU-+sa4[z8wKO"><value name="COLOR"><block type="variables_get" id="rsm([Dp*s5Hi+*bWE}*i"><mutation var="color" parent="h#T:7OUn=gaPXqUplXe]"></mutation></block></value><next><block type="Poner" id="jGqg=|!OChe?VZ0_dsUd"><value name="COLOR"><block type="variables_get" id="RawKnPa#tN{0vEvMFmY_"><mutation var="color" parent="h#T:7OUn=gaPXqUplXe]"></mutation></block></value><next><block type="Poner" id="BnYamcc*iwjGM,-yoa}n"><value name="COLOR"><block type="variables_get" id="z#LO[/(O-spS=WQVeh)*"><mutation var="color" parent="h#T:7OUn=gaPXqUplXe]"></mutation></block></value></block></next></block></next></block></statement></block><block type="procedures_defreturnsimplewithparams" id=")(t47XNXCjl]b^(zV:4;" x="80" y="-8"><mutation statements="false"><arg name="número"></arg></mutation><field name="NAME">dobleDe_</field><field name="ARG0">número</field><value name="RETURN"><block type="OperadorNumerico" id=":}n%C$e}/%y;JdE1]`D("><field name="OPERATOR">*</field><value name="arg1"><block type="variables_get" id="h6)YVE)7%.KldhC)wE$~"><mutation var="número" parent=")(t47XNXCjl]b^(zV:4;"></mutation></block></value><value name="arg2"><block type="math_number" id="EB$._vZ}Qk+wIYcE:V74"><field name="NUM">2</field></block></value></block></value></block></xml>',
+      expectations: [
+        {binding: 'program', inspection: 'Uses:dobleDe_'},
+        {binding: 'program', inspection: 'Uses:PonerTres_'}
+      ],
+      test: '
+check_head_position: true
+
+examples:
+ - initial_board: |
+     GBB/1.0
+     size 4 4
+     head 0 0
+   final_board: |
+     GBB/1.0
+     size 4 4
+     cell 0 0 Azul 18 Rojo 0 Verde 0 Negro 0
+     head 0 0
+    ')
+
+    expect(response.except(:test_results)).to eq response_type: :structured,
+                                                 status: :passed,
+                                                 feedback: '',
+                                                 expectation_results: [
+                                                   {binding: "program", inspection: "Uses:dobleDe_", result: :passed},
+                                                   {binding: "program", inspection: "Uses:PonerTres_", result: :passed}
+                                                 ],
+                                                 result: ''
+  end
 end
