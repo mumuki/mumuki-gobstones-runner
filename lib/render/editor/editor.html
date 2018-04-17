@@ -82,23 +82,15 @@
         };
 
         const triggerResizeOnContextModalClose = () => {
-          $('#kids-context').on('hidden.bs.modal', function () {
-            $(window).trigger("resize");
+          $('#kids-context, #kids-results').on('hidden.bs.modal shown.bs.modal', function () {
+            localOnResize();
           })
         };
 
-        const trashcanReposition = (blockly) => {
+        const relocateTrash = (blockly) => {
           blockly.workspace.trashcan.bottom_ = 150; //Setting vertical position programmatically to adjust the draggable area
           $(window).resize((e) => localOnResize());
           triggerResizeOnContextModalClose();
-        };
-
-        const triggerInitialResize = (blockly) => {
-          if(typeof angular !== "undefined"){
-            blockly._onresize();
-          } else {
-            $(window).trigger("resize");
-          }
         };
 
         const initialize = () => {
@@ -107,7 +99,7 @@
 
             if (!blockly || !blockly.workspace) return initialize();
 
-            trashcanReposition(blockly);
+            relocateTrash(blockly);
 
             const teacherCode = this.getTeacherCode();
             if (teacherCode) {
@@ -129,7 +121,9 @@
               }
             }
 
-            triggerInitialResize(blockly);
+            localOnResize();
+
+            blockly._onresize();
             blockly.workspace.addChangeListener(updateFields);
             updateFields();
           }, 50);
