@@ -24,7 +24,9 @@
       },
 
       attached: function () {
-        const setBlocklyColors = () => {
+        var self = this;
+
+        function setBlocklyColors() {
           if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS) return setTimeout(setBlocklyColors, 50);
           Blockly.HSV_SATURATION = 0.64;
           Blockly.HSV_VALUE = 1;
@@ -49,9 +51,9 @@
           Blockly.CUSTOM_COLORS.assignation = Blockly.MUMUKI_COLORS.yellow;
         };
 
-        const updateFields = () => {
-          const blockly = this.getBlockly();
-          const editorValue = $("#mu-custom-editor-value")[0];
+        function updateFields() {
+          var blockly = self.getBlockly();
+          var editorValue = $("#mu-custom-editor-value")[0];
           if (editorValue) {
             editorValue.value = blockly.workspaceXml;
           }
@@ -59,13 +61,13 @@
             angular.element(editorValue).triggerHandler("change");
           }
 
-          const submit = $("kids-submit-button")[0];
+          var submit = $("kids-submit-button")[0];
           if (submit && submit.$.runner.isRunning) {
             submit.$.runner.stop();
           }
         };
 
-        const setTrashPosition = () => {
+        function setTrashPosition() {
           var width = $('#blocklyDiv').width() - 68;
           var height = $('#blocklyDiv').height() - 210;
           $('.blocklyTrash').css("transform", `translate(${width}px, ${height}px)`);
@@ -74,49 +76,50 @@
 
         var setTrashTimeout;
 
-        const localOnResize = () => {
+        function localOnResize() {
           clearTimeout(setTrashTimeout);
-          setTrashTimeout = setTimeout(() => {
+          setTrashTimeout = setTimeout(function() {
             setTrashPosition();
           });
         };
 
-        const triggerResizeOnContextModalClose = () => {
+        function triggerResizeOnContextModalClose() {
           $('#kids-context, #kids-results').on('hidden.bs.modal shown.bs.modal', function () {
             localOnResize();
           })
         };
 
-        const relocateTrash = (blockly) => {
+        function relocateTrash(blockly) {
           blockly.workspace.trashcan.bottom_ = 150; //Setting vertical position programmatically to adjust the draggable area
-          $(window).resize((e) => localOnResize());
+          $(window).resize(function() {
+            localOnResize();
+          });
           triggerResizeOnContextModalClose();
         };
 
-        const initialize = () => {
-          setTimeout(() => {
-            const blockly = this.getBlockly();
-
+        function initialize() {
+          var blockly = self.getBlockly();
+          setTimeout(function() {
             if (!blockly || !blockly.workspace) return initialize();
 
             relocateTrash(blockly);
 
-            const teacherCode = this.getTeacherCode();
+            var teacherCode = self.getTeacherCode();
             if (teacherCode) {
-              setTimeout(() => {
-                const actions = new Parser().getActionsFromSource(teacherCode);
+              setTimeout(function() {
+                var actions = new Parser().getActionsFromSource(teacherCode);
                 blockly.primitiveProcedures = actions.procedureDeclarations;
                 blockly.primitiveFunctions = actions.functionDeclarations;
               });
             }
 
-            this._setInitialXml(blockly);
+            self._setInitialXml(blockly);
 
             var value = $("#mu-custom-editor-value")[0].value;
             if (value) {
               blockly.workspaceXml = value;
             } else {
-              if (this.startEmpty) {
+              if (self.startEmpty) {
                 blockly.workspaceXml = "<xml></xml>";
               }
             }
@@ -148,14 +151,14 @@
       },
 
       getTeacherCode: function () {
-        const teacherXml = $("#mu-custom-editor-extra")[0];
+        var teacherXml = $("#mu-custom-editor-extra")[0];
         if (!teacherXml || !teacherXml.value) return;
         this.$.blocklyTmp.workspaceXml = teacherXml.value;
         return this.$.blocklyTmp.generateCode();
       },
 
       _setInitialXml: function (blockly) {
-        const editorDefaultContent = $("#mu-custom-editor-default-value")[0];
+        var editorDefaultContent = $("#mu-custom-editor-default-value")[0];
         if(editorDefaultContent && editorDefaultContent.value) {
           blockly.initialXml = editorDefaultContent.value;
         } else {
@@ -248,7 +251,7 @@
       is: 'kids-reset-button',
 
       _onButtonClick: function () {
-        const blockly = this._getBlockly();
+        var blockly = this._getBlockly();
         blockly.workspaceXml = blockly.initialXml;
       },
 
@@ -306,12 +309,12 @@
       },
 
       ready: function () {
-
-        const setInitialState = () => {
-          const initialBoard = this._getTargetBoard();
+        var self = this;
+        function setInitialState() {
+          var initialBoard = self._getTargetBoard();
           if (!initialBoard.size) return setTimeout(setInitialState, 50);
 
-          this.initialState = {
+          self.initialState = {
             size: initialBoard.size,
             table: initialBoard.table,
             header: initialBoard.header
@@ -322,25 +325,26 @@
       },
 
       _onRunRequest: function (event) {
-        const {detail: controller} = event;
+        var self = this;
+        var controller = event.detail;
 
-        const editor = this._getEditor();
-        const xml = editor.getStudentXml();
-        const code = editor.getStudentCode();
-        const teacherCode = editor.getTeacherCode() || "";
-        const finalBoard = this._getTargetBoard();
-        const solution = {content: xml};
-        const executionSpeed = 2;
+        var editor = this._getEditor();
+        var xml = editor.getStudentXml();
+        var code = editor.getStudentCode();
+        var teacherCode = editor.getTeacherCode() || "";
+        var finalBoard = this._getTargetBoard();
+        var solution = {content: xml};
+        var executionSpeed = 2;
 
         this._cleanState();
         this._cleanErrors(finalBoard);
 
-        const promise = new mumuki.bridge.Laboratory()
+        var promise = new mumuki.bridge.Laboratory()
           .runTests(solution)
-          .then((results) => {
-            if (promise !== this.serverPromise) return;
+          .then(function(results) {
+            if (promise !== self.serverPromise) return;
 
-            this._onRemoteExecutionStop(results)
+            self._onRemoteExecutionStop(results)
           });
         this.serverPromise = promise;
 
@@ -352,21 +356,21 @@
             teacher: teacherCode
           }
         }, {
-          onResult: (state, fullState) => {
-            const region = this._getLastRegion(fullState);
-            if (region) this._highlight(region);
+          onResult: function(state, fullState) {
+            var region = self._getLastRegion(fullState);
+            if (region) self._highlight(region);
 
-            this._updateBoard(state, finalBoard);
+            self._updateBoard(state, finalBoard);
           },
-          onCompilationError: (error) => {
-            const {region} = error.on;
-            if (region) this._showError(region, error);
+          onCompilationError: function(error) {
+            var region = error.on.region;
+            if (region) self._showError(region, error);
           }
         }, executionSpeed);
       },
 
       _onStop: function (event) {
-        const reason = event.detail;
+        var reason = event.detail;
 
         if (reason === "end") {
           this._onLocalExecutionStop();
@@ -393,12 +397,14 @@
       },
 
       _updateBoard: function (state, finalBoard) {
-        const {error, table, head} = state;
+        var error = state.error;
+        var table = state.table;
+        var head = state.head;
 
         finalBoard.boom = error != null;
 
         if (error) {
-          const region = this._getLastRegion(error.on);
+          var region = this._getLastRegion(error.on);
           if (region) this._showError(region, error);
         } else {
           finalBoard.update(table, head);
@@ -424,9 +430,10 @@
         finalBoard.boom = false;
       },
 
-      _getLastRegion: function (context = {}) {
-        const {regionStack} = context;
-        return regionStack && regionStack.filter(it => it).slice(-1)[0];
+      _getLastRegion: function (context) {
+        if(!context) context = {};
+        var regionStack = context.regionStack;
+        return regionStack && regionStack.filter(function(it){ return it }).slice(-1)[0];
       },
 
       _getBlockly: function () {
@@ -450,8 +457,8 @@
       },
 
       _resetBoard: function () {
-        const initialState = this.initialState;
-        const initialBoard = this._getTargetBoard();
+        var initialState = this.initialState;
+        var initialBoard = this._getTargetBoard();
         initialBoard.update(initialState.table, initialState.header);
         initialBoard.boom = false;
       },
@@ -482,9 +489,11 @@
       attached: function () {
         this._setAttire();
       },
+
       _attireChanged: function () {
         this._setAttire();
       },
+      
       _setAttire: function () {
         $.getJSON(this.attireUrl, function (attire) {
           GobstonesBoard && GobstonesBoard.setDefaultAttire(attire);
@@ -506,12 +515,14 @@
       attached: function () {
         this._setToolbox();
       },
+
       _toolboxChanged: function () {
         this._setToolbox();
       },
+
       _setToolbox: function () {
         $.get(this.toolboxUrl, function (toolboxXml) {
-          const blockly = $("mu-gobstones-custom-editor")[0].getBlockly();
+          var blockly = $("mu-gobstones-custom-editor")[0].getBlockly();
           blockly.setDefaultToolbox(toolboxXml);
         });
       }
