@@ -35,6 +35,6 @@ class GobstonesPrecompileHook < Mumukit::Templates::FileHook
   end
 
   def post_process_file(_file, result, status)
-    [result.parse_as_json, status]
+    [status == :passed ? result.parse_as_json : result, status]
   end
 end
