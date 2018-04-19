@@ -167,7 +167,7 @@
 
       _setInitialXml: function (blockly) {
         const editorDefaultContent = $("#mu-custom-editor-default-value")[0];
-        if(editorDefaultContent && editorDefaultContent.value) {
+        if (editorDefaultContent && editorDefaultContent.value) {
           blockly.initialXml = editorDefaultContent.value;
         } else {
           blockly.initialXml = blockly.workspaceXml;
@@ -400,7 +400,7 @@
 
       _onExecutionStop: function (data) {
         this._cleanState();
-        mumuki.showKidsResult(data);
+        mumuki.kids.showResult(data);
       },
 
       _updateBoard: function (state, finalBoard) {
@@ -471,6 +471,7 @@
         this._getBlockly().workspace.removeBlockErrors();
         this._resetBoard();
         this._toggleInitialState();
+        mumuki.kids.restart();
       },
 
       _toggleInitialState: function () {
