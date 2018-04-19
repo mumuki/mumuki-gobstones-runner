@@ -22,12 +22,18 @@ module Gobstones
       boards_match = board_json(expected_board).eql? board_json(actual_board)
       headers_match = expected_board[:head].eql?(actual_board[:head]) || !@options[:check_head_position]
 
-      fail_with status: :check_final_board_failed_different_boards,
-                result: {
-                  initial: result[:initialBoard],
-                  expected: expected_board,
-                  actual: actual_board
-                } unless boards_match && headers_match
+      if !boards_match || !headers_match
+        status = boards_match && !headers_match ?
+          :check_final_board_failed_different_headers :
+          :check_final_board_failed_different_boards
+
+        fail_with status: status,
+                  result: {
+                    initial: result[:initialBoard],
+                    expected: expected_board,
+                    actual: actual_board
+                  }
+      end
     end
 
     def check_error(output, expected)

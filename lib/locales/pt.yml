@@ -2,6 +2,7 @@ pt:
   actual_board: 'Tabuleiro final obtido'
   check_failed_unexpected_boom: 'O programa fez BOOM.'
   check_final_board_failed_different_boards: 'Um tabuleiro diferente foi obtido do que o esperado'
+  check_final_board_failed_different_headers: 'O tabuleiro é quase o mesmo que esperava-se, mas a cabeça não coincide'
   check_error_failed_expected_boom: 'Esperava-se que o programa fizesse BOOM, mas foi executado normalmente'
   check_error_failed_another_reason: 'Esperava-se que o programa fosse BOOM para <strong>%{expected_code}</strong>, mas falhou por outro motivo'
   check_return_failed_different_values: 'Esperava-se <strong>%{expected_value}</strong> mas foi obtido <strong>%{actual_value}</strong>.'
