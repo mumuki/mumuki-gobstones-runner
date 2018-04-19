@@ -18,6 +18,11 @@ module Gobstones
                   boards: prepare_boards([:initial, :expected, :actual], result)
     end
 
+    def render_error_check_final_board_failed_different_headers(result)
+      bind_result error: :check_final_board_failed_different_headers,
+                  boards: prepare_boards([:initial, :expected, :actual], result)
+    end
+
     def render_error_check_failed_unexpected_boom(result)
       bind_result error: :check_failed_unexpected_boom,
                   boards: prepare_boards([:initial, :expected, :actual], result),

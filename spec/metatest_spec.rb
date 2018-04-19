@@ -112,7 +112,7 @@ describe 'metatest' do
         }
 
         it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "Expected final board" }
+        it { expect(result[0][0][2]).to include "head doesn't match" }
       end
 
       context 'when fails by different boards (stones)' do
@@ -121,7 +121,7 @@ describe 'metatest' do
         }
 
         it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "Expected final board" }
+        it { expect(result[0][0][2]).to include "different board was obtained" }
       end
 
     end
