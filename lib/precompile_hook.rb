@@ -9,11 +9,15 @@ class GobstonesPrecompileHook < Mumukit::Templates::FileHook
   end
 
   def command_line(filename)
-    "gobstones-cli --batch #{filename} #{locale_argument}"
+    "gobstones-cli --batch #{filename} #{locale_argument} #{timeout_argument}"
   end
 
   def locale_argument
     "--language #{@locale}" if @locale
+  end
+
+  def timeout_argument
+    "--timeout #{(Mumukit.config.command_time_limit - 1) * 1000}"
   end
 
   def compile(request)
@@ -35,6 +39,17 @@ class GobstonesPrecompileHook < Mumukit::Templates::FileHook
   end
 
   def post_process_file(_file, result, status)
-    [status == :passed ? result.parse_as_json : result, status]
+    if status == :passed
+      result = result.parse_as_json
+      status = :aborted if is_timeout? result
+    end
+
+    [result, status]
+  end
+
+  private
+
+  def is_timeout?(result)
+    result[0]&.dig(:result, :finalBoardError, :reason, :code) === "timeout"
   end
 end
