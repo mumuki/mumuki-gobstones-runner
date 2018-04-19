@@ -30,23 +30,34 @@
           Blockly.HSV_VALUE = 1;
 
           Blockly.MUMUKI_COLORS = {
-            pink: 346,
-            blue: 204,
-            yellow: 40
+            pink: "#FF5C82",
+            blue: "#5CBEFF",
+            yellow: "#FFC95C"
           };
 
-          Blockly.Msg.MATH_HUE = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.literalExpression = Blockly.MUMUKI_COLORS.blue;
-
+          // reserved
           Blockly.CUSTOM_COLORS.program = Blockly.MUMUKI_COLORS.pink;
           Blockly.CUSTOM_COLORS.interactiveProgram = Blockly.MUMUKI_COLORS.pink;
           Blockly.CUSTOM_COLORS.interactiveBinding = Blockly.MUMUKI_COLORS.pink;
+          Blockly.CUSTOM_COLORS.procedure = Blockly.MUMUKI_COLORS.pink;
+          Blockly.CUSTOM_COLORS.function = Blockly.MUMUKI_COLORS.pink;
+          Blockly.CUSTOM_COLORS.complete = Blockly.MUMUKI_COLORS.pink;
 
+          // commands
           Blockly.CUSTOM_COLORS.controlStructure = Blockly.MUMUKI_COLORS.yellow;
           Blockly.CUSTOM_COLORS.primitiveCommand = Blockly.MUMUKI_COLORS.yellow;
-          Blockly.CUSTOM_COLORS.complete = Blockly.MUMUKI_COLORS.yellow;
-          Blockly.CUSTOM_COLORS.expression = Blockly.MUMUKI_COLORS.yellow;
+          Blockly.CUSTOM_COLORS.primitiveProcedure = Blockly.MUMUKI_COLORS.yellow;
+          Blockly.CUSTOM_COLORS.procedure_call = Blockly.MUMUKI_COLORS.yellow;
           Blockly.CUSTOM_COLORS.assignation = Blockly.MUMUKI_COLORS.yellow;
+
+          // expressions
+          Blockly.Msg.MATH_HUE = Blockly.MUMUKI_COLORS.blue;
+          Blockly.CUSTOM_COLORS.literalExpression = Blockly.MUMUKI_COLORS.blue;
+          Blockly.CUSTOM_COLORS.variable = Blockly.MUMUKI_COLORS.blue;
+          Blockly.CUSTOM_COLORS.parameter = Blockly.MUMUKI_COLORS.blue;
+          Blockly.CUSTOM_COLORS.primitiveFunction = Blockly.MUMUKI_COLORS.blue;
+          Blockly.CUSTOM_COLORS.function_call = Blockly.MUMUKI_COLORS.blue;
+          Blockly.CUSTOM_COLORS.expression = Blockly.MUMUKI_COLORS.blue;
         };
 
         const updateFields = () => {
