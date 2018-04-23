@@ -352,6 +352,9 @@
             if (promise !== this.serverPromise) return;
 
             this._onRemoteExecutionStop(results)
+          })
+          .catch(() => {
+            mumuki.kids.showResult({status: 'aborted'})
           });
         this.serverPromise = promise;
 
