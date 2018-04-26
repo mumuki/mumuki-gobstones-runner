@@ -93,7 +93,7 @@
         };
 
         const triggerResizeOnContextModalClose = () => {
-          $('#kids-context, #kids-results').on('hidden.bs.modal shown.bs.modal', function () {
+          $('#kids-context, #kids-results, #kids-results-aborted').on('hidden.bs.modal shown.bs.modal', function () {
             localOnResize();
           })
         };
@@ -318,6 +318,13 @@
 
       ready: function () {
 
+        const resetStatusAfterAborted = () => {
+          $('#kids-results-aborted').on('hidden.bs.modal', () => {
+            this.$.runner.isDirty = false;
+            this._onResetState();
+          })
+        };
+
         const setInitialState = () => {
           const initialBoard = this._getTargetBoard();
           if (!initialBoard.size) return setTimeout(setInitialState, 50);
@@ -327,6 +334,8 @@
             table: initialBoard.table,
             header: initialBoard.header
           };
+
+          resetStatusAfterAborted();
         }
 
         setInitialState();
