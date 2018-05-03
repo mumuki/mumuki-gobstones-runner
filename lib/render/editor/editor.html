@@ -101,7 +101,7 @@
 
             relocateTrash(blockly);
 
-            this.defineTeacherActions(blockly);
+            this.setTeacherActions(blockly);
             this._setInitialXml(blockly);
             this._initializeWorkspace(blockly);
 
@@ -117,7 +117,7 @@
         initialize();
       },
 
-      defineTeacherActions(blockly) {
+      setTeacherActions(blockly) {
         const teacherCode = this.getTeacherCode();
         if (teacherCode) {
           setTimeout(() => {
@@ -521,7 +521,7 @@
           const editor = $("mu-gobstones-custom-editor")[0];
           const blockly = editor.getBlockly();
           blockly.setDefaultToolbox(toolboxXml);
-          editor.defineTeacherActions(blockly);
+          editor.setTeacherActions(blockly);
         });
       }
     });
