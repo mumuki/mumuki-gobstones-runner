@@ -112,25 +112,9 @@
 
             relocateTrash(blockly);
 
-            const teacherCode = this.getTeacherCode();
-            if (teacherCode) {
-              setTimeout(() => {
-                const actions = new Parser().getActionsFromSource(teacherCode);
-                blockly.primitiveProcedures = actions.procedureDeclarations;
-                blockly.primitiveFunctions = actions.functionDeclarations;
-              });
-            }
-
+            this.setTeacherActions(blockly);
             this._setInitialXml(blockly);
-
-            var value = $("#mu-custom-editor-value")[0].value;
-            if (value) {
-              blockly.workspaceXml = value;
-            } else {
-              if (this.startEmpty) {
-                blockly.workspaceXml = "<xml></xml>";
-              }
-            }
+            this._initializeWorkspace(blockly);
 
             localOnResize();
 
@@ -142,6 +126,17 @@
 
         setBlocklyColors();
         initialize();
+      },
+
+      setTeacherActions(blockly) {
+        const teacherCode = this.getTeacherCode();
+        if (teacherCode) {
+          setTimeout(() => {
+            const actions = new Parser().getActionsFromSource(teacherCode);
+            blockly.primitiveProcedures = actions.procedureDeclarations;
+            blockly.primitiveFunctions = actions.functionDeclarations;
+          });
+        }
       },
 
       getBlockly: function () {
@@ -172,8 +167,20 @@
         } else {
           blockly.initialXml = blockly.workspaceXml;
         }
-      }
+      },
 
+      _initializeWorkspace: function(blockly) {
+        setTimeout(() => {
+          var value = $("#mu-custom-editor-value")[0].value;
+          if (value) {
+            blockly.workspaceXml = value;
+          } else {
+            if (this.startEmpty) {
+              blockly.workspaceXml = "<xml></xml>";
+            }
+          }
+        });
+      }
     });
   </script>
 </dom-module>
@@ -535,8 +542,10 @@
       },
       _setToolbox: function () {
         $.get(this.toolboxUrl, function (toolboxXml) {
-          const blockly = $("mu-gobstones-custom-editor")[0].getBlockly();
+          const editor = $("mu-gobstones-custom-editor")[0];
+          const blockly = editor.getBlockly();
           blockly.setDefaultToolbox(toolboxXml);
+          editor.setTeacherActions(blockly);
         });
       }
     });
