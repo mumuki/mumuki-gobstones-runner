@@ -161,7 +161,7 @@
       },
 
       _setInitialXml: function (blockly) {
-        const editorDefaultContent = $("#mu-custom-editor-default-value")[0];
+        const editorDefaultContent = $("#default_content")[0];
         if (editorDefaultContent && editorDefaultContent.value) {
           blockly.initialXml = editorDefaultContent.value;
         } else {
