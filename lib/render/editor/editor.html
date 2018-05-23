@@ -53,11 +53,16 @@
           // expressions
           Blockly.Msg.MATH_HUE = Blockly.MUMUKI_COLORS.blue;
           Blockly.CUSTOM_COLORS.literalExpression = Blockly.MUMUKI_COLORS.blue;
+          Blockly.CUSTOM_COLORS.primitiveExpression = Blockly.MUMUKI_COLORS.blue;
+          Blockly.CUSTOM_COLORS.operator = Blockly.MUMUKI_COLORS.blue;
           Blockly.CUSTOM_COLORS.variable = Blockly.MUMUKI_COLORS.blue;
           Blockly.CUSTOM_COLORS.parameter = Blockly.MUMUKI_COLORS.blue;
           Blockly.CUSTOM_COLORS.primitiveFunction = Blockly.MUMUKI_COLORS.blue;
           Blockly.CUSTOM_COLORS.function_call = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.expression = Blockly.MUMUKI_COLORS.blue;
+
+          setTimeout(() => {
+            this.getBlockly().testColors(Blockly.CUSTOM_COLORS);
+          });
         };
 
         const updateFields = () => {
