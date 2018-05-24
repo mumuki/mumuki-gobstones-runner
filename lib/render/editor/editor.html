@@ -68,6 +68,7 @@
         const updateFields = () => {
           const blockly = this.getBlockly();
           const editorValue = $("#mu-custom-editor-value")[0];
+
           if (editorValue) {
             editorValue.value = blockly.workspaceXml;
           }
@@ -122,10 +123,9 @@
             this._initializeWorkspace(blockly);
 
             localOnResize();
-
             blockly._onresize();
-            blockly.workspace.addChangeListener(updateFields);
-            updateFields();
+
+            this._subscribeToWorkspace(blockly, updateFields);
           }, 50);
         };
 
@@ -176,14 +176,19 @@
 
       _initializeWorkspace: function(blockly) {
         setTimeout(() => {
-          var value = $("#mu-custom-editor-value")[0].value;
-          if (value) {
-            blockly.workspaceXml = value;
-          } else {
-            if (this.startEmpty) {
-              blockly.workspaceXml = "<xml></xml>";
-            }
-          }
+          const value = $("#mu-custom-editor-value")[0].value;
+          blockly.workspaceXml = value || (
+            this.startEmpty
+              ? "<xml></xml>"
+              : blockly.initialXml
+          );
+        });
+      },
+
+      _subscribeToWorkspace: function(blockly, action) {
+        setTimeout(() => {
+          blockly.workspace.addChangeListener(action);
+          action();
         });
       }
     });
