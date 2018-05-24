@@ -17,7 +17,7 @@
           type: Boolean,
           value: false
         },
-        startEmpty: {
+        teacherMode: {
           type: Boolean,
           default: false
         }
@@ -67,11 +67,19 @@
 
         const updateFields = () => {
           const blockly = this.getBlockly();
-          const editorValue = $("#mu-custom-editor-value")[0];
 
+          const editorValue = $("#mu-custom-editor-value")[0];
           if (editorValue) {
             editorValue.value = blockly.workspaceXml;
           }
+
+          if (this.teacherMode) {
+            const editorExtra = $("#mu-custom-editor-extra")[0];
+            if (editorExtra) {
+              editorExtra.value = blockly.workspaceXml;
+            }
+          }
+
           if (typeof angular !== 'undefined') {
             angular.element(editorValue).triggerHandler("change");
           }
@@ -178,7 +186,7 @@
         setTimeout(() => {
           const value = $("#mu-custom-editor-value")[0].value;
           blockly.workspaceXml = value || (
-            this.startEmpty
+            this.teacherMode
               ? "<xml></xml>"
               : blockly.initialXml
           );
