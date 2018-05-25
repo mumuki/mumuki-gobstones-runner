@@ -185,11 +185,13 @@
       _initializeWorkspace: function(blockly) {
         setTimeout(() => {
           const value = $("#mu-custom-editor-value")[0].value;
+
           blockly.workspaceXml = value || (
             this.teacherMode
               ? "<xml></xml>"
               : blockly.initialXml
           );
+          blockly.scrollToBlock();
         });
       },
 
@@ -286,6 +288,7 @@
       _onButtonClick: function () {
         const blockly = this._getBlockly();
         blockly.workspaceXml = blockly.initialXml;
+        blockly.scrollToBlock();
       },
 
       _getBlockly: function () {
