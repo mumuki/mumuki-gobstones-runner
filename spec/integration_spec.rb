@@ -464,4 +464,67 @@ examples:
                                                  ],
                                                  result: ''
   end
+
+  context 'Blockly XML with finer expectations' do
+    let(:expectations) { [
+      {binding: '*', inspection: 'Uses:RecolectarPolen'},
+      {binding: '*', inspection: 'Declares:RecolectarPolen'},
+      {binding: 'RecolectarPolen', inspection: 'UsesRepeat'}
+    ] }
+
+    def run_expectations!(content)
+      extra = '<xml xmlns="http://www.w3.org/1999/xhtml"><variables><variable type="" id="#tkEaZ|1O/iYzpk$jb*F">direccion</variable></variables><block type="procedures_defnoreturn" id="ta2r.#tE.Z3=cqo_~(GS" x="42" y="-63"><mutation><arg name="direccion"></arg></mutation><field name="NAME">Volar Al_</field><field name="ARG0">direccion</field><statement name="STACK"><block type="Sacar" id="5*l*j7d[{}-sxylSK?yc"><value name="COLOR"><block type="ColorSelector" id="k]:7DyS5cSE%dt-#;N~8"><field name="ColorDropdown">Negro</field></block></value><next><block type="Mover" id="Ld#c~6FG8LB)y94=iHi("><value name="DIRECCION"><block type="variables_get" id="ea,RDtzQN,XRBgfNU5AU"><mutation var="direccion" parent="ta2r.#tE.Z3=cqo_~(GS"></mutation></block></value><next><block type="Poner" id="+HbxwbY6f-b.ZL/fNm%j"><value name="COLOR"><block type="ColorSelector" id="ZjyHOJAVte5Tlt:L`%oO"><field name="ColorDropdown">Negro</field></block></value></block></next></block></next></block></statement></block></xml>'
+      bridge.run_tests!(
+        content: content,
+        extra: extra,
+        expectations: expectations,
+        test: '
+  check_head_position: true
+
+  examples:
+  - initial_board: |
+      GBB/1.0
+      size 4 4
+      head 0 0
+    final_board: |
+      GBB/1.0
+      size 4 4
+      cell 0 0 Azul 18 Rojo 0 Verde 0 Negro 0
+      head 0 0
+      ')[:expectation_results]
+    end
+
+    it 'works when all pass' do
+      # Equivalent to program { VolarAl_(Este) ; RecolectarPolen() } procedure RecolectarPolen() { repeat(5) { Sacar(Verde) } }
+      content = '<xml xmlns="http://www.w3.org/1999/xhtml"><variables><variable type="" id="#tkEaZ|1O/iYzpk$jb*F">direccion</variable></variables><block type="Program" id="Rp8VMHPa/]EZ}FvH/Pi|" deletable="false" x="42" y="-98"><mutation timestamp="1528058851731"></mutation><statement name="program"><block type="VolarAl_" id="`I4gt4t#Rj|OB3QwE2HP"><value name="arg1"><block type="DireccionSelector" id="7A8Ipt/$RClcH5KNEZ)^"><field name="DireccionDropdown">Este</field></block></value><next><block type="procedures_callnoreturnnoparams" id="31;^FQ_kr`XO|9D9`y|1"><mutation name="Recolectar Polen"></mutation></block></next></block></statement></block><block type="procedures_defnoreturnnoparams" id="9)jdRaCNSwCopGPcG^6w" x="40" y="112"><field name="NAME">Recolectar Polen</field><statement name="STACK"><block type="RepeticionSimple" id=";q2M8~vOaO_Qo~#Qxz#Z"><value name="count"><block type="math_number" id="6o]|L|{7Xh|#+p2VnYn("><field name="NUM">5</field></block></value><statement name="block"><block type="Sacar" id="8{aYL%2e+he~ztS%MlZ$"><value name="COLOR"><block type="ColorSelector" id="(VW][LR1vg)z*2!r,{kG"><field name="ColorDropdown">Verde</field></block></value></block></statement></block></statement></block></xml>'
+      expect(run_expectations! content).to eq [{binding: '*', inspection: "Uses:RecolectarPolen", result: :passed},
+                                               {binding: '*', inspection: "Declares:RecolectarPolen", result: :passed},
+                                               {binding: 'RecolectarPolen', inspection: "UsesRepeat", result: :passed}]
+    end
+
+    it 'works when all expectations fail' do
+      # Equivalent to program { VolarAl_(Este) ; repeat(5) { Sacar(Verde) } }
+      content = '<xml xmlns="http://www.w3.org/1999/xhtml"><variables><variable type="" id="#tkEaZ|1O/iYzpk$jb*F">direccion</variable></variables><block type="Program" id="Rp8VMHPa/]EZ}FvH/Pi|" deletable="false" x="42" y="-98"><mutation timestamp="1528054201699"></mutation><statement name="program"><block type="VolarAl_" id="`I4gt4t#Rj|OB3QwE2HP"><value name="arg1"><block type="DireccionSelector" id="7A8Ipt/$RClcH5KNEZ)^"><field name="DireccionDropdown">Este</field></block></value><next><block type="RepeticionSimple" id=";q2M8~vOaO_Qo~#Qxz#Z"><value name="count"><block type="math_number" id="6o]|L|{7Xh|#+p2VnYn("><field name="NUM">5</field></block></value><statement name="block"><block type="Sacar" id="8{aYL%2e+he~ztS%MlZ$"><value name="COLOR"><block type="ColorSelector" id="(VW][LR1vg)z*2!r,{kG"><field name="ColorDropdown">Verde</field></block></value></block></statement></block></next></block></statement></block></xml>'
+      expect(run_expectations! content).to eq [{binding: '*', inspection: "Uses:RecolectarPolen", result: :failed},
+                                               {binding: '*', inspection: "Declares:RecolectarPolen", result: :failed},
+                                               {binding: 'RecolectarPolen', inspection: "UsesRepeat", result: :failed}]
+    end
+
+    it 'works when some fail with empty blocks' do
+      # Equivalent to program { VolarAl_(Este) ; repeat(5) { Sacar(Verde) } } procedure HacerAlgo() { }
+      content = '<xml xmlns="http://www.w3.org/1999/xhtml"><variables><variable type="" id="#tkEaZ|1O/iYzpk$jb*F">direccion</variable></variables><block type="Program" id="Rp8VMHPa/]EZ}FvH/Pi|" deletable="false" x="42" y="-98"><mutation timestamp="1528058068163"></mutation><statement name="program"><block type="VolarAl_" id="`I4gt4t#Rj|OB3QwE2HP"><value name="arg1"><block type="DireccionSelector" id="7A8Ipt/$RClcH5KNEZ)^"><field name="DireccionDropdown">Este</field></block></value><next><block type="RepeticionSimple" id=";q2M8~vOaO_Qo~#Qxz#Z"><value name="count"><block type="math_number" id="6o]|L|{7Xh|#+p2VnYn("><field name="NUM">5</field></block></value><statement name="block"><block type="Sacar" id="8{aYL%2e+he~ztS%MlZ$"><value name="COLOR"><block type="ColorSelector" id="(VW][LR1vg)z*2!r,{kG"><field name="ColorDropdown">Verde</field></block></value></block></statement></block></next></block></statement></block><block type="procedures_defnoreturnnoparams" id="9)jdRaCNSwCopGPcG^6w" x="40" y="112"><field name="NAME">Hacer algo</field></block></xml>'
+      expect(run_expectations! content).to eq [{binding: '*', inspection: "Uses:RecolectarPolen", result: :failed},
+                                               {binding: '*', inspection: "Declares:RecolectarPolen", result: :failed},
+                                               {binding: 'RecolectarPolen', inspection: "UsesRepeat", result: :failed}]
+    end
+
+
+    it 'works when some fail because of similar names' do
+      # Equivalent to program { VolarAl_(Este) ; RecolectarPolenta() } procedure RecolectarPolenta() { repeat(5) { Sacar(Verde) } }
+      content = '<xml xmlns="http://www.w3.org/1999/xhtml"><variables><variable type="" id="#tkEaZ|1O/iYzpk$jb*F">direccion</variable></variables><block type="Program" id="Rp8VMHPa/]EZ}FvH/Pi|" deletable="false" x="42" y="-98"><mutation timestamp="1528058279725"></mutation><statement name="program"><block type="VolarAl_" id="`I4gt4t#Rj|OB3QwE2HP"><value name="arg1"><block type="DireccionSelector" id="7A8Ipt/$RClcH5KNEZ)^"><field name="DireccionDropdown">Este</field></block></value><next><block type="procedures_callnoreturnnoparams" id="31;^FQ_kr`XO|9D9`y|1"><mutation name="Recolectar Polenta"></mutation></block></next></block></statement></block><block type="procedures_defnoreturnnoparams" id="9)jdRaCNSwCopGPcG^6w" x="40" y="112"><field name="NAME">Recolectar Polenta</field><statement name="STACK"><block type="RepeticionSimple" id=";q2M8~vOaO_Qo~#Qxz#Z"><value name="count"><block type="math_number" id="6o]|L|{7Xh|#+p2VnYn("><field name="NUM">5</field></block></value><statement name="block"><block type="Sacar" id="8{aYL%2e+he~ztS%MlZ$"><value name="COLOR"><block type="ColorSelector" id="(VW][LR1vg)z*2!r,{kG"><field name="ColorDropdown">Verde</field></block></value></block></statement></block></statement></block></xml>'
+      expect(run_expectations! content).to eq [{binding: '*', inspection: "Uses:RecolectarPolen", result: :failed},
+                                               {binding: '*', inspection: "Declares:RecolectarPolen", result: :failed},
+                                               {binding: 'RecolectarPolen', inspection: "UsesRepeat", result: :failed}]
+    end
+  end
 end
