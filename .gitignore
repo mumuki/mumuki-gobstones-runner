@@ -3,3 +3,6 @@
 hs_*.log
 Gemfile.lock
 *.sublime-workspace
+bower_components/**
+node_modules/**
+**.gem
