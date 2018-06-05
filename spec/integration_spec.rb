@@ -252,6 +252,46 @@ examples:
     expect(response[:result]).to eq "<pre>[0:0]: No program definition was found</pre>"
   end
 
+  context 'Board rendering' do
+    let(:response) {
+      bridge.run_tests!(
+        content: 'program {}',
+        extra: '',
+        test: "
+check_head_position: #{check_head_position}
+examples:
+ - initial_board: |
+     GBB/1.0
+     size 4 4
+     head 0 0
+   final_board: |
+     GBB/1.0
+     size 4 4
+     cell 0 0 Azul 1 Rojo 1 Verde 1 Negro 1
+     head 0 0")
+    }
+
+    let(:result) {
+      response[:test_results][0][:result]
+    }
+
+    context "when the test doesn't check the head's position" do
+      let(:check_head_position) { false }
+
+      it "renders the boards with the 'without-header' attribute" do
+        expect(result).to include "<gs-board without-header>"
+      end
+    end
+
+    context "when the test does check the head's position" do
+      let(:check_head_position) { true }
+
+      it "renders the boards without the 'without-header' attribute" do
+        expect(result).not_to include "<gs-board without-header>"
+      end
+    end
+  end
+
   # See https://github.com/mumuki/mulang/issues/144. Caused by not excluding the proper smells
   it 'checks an inspection over a function correctly' do
     response = bridge.run_tests!(
