@@ -2,7 +2,17 @@
 <link href="./gobstones-code-runner.html" rel="import"/>
 
 <dom-module id="mu-gobstones-custom-editor">
+  <style>
+    .floating-attire-toggle-button {
+      position: fixed;
+      top: 95px;
+      right: 15px;
+    }
+  </style>
+
   <template>
+    <gs-attire-toggle-button class="floating-attire-toggle-button"></gs-attire-toggle-button>
+
     <gs-element-blockly read-only="{{readOnly}}" id="blocklyElement"
                         media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
     <gs-element-blockly id="blocklyTmp" style="display: none"
@@ -10,6 +20,11 @@
   </template>
 
   <script>
+    function gbsBoardRemoveBorder(board) {
+      board._setBorderOff();
+      board.updateStyles();
+    }
+
     Polymer({
       is: 'mu-gobstones-custom-editor',
       properties: {
@@ -286,13 +301,8 @@
   </script>
 </dom-module>
 
-
 <dom-module id="kids-reset-button">
-
   <template>
-    <style>
-    </style>
-
     <div>
       <paper-fab id="gbsResetButton"
                  icon="av:replay"
@@ -474,6 +484,8 @@
         } else {
           finalBoard.update(table, head);
         }
+
+        gbsBoardRemoveBorder(finalBoard);
       },
 
       _highlight: function (region) {
@@ -588,6 +600,58 @@
           blockly.setDefaultToolbox(toolboxXml);
           editor.setTeacherActions(blockly);
         });
+      }
+    });
+  </script>
+</dom-module>
+
+<dom-module id="gs-attire-toggle-button">
+  <style>
+    .button {
+      width: 35px;
+      height: 35px;
+      padding-left: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      padding-right: 0;
+      background-color: transparent;
+      color: black;
+      transform: scale(1.5);
+    }
+  </style>
+
+  <template>
+    <div>
+      <paper-fab id="button"
+                 label$="[[_icon(isEnabled)]]"
+                 on-click="_onButtonClick"
+                 class="button"
+      ></paper-fab>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'gs-attire-toggle-button',
+      properties: {
+        isEnabled: {
+          type: Boolean,
+          value: true
+        }
+      },
+
+      _onButtonClick: function () {
+        this.isEnabled = !this.isEnabled;
+
+        $(".mu-kids-states").find("gs-board").each((__, board) => {
+          if (this.isEnabled) board.detectAttire();
+          else board.attire = null;
+          gbsBoardRemoveBorder(board);
+        });
+      },
+
+      _icon: function(isEnabled) {
+        return isEnabled ? "👚" : "◱";
       }
     });
   </script>
