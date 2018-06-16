@@ -11,7 +11,9 @@
   </style>
 
   <template>
-    <gs-attire-toggle-button class="floating-attire-toggle-button"></gs-attire-toggle-button>
+    <template is="dom-if" if="{{!teacherMode}}">
+      <gs-attire-toggle-button class="floating-attire-toggle-button"></gs-attire-toggle-button>
+    </template>
 
     <gs-element-blockly read-only="{{readOnly}}" id="blocklyElement"
                         media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
