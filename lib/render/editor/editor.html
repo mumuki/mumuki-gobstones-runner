@@ -2,6 +2,7 @@
 <link href="./gobstones-code-runner.html" rel="import"/>
 
 <dom-module id="mu-gobstones-custom-editor">
+
   <template>
     <gs-element-blockly read-only="{{readOnly}}" id="blocklyElement"
                         media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
@@ -10,6 +11,11 @@
   </template>
 
   <script>
+    function gbsBoardRemoveBorder(board) {
+      board._setBorderOff();
+      board.updateStyles();
+    }
+
     Polymer({
       is: 'mu-gobstones-custom-editor',
       properties: {
@@ -286,13 +292,8 @@
   </script>
 </dom-module>
 
-
 <dom-module id="kids-reset-button">
-
   <template>
-    <style>
-    </style>
-
     <div>
       <paper-fab id="gbsResetButton"
                  icon="av:replay"
@@ -474,6 +475,8 @@
         } else {
           finalBoard.update(table, head);
         }
+
+        gbsBoardRemoveBorder(finalBoard);
       },
 
       _highlight: function (region) {
@@ -587,6 +590,49 @@
           const blockly = editor.getBlockly();
           blockly.setDefaultToolbox(toolboxXml);
           editor.setTeacherActions(blockly);
+        });
+      }
+    });
+  </script>
+</dom-module>
+
+<dom-module id="gs-attire-toggle-button">
+  <style>
+    .button {
+      padding: 5px;
+      cursor: pointer;
+      float: right;
+    }
+  </style>
+
+  <template>
+    <div class="button" on-click="_onButtonClick">
+      <template is="dom-if" if="{{isEnabled}}">
+        <img src="./attires_enabled.svg">
+      </template>
+      <template is="dom-if" if="{{!isEnabled}}">
+        <img src="./attires_disabled.svg">
+      </template>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'gs-attire-toggle-button',
+      properties: {
+        isEnabled: {
+          type: Boolean,
+          value: true
+        }
+      },
+
+      _onButtonClick: function () {
+        this.isEnabled = !this.isEnabled;
+
+        $(".mu-kids-states").find("gs-board").each((__, board) => {
+          if (this.isEnabled) board.detectAttire();
+          else board.attire = null;
+          gbsBoardRemoveBorder(board);
         });
       }
     });
