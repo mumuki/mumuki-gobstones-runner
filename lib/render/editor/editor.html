@@ -24,8 +24,20 @@
       },
 
       attached: function () {
+
+        const setBlocklySounds = () => {
+          Blockly.WorkspaceAudio.prototype.preload = () => {
+            for (var soundName in this.SOUNDS_) {
+              let sound = this.SOUNDS_[soundName];
+              sound.volume = 0.01;
+              let playPromise = sound.play();
+              playPromise && playPromise.then(sound.pause.bind(sound));
+              if (goog.userAgent.IPAD || goog.userAgent.IPHONE) break;
+            }
+          };
+        };
+
         const setBlocklyColors = () => {
-          if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS) return setTimeout(setBlocklyColors, 50);
           Blockly.HSV_SATURATION = 0.64;
           Blockly.HSV_VALUE = 1;
 
@@ -63,6 +75,12 @@
           setTimeout(() => {
             this.getBlockly().testColors(Blockly.CUSTOM_COLORS);
           });
+        };
+
+        const setBlocklyCustomSettings = () => {
+          if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS) return setTimeout(setBlocklyCustomSettings, 50);
+          setBlocklySounds();
+          setBlocklyColors();
         };
 
         const updateFields = () => {
@@ -139,7 +157,7 @@
           }, 50);
         };
 
-        setBlocklyColors();
+        setBlocklyCustomSettings();
         initialize();
       },
 
