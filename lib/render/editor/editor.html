@@ -2,19 +2,8 @@
 <link href="./gobstones-code-runner.html" rel="import"/>
 
 <dom-module id="mu-gobstones-custom-editor">
-  <style>
-    .floating-attire-toggle-button {
-      position: fixed;
-      top: 95px;
-      right: 15px;
-    }
-  </style>
 
   <template>
-    <template is="dom-if" if="{{!teacherMode}}">
-      <gs-attire-toggle-button class="floating-attire-toggle-button"></gs-attire-toggle-button>
-    </template>
-
     <gs-element-blockly read-only="{{readOnly}}" id="blocklyElement"
                         media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
     <gs-element-blockly id="blocklyTmp" style="display: none"
@@ -610,25 +599,20 @@
 <dom-module id="gs-attire-toggle-button">
   <style>
     .button {
-      width: 35px;
-      height: 35px;
-      padding-left: 0;
-      padding-top: 0;
-      padding-bottom: 0;
-      padding-right: 0;
-      background-color: transparent;
-      color: black;
-      transform: scale(1.5);
+      padding: 5px;
+      cursor: pointer;
+      float: right;
     }
   </style>
 
   <template>
-    <div>
-      <paper-fab id="button"
-                 label$="[[_icon(isEnabled)]]"
-                 on-click="_onButtonClick"
-                 class="button"
-      ></paper-fab>
+    <div class="button" on-click="_onButtonClick">
+      <template is="dom-if" if="{{isEnabled}}">
+        <img src="./attires_enabled.svg">
+      </template>
+      <template is="dom-if" if="{{!isEnabled}}">
+        <img src="./attires_disabled.svg">
+      </template>
     </div>
   </template>
 
