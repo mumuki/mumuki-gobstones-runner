@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Rodrigo Alfonso']
   spec.email         = ['rodri042@gmail.com']
   spec.summary       = 'Gobstones Runner for Mumuki'
-  spec.homepage      = 'http://github.com/gobstones/mumuki-gobstones-runner'
+  spec.homepage      = 'http://github.com/mumuki/mumuki-gobstones-runner'
   spec.license       = 'MIT'
 
   spec.files         = Dir['lib/**/**']
