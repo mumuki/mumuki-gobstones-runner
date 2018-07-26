@@ -606,14 +606,16 @@
   </style>
 
   <template>
-    <div class="button" on-click="_onButtonClick">
-      <template is="dom-if" if="{{isEnabled}}">
-        <img src="./attires_enabled.svg">
-      </template>
-      <template is="dom-if" if="{{!isEnabled}}">
-        <img src="./attires_disabled.svg">
-      </template>
-    </div>
+    <template is="dom-if" if="{{shouldDisplay}}">
+      <div class="button" on-click="_onButtonClick">
+        <template is="dom-if" if="{{isEnabled}}">
+          <img src="./attires_enabled.svg">
+        </template>
+        <template is="dom-if" if="{{!isEnabled}}">
+          <img src="./attires_disabled.svg">
+        </template>
+      </div>
+    </template>
   </template>
 
   <script>
@@ -626,10 +628,17 @@
         }
       },
 
+      ready: function () {
+        this.boards = $(".mu-kids-states").find("gs-board");
+        setTimeout(() => {
+          this.shouldDisplay = this.boards.toArray().some( (board) => { return board.attire });
+        }, 500);
+      },
+
       _onButtonClick: function () {
         this.isEnabled = !this.isEnabled;
 
-        $(".mu-kids-states").find("gs-board").each((__, board) => {
+        this.boards.each((__, board) => {
           if (this.isEnabled) board.detectAttire();
           else board.attire = null;
           gbsBoardRemoveBorder(board);
