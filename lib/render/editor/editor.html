@@ -631,7 +631,7 @@
       ready: function () {
         this.boards = $(".mu-kids-states").find("gs-board");
         setTimeout(() => {
-          this.shouldDisplay = this.boards.toArray().some( (board) => { return board.attire });
+          this.shouldDisplay = this.boards.toArray().some(board => board.attire);
         }, 500);
       },
 
