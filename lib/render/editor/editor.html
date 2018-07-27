@@ -11,6 +11,10 @@
   </template>
 
   <script>
+    function postpone(action) {
+      return setTimeout(action, 50);
+    }
+
     function gbsBoardRemoveBorder(board) {
       board._setBorderOff();
       board.updateStyles();
@@ -84,7 +88,7 @@
         };
 
         const setBlocklyCustomSettings = () => {
-          if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS) return setTimeout(setBlocklyCustomSettings, 50);
+          if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS) return postpone(setBlocklyCustomSettings);
           setBlocklySounds();
           setBlocklyColors();
         };
@@ -143,7 +147,7 @@
         };
 
         const initialize = () => {
-          setTimeout(() => {
+          postpone(() => {
             const blockly = this.getBlockly();
 
             if (!blockly || !blockly.workspace) return initialize();
@@ -154,13 +158,13 @@
 
             this.setTeacherActions(blockly);
             this._setInitialXml(blockly);
-            this._initializeWorkspace(blockly);
+            this._initializeWorkspace(blockly, () => {
+              localOnResize();
+              blockly._onresize();
 
-            localOnResize();
-            blockly._onresize();
-
-            this._subscribeToWorkspace(blockly, updateFields);
-          }, 50);
+              this._subscribeToWorkspace(blockly, updateFields);
+            });
+          });
         };
 
         setBlocklyCustomSettings();
@@ -208,8 +212,8 @@
         }
       },
 
-      _initializeWorkspace: function(blockly) {
-        setTimeout(() => {
+      _initializeWorkspace: function(blockly, callback) {
+        postpone(() => {
           const value = $("#mu-custom-editor-value")[0].value;
 
           blockly.workspaceXml = value || (
@@ -218,6 +222,8 @@
               : blockly.initialXml
           );
           blockly.scrollToBlock();
+
+          callback();
         });
       },
 
@@ -376,7 +382,7 @@
 
         const setInitialState = () => {
           const initialBoard = this._getTargetBoard();
-          if (!initialBoard.size) return setTimeout(setInitialState, 50);
+          if (!initialBoard.size) return postpone(setInitialState);
 
           this.initialState = {
             size: initialBoard.size,
