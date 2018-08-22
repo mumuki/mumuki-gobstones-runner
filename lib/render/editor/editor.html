@@ -4,10 +4,16 @@
 <dom-module id="mu-gobstones-custom-editor">
 
   <template>
-    <gs-element-blockly read-only="{{readOnly}}" id="blocklyElement"
-                        media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
-    <gs-element-blockly id="blocklyTmp" style="display: none"
-                        media="https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"></gs-element-blockly>
+    <gs-element-blockly id="blocklyElement"
+                        read-only="{{readOnly}}"
+                        media="{{mediaUrl}}"
+                        local-media="{{localMediaUrl}}"
+    ></gs-element-blockly>
+    <gs-element-blockly id="blocklyTmp"
+                        style="display: none"
+                        media="{{mediaUrl}}"
+                        localMediaUrl="{{localMediaUrl}}"
+    ></gs-element-blockly>
   </template>
 
   <script>
@@ -23,6 +29,14 @@
     Polymer({
       is: 'mu-gobstones-custom-editor',
       properties: {
+        mediaUrl: {
+          type: String,
+          value: "https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"
+        },
+        localMediaUrl: {
+          type: String,
+          value: "https://github.com/Program-AR/gs-element-blockly/raw/0.19.1/media/"
+        },
         readOnly: {
           type: Boolean,
           value: false
