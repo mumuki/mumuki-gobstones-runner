@@ -12,13 +12,12 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
     Mulang::Code.new(mulang_language, ast)
   end
 
-  def compile_expectations_and_exceptions(request)
-    expectations, exceptions = super request
-
-    subject = request.batch.options[:subject]
-    expectations << { binding: '*', inspection: "Declares:=#{subject}" } if subject
-
-    [expectations, exceptions]
+  def compile_expectations(request)
+    super(request).tap do |expectations|
+      request.batch.options[:subject].try do |subject|
+        expectations[:ast] << { binding: '*', inspection: "Declares:=#{subject}" }
+      end
+    end
   end
 
   def default_smell_exceptions

@@ -17,11 +17,11 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'mumukit', '~> 2.21'
+  spec.add_dependency 'mumukit', '~> 2.26'
   spec.add_dependency 'sinatra-cross_origin', '~> 0.4'
-  spec.add_dependency 'gobstones-board', '~>1.16'
-  spec.add_dependency 'gobstones-blockly', '~>0.19'
-  spec.add_dependency 'gobstones-code-runner', '~>0.3'
+  spec.add_dependency 'gobstones-board', '~> 1.16'
+  spec.add_dependency 'gobstones-blockly', '~> 0.19'
+  spec.add_dependency 'gobstones-code-runner', '~> 0.3'
 
   spec.add_development_dependency 'bundler', '~> 1.7'
   spec.add_development_dependency 'rake', '~> 10.0'
