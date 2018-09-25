@@ -608,7 +608,7 @@
         $.get(this.toolboxUrl, function (toolboxXml) {
           const editor = $("mu-gobstones-custom-editor")[0];
           const blockly = editor.getBlockly();
-          blockly.setDefaultToolbox(toolboxXml);
+          blockly.toolbox = { defaultToolbox: toolboxXml };
           editor.setTeacherActions(blockly);
         });
       }
