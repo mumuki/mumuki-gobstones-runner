@@ -48,7 +48,6 @@
       },
 
       attached: function () {
-
         const setBlocklySounds = () => {
           Blockly.WorkspaceAudio.prototype.preload = () => {
             for (var soundName in this.SOUNDS_) {
@@ -110,13 +109,13 @@
         const updateFields = () => {
           const blockly = this.getBlockly();
 
-          const editorValue = $("#mu-custom-editor-value")[0];
+          const editorValue = this.getEditorValue();
           if (editorValue) {
             editorValue.value = blockly.workspaceXml;
           }
 
           if (this.teacherMode) {
-            const editorExtra = $("#mu-custom-editor-extra")[0];
+            const editorExtra = this.getEditorExtra();
             if (editorExtra) {
               editorExtra.value = blockly.workspaceXml;
             }
@@ -207,18 +206,34 @@
       },
 
       getStudentXml: function () {
-        return $("#mu-custom-editor-value")[0].value || "";
+        return this.getEditorValue().value || "";
       },
 
       getTeacherCode: function () {
-        const teacherXml = $("#mu-custom-editor-extra")[0];
+        const teacherXml = this.getEditorExtra();
         if (!teacherXml || !teacherXml.value) return;
         this.$.blocklyTmp.workspaceXml = teacherXml.value;
         return this.$.blocklyTmp.generateCode();
       },
 
+      getEditorValue: function() {
+        return $("#mu-custom-editor-value")[0];
+      },
+
+      getEditorDefaultValue: function() {
+        return $("#mu-custom-editor-default-value")[0];
+      },
+
+      getEditorExtra: function() {
+        return $("#mu-custom-editor-extra")[0];
+      },
+
+      getEditorTest: function() {
+        return $("#mu-custom-editor-test")[0];
+      },
+
       _setInitialXml: function (blockly) {
-        const editorDefaultContent = $("#mu-custom-editor-default-value")[0];
+        const editorDefaultContent = this.getEditorDefaultValue();
         if (editorDefaultContent && editorDefaultContent.value) {
           blockly.initialXml = editorDefaultContent.value;
         } else {
@@ -228,7 +243,7 @@
 
       _initializeWorkspace: function(blockly, callback) {
         postpone(() => {
-          const value = $("#mu-custom-editor-value")[0].value;
+          const value = this.getEditorValue().value;
 
           blockly.workspaceXml = value || (
             this.teacherMode
@@ -504,6 +519,19 @@
       },
 
       _showError: function (region, error) {
+        const expectsTimeout = this
+          ._getEditor()
+          .getEditorTest()
+          .value
+          .includes("expect_endless_while: true");
+
+        const isExpectedTimeout = (
+          error.reason && error.reason.code === "timeout" &&
+          expectsTimeout
+        );
+
+        if (isExpectedTimeout) return;
+
         this._getBlockly().showBlockError(region, error.message);
       },
 
