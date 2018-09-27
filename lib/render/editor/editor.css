@@ -54,3 +54,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.gbs_gh {
+  outline: 1px solid #cc0000 !important;
+}
