@@ -42,3 +42,15 @@
 .gbs_green {
   background-image: url(./green.svg) !important;
 }
+
+.gbs_stone {
+  position: relative;
+}
+
+.gbs_stone_amount {
+  font-family: "Nunito", sans-serif !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
