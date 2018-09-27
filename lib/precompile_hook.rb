@@ -1,6 +1,8 @@
 class GobstonesPrecompileHook < Mumukit::Templates::FileHook
   attr_accessor :batch
 
+  DEFAULT_TIMEOUT = 2
+
   structured true
   isolated true
 
@@ -17,7 +19,11 @@ class GobstonesPrecompileHook < Mumukit::Templates::FileHook
   end
 
   def timeout_argument
-    "--timeout #{(Mumukit.config.command_time_limit - 1) * 1000}"
+    "--timeout " + timeout.to_s
+  end
+
+  def timeout
+    (ENV['MUMUKI_GOBSTONES_TIMEOUT'] || DEFAULT_TIMEOUT).to_i * 1000
   end
 
   def compile(request)
