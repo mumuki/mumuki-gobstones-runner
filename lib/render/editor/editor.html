@@ -519,11 +519,9 @@
       },
 
       _showError: function (region, error) {
-        const expectsTimeout = this
-          ._getEditor()
-          .getEditorTest()
-          .value
-          .includes("expect_endless_while: true");
+        const expectsTimeout = /expect_endless_while *: *true/.test(
+          this._getEditor().getEditorTest().value
+        );
 
         const isExpectedTimeout = (
           error.reason && error.reason.code === "timeout" &&
