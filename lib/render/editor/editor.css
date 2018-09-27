@@ -26,3 +26,19 @@
   stroke-width: 3px;
   stroke-opacity: 0.5;
 }
+
+.gbs_blue {
+  background-image: url(./blue.svg) !important;
+}
+
+.gbs_black {
+  background-image: url(./black.svg) !important;
+}
+
+.gbs_red {
+  background-image: url(./red.svg) !important;
+}
+
+.gbs_green {
+  background-image: url(./green.svg) !important;
+}
