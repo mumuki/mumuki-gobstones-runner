@@ -31,9 +31,9 @@ class Mumukit::Server::App < Sinatra::Base
     get_asset route, File.join(__dir__, '..', path), type
   end
 
-  get_board_asset 'polymer.html', 'htmls/vendor/polymer.html', 'text/html'
-  get_board_asset 'polymer-mini.html', 'htmls/vendor/polymer-mini.html', 'text/html'
-  get_board_asset 'polymer-micro.html', 'htmls/vendor/polymer-micro.html', 'text/html'
+  ['polymer', 'polymer-mini', 'polymer-micro'].each { |name|
+    get_board_asset "#{name}.html", "htmls/vendor/#{name}.html", 'text/html'
+  }
   get_board_asset 'gs-board.html', 'htmls/gs-board.html', 'text/html'
 
   get_editor_asset 'editor/gs-element-blockly.html', 'htmls/gs-element-blockly.html', 'text/html'
@@ -44,6 +44,7 @@ class Mumukit::Server::App < Sinatra::Base
   get_local_asset 'editor/editor.css', 'lib/render/editor/editor.css', 'text/css'
   get_local_asset 'editor/editor.html', 'lib/render/editor/editor.html', 'text/html'
   get_local_asset 'boom.png', 'lib/public/boom.png', 'image/png'
-  get_local_asset 'editor/attires_enabled.svg', 'lib/public/attires_enabled.svg', 'image/svg+xml'
-  get_local_asset 'editor/attires_disabled.svg', 'lib/public/attires_disabled.svg', 'image/svg+xml'
+  ['red', 'blue', 'green', 'black', 'attires_enabled', 'attires_disabled'].each { |name|
+    get_local_asset "editor/#{name}.svg", "lib/public/#{name}.svg", 'image/svg+xml'
+  }
 end
