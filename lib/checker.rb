@@ -10,11 +10,7 @@ module Gobstones
       status = output[:status]
       result = output[:result]
 
-      is_expected_timeout = result[:finalBoardError] &&
-                                    result[:finalBoardError][:reason][:code] == 'timeout' &&
-                                    @options[:expect_endless_while]
-
-      return if is_expected_timeout
+      return if is_expected_timeout(result)
       assert_not_boom status, result
 
       expected_board = result[:extraBoard]
@@ -39,6 +35,8 @@ module Gobstones
     def check_error(output, expected)
       status = output[:status]
       result = output[:result]
+
+      return if is_expected_timeout(result)
 
       fail_with status: :check_error_failed_expected_boom,
                 result: {
@@ -95,6 +93,12 @@ module Gobstones
                   actual: :boom,
                   reason: result[:finalBoardError]
                 } if status == :runtime_error
+    end
+
+    def is_expected_timeout(result)
+      result[:finalBoardError] &&
+      result[:finalBoardError][:reason][:code] == 'timeout' &&
+      @options[:expect_endless_while]
     end
 
     def fail_with(error)
