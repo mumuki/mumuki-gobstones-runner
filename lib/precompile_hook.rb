@@ -47,13 +47,17 @@ class GobstonesPrecompileHook < Mumukit::Templates::FileHook
   def post_process_file(_file, result, status)
     if status == :passed
       result = result.parse_as_json
-      status = :aborted if is_timeout? result and !@batch.options[:expect_endless_while]
+      status = :aborted if is_timeout? result and !expects_timeout?
     end
 
     [result, status]
   end
 
   private
+
+  def expects_timeout?
+    @batch.options[:expect_endless_while] || @batch.examples.any? { |it| it[:postconditions][:error] == 'timeout' }
+  end
 
   def is_timeout?(result)
     result[0]&.dig(:result, :finalBoardError, :reason, :code) === 'timeout'
