@@ -47,6 +47,10 @@
   position: relative;
 }
 
+.gbs_board td {
+  padding: 0 !important;
+}
+
 .gbs_stone_amount {
   font-family: "Nunito", sans-serif !important;
   position: absolute;
