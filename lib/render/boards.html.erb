@@ -40,7 +40,7 @@
         <% if it.board.boom %>
           <img src=<%= "#{Mumukit.runner_url}/assets/boom.png" %> />
         <% else %>
-          <gs-board <%= @options[:check_head_position] ? "" : "without-header"  %>>
+          <gs-board <%= it.title == :expected_board && !@options[:check_head_position] ? "without-header" : "" %>>
             <%= it.board.gbb %>
           </gs-board>
         <% end %>
