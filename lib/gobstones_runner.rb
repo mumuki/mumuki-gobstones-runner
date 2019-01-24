@@ -5,7 +5,7 @@ I18n.load_translations_path File.join(__dir__, 'locales', '*.yml')
 
 Mumukit.runner_name = 'gobstones'
 Mumukit.configure do |config|
-  config.docker_image = 'mumuki/mumuki-gobstones-worker:3.0'
+  config.docker_image = 'mumuki/mumuki-gobstones-worker:3.1'
   config.content_type = 'html'
   config.structured = true
 end
