@@ -36,9 +36,9 @@
   <% @result[:boards].each do |it| %>
     <div class="board">
       <p class="title"><%=I18n.t it.title %></p>
-      <p>
+      <p class="<%= it.title %>">
         <% if it.board.boom %>
-          <img src=<%= "#{Mumukit.runner_url}/assets/boom.png" %> />
+          <gs-board boom></gs-board>
         <% else %>
           <gs-board <%= it.title == :expected_board && !@options[:check_head_position] ? "without-header" : "" %>>
             <%= it.board.gbb %>
