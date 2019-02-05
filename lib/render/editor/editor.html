@@ -534,6 +534,7 @@
       _updateBoards: function (resultsBoards) {
         let initialBoards = this.multipleScenarios.scenarios[0];
         resultsBoards.forEach((resultScenario, index) => {
+          if (this.multipleScenarios.currentScenarioIndex === index) return;
           let currentBoard = initialBoards[index];
           this._updateBoardFromResult(currentBoard.firstChild, resultScenario);
         });
@@ -541,7 +542,7 @@
 
       _updateBoardFromResult: function (originalBoard, resultBoard) {
         resultBoard = resultBoard.cloneNode(); // To force initialization
-        if(resultBoard.textContent) {
+        if (resultBoard.textContent) {
           let boardAttrs = gbbReader.fromString(resultBoard.textContent);
           originalBoard.update(boardAttrs.table, boardAttrs.header);
         }
