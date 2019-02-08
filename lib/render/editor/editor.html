@@ -676,10 +676,12 @@
       },
 
       ready: function () {
+        document.addEventListener('board-attire-changed', this._updateVisibility.bind(this));
+      },
+
+      _updateVisibility: function () {
         this.boards = $(".mu-kids-states").find("gs-board");
-        setTimeout(() => {
-          this.shouldDisplay = this.boards.toArray().some(board => board.attire);
-        }, 500);
+        this.shouldDisplay = this.boards.toArray().some(board => board.attire);
       },
 
       _onButtonClick: function () {
