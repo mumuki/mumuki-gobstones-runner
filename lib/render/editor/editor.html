@@ -688,8 +688,7 @@
         this.isEnabled = !this.isEnabled;
 
         this.boards.each((__, board) => {
-          if (this.isEnabled) board.detectAttire();
-          else board.attire = null;
+          if (board.attire) board.set("attire.enabled", this.isEnabled);
           gbsBoardRemoveBorder(board);
         });
       }
