@@ -707,7 +707,10 @@
       position: absolute;
       cursor: pointer;
       top: -2px;
-      right: -5px;
+      right: 0;
+      -ms-transform-origin: right center;
+      -webkit-transform-origin: right center;
+      transform-origin: right center;
     }
   </style>
 
@@ -736,6 +739,7 @@
 
       ready: function () {
         document.addEventListener('board-attire-changed', this._updateVisibility.bind(this));
+        this._relocateButton();
       },
 
       _updateVisibility: function () {
@@ -750,7 +754,23 @@
           if (board.attire) board.set("attire.enabled", this.isEnabled);
           gbsBoardRemoveBorder(board);
         });
-      }
+      },
+
+      _relocateButton: function () {
+        const $container = $('.mu-kids-gbs-board-initial');
+        if(!$container.length) return;
+        const $header = $('.mu-initial-state-header');
+        const $attireToggle = $container.find('.button.gs-attire-toggle-button');
+        if(!$attireToggle.length) return setTimeout(() => this._relocateButton());
+        const margin = 4; // Leave a margin between text and image
+        const maxSize = 65.75; // Original width
+        mumuki.resize(() => {
+          $attireToggle.css('transform', 'scale(1)');
+          let buttonSize = (($container.width() - $header.width()) / 2) - margin;
+          let scaleX = Math.min(buttonSize, maxSize) / $attireToggle.width();
+          $attireToggle.css('transform', `scale(${scaleX})`);
+        });
+      },
     });
   </script>
 </dom-module>
