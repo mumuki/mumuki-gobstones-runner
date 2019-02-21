@@ -106,6 +106,9 @@
           if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS) return postpone(setBlocklyCustomSettings);
           setBlocklySounds();
           setBlocklyColors();
+
+          // Removing "/" from the block id character set to avoid syntax errors
+          Blockly.utils.genUid.soup_ = Blockly.utils.genUid.soup_.replace("/", "");
         };
 
         const updateFields = () => {
