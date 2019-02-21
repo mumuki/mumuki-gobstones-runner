@@ -412,21 +412,31 @@
             this._onResetState();
           })
         };
+        const _getScenarioSelector = function (scenario) {
+          return `.mu-state-${scenario} .mu-kids-state-image > *`;
+        };
+
+        const _createMultipleScenarios = () => {
+          const scenarios = ['initial', 'final'];
+          const scenarioSelectors = scenarios.map(it => _getScenarioSelector(it));
+          this.multipleScenarios = new mumuki.MultipleScenarios(scenarioSelectors);
+        };
 
         const setInitialState = () => {
-          const initialBoard = this._getTargetBoard();
-          if (!initialBoard.size) return postpone(setInitialState);
+          const initialBoards = this._getInitialBoards();
+          if (!initialBoards[0].size) return postpone(setInitialState);
 
-          this.initialState = {
-            size: initialBoard.size,
-            table: initialBoard.table,
-            header: initialBoard.header
-          };
+          this.initialState = initialBoards.toArray().map((board) => this._boardToState(board));
 
           resetStatusAfterAborted();
-        }
+        };
 
+        _createMultipleScenarios();
         setInitialState();
+      },
+
+      _boardToState : function ({size, table, header, boom}) {
+        return {size, table, header, boom}
       },
 
       _onRunRequest: function (event) {
@@ -443,6 +453,7 @@
         this._cleanState();
         this._cleanErrors(finalBoard);
 
+        this.targetState = this._boardToState(finalBoard);
         const promise = new mumuki.bridge.Laboratory()
           .runTests(solution)
           .then((results) => {
@@ -456,7 +467,7 @@
         this.serverPromise = promise;
 
         controller.start({
-          initialState: this.initialState,
+          initialState: this.targetState,
           code: {
             main: code,
             library: "",
@@ -500,7 +511,44 @@
 
       _onExecutionStop: function (data) {
         this._cleanState();
+        this._setResultsBoards(data.test_results);
         mumuki.kids.showResult(data);
+      },
+
+      _setResultsBoards: function (testResults) {
+        if (!testResults) return;
+        const testResultsBoards = this._testResultsBoards(testResults);
+        this._updateBoards(testResultsBoards);
+        const testResultsStatuses = this._testResultsStatuses(testResults);
+        this.multipleScenarios.updateIndicators(testResultsStatuses);
+      },
+
+      _testResultsBoards: function (testResults) {
+        return testResults.map(it => $(it.result).find('.actual_board > *, .final_board > *')[0]);
+      },
+
+      _testResultsStatuses: function (testResults) {
+        return testResults.map(it => it.status);
+      },
+
+      _updateBoards: function (resultsBoards) {
+        const initialBoards = this.multipleScenarios.scenarios[0];
+        resultsBoards.forEach((resultScenario, index) => {
+          if (this.multipleScenarios.currentScenarioIndex === index) return;
+          const currentBoard = initialBoards[index];
+          this._updateBoardFromResult(currentBoard.firstChild, resultScenario);
+        });
+      },
+
+      _updateBoardFromResult: function (originalBoard, resultBoard) {
+        resultBoard = resultBoard.cloneNode(); // To force initialization
+        if (resultBoard.textContent) {
+          const boardAttrs = gbbReader.fromString(resultBoard.textContent);
+          originalBoard.update(boardAttrs.table, boardAttrs.header);
+        }
+        else {
+          originalBoard.boom = resultBoard.boom;
+        }
       },
 
       _updateBoard: function (state, finalBoard) {
@@ -561,8 +609,12 @@
         return $("mu-gobstones-custom-editor")[0];
       },
 
+      _getInitialBoards: function () {
+        return $(".mu-kids-gbs-board-initial gs-board");
+      },
+
       _getTargetBoard: function () {
-        return $(".mu-kids-gbs-board-initial gs-board")[0];
+        return this._getInitialBoards().parent('.active').children()[0];
       },
 
       _getSubmitCss: function (isWaiting) {
@@ -573,17 +625,20 @@
         return isWaiting ? "visible" : "hidden";
       },
 
-      _resetBoard: function () {
-        const initialState = this.initialState;
-        const initialBoard = this._getTargetBoard();
-        initialBoard.update(initialState.table, initialState.header);
-        initialBoard.boom = false;
+      _resetBoards: function () {
+        const boards = this._getInitialBoards();
+        this.initialState.forEach(({table, header, boom}, index) => {
+          const board = boards[index];
+          board.update(table, header);
+          board.boom = boom;
+        });
       },
 
       _onResetState: function () {
         this._getBlockly().workspace.removeBlockErrors();
-        this._resetBoard();
+        this._resetBoards();
         this._toggleInitialState();
+        this.multipleScenarios.resetIndicators();
         mumuki.kids.restart();
       },
 
@@ -649,9 +704,13 @@
 <dom-module id="gs-attire-toggle-button">
   <style>
     .button {
-      padding: 5px;
+      position: absolute;
       cursor: pointer;
-      float: right;
+      top: -2px;
+      right: 0;
+      -ms-transform-origin: right center;
+      -webkit-transform-origin: right center;
+      transform-origin: right center;
     }
   </style>
 
@@ -680,6 +739,7 @@
 
       ready: function () {
         document.addEventListener('board-attire-changed', this._updateVisibility.bind(this));
+        this._relocateButton();
       },
 
       _updateVisibility: function () {
@@ -694,7 +754,23 @@
           if (board.attire) board.set("attire.enabled", this.isEnabled);
           gbsBoardRemoveBorder(board);
         });
-      }
+      },
+
+      _relocateButton: function () {
+        const $container = $('.mu-kids-gbs-board-initial');
+        if(!$container.length) return;
+        const $header = $('.mu-initial-state-header');
+        const $attireToggle = $container.find('.button.gs-attire-toggle-button');
+        if(!$attireToggle.length) return setTimeout(() => this._relocateButton());
+        const margin = 4; // Leave a margin between text and image
+        const maxSize = 65.75; // Original width
+        mumuki.resize(() => {
+          $attireToggle.css('transform', 'scale(1)');
+          let buttonSize = (($container.width() - $header.width()) / 2) - margin;
+          let scaleX = Math.min(buttonSize, maxSize) / $attireToggle.width();
+          $attireToggle.css('transform', `scale(${scaleX})`);
+        });
+      },
     });
   </script>
 </dom-module>
