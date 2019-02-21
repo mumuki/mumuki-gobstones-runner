@@ -517,9 +517,9 @@
 
       _setResultsBoards: function (testResults) {
         if (!testResults) return;
-        let testResultsBoards = this._testResultsBoards(testResults);
+        const testResultsBoards = this._testResultsBoards(testResults);
         this._updateBoards(testResultsBoards);
-        let testResultsStatuses = this._testResultsStatuses(testResults);
+        const testResultsStatuses = this._testResultsStatuses(testResults);
         this.multipleScenarios.updateIndicators(testResultsStatuses);
       },
 
@@ -532,10 +532,10 @@
       },
 
       _updateBoards: function (resultsBoards) {
-        let initialBoards = this.multipleScenarios.scenarios[0];
+        const initialBoards = this.multipleScenarios.scenarios[0];
         resultsBoards.forEach((resultScenario, index) => {
           if (this.multipleScenarios.currentScenarioIndex === index) return;
-          let currentBoard = initialBoards[index];
+          const currentBoard = initialBoards[index];
           this._updateBoardFromResult(currentBoard.firstChild, resultScenario);
         });
       },
@@ -543,7 +543,7 @@
       _updateBoardFromResult: function (originalBoard, resultBoard) {
         resultBoard = resultBoard.cloneNode(); // To force initialization
         if (resultBoard.textContent) {
-          let boardAttrs = gbbReader.fromString(resultBoard.textContent);
+          const boardAttrs = gbbReader.fromString(resultBoard.textContent);
           originalBoard.update(boardAttrs.table, boardAttrs.header);
         }
         else {
@@ -628,7 +628,7 @@
       _resetBoards: function () {
         const boards = this._getInitialBoards();
         this.initialState.forEach(({table, header, boom}, index) => {
-          let board = boards[index];
+          const board = boards[index];
           board.update(table, header);
           board.boom = boom;
         });
