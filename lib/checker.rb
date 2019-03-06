@@ -113,10 +113,14 @@ module Gobstones
       return "no_stones" if code == 'cannot-remove-stone'
       return "out_of_board" if code == 'cannot-move-to'
       return "unassigned_variable" if code == 'undefined-variable'
-      return "wrong_argument_type" if code.include? 'type-mismatch'
+      return "wrong_argument_type" if has_wrong_argument_type? code
       return "wrong_arguments_quantity" if code.include? 'arity-mismatch'
 
       code
+    end
+
+    def has_wrong_argument_type?(code)
+      code.match Regexp.union('type-mismatch', 'expected-value-of-type')
     end
 
     def adapt_value(return_value)
