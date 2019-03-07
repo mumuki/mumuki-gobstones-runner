@@ -148,7 +148,18 @@ examples:
                                                  result: ''
   end
 
-  it 'answers a valid hash when the expected boom type is wrong_arguments_type' do
+  it 'answers a valid hash when the expected boom type is wrong_argument_type' do
+    response = bridge.run_tests!(
+      content: "program {\nDibujarLinea3(Este, Verde)\nMover(Este)\nDibujarLinea3(Norte, Rojo)\nMover(Norte)\nDibujarLinea3(Oeste, Negro)\nMover(Oeste)\nDibujarLinea3(Sur, Azul)\n}",
+      extra: "procedure DibujarLinea3(color, direccion) {\n repeat(color) {\n  Poner(color)\n  Mover(direccion)\n  Poner(color)\n  Mover(direccion)\n  Poner(color)\n }\n }",
+      expectations: [],
+      test: "check_head_position: true\n\nexamples:\n - title: '¡BOOM!'\n   initial_board: |\n     GBB/1.0\n     size 3 3\n     head 0 0\n   error: wrong_argument_type")
+
+    expect(response[:status]).to eq :passed
+    expect(response[:response_type]).to eq :structured
+  end
+
+  it 'answers a valid hash when the expected boom type is wrong_argument_type' do
     response = bridge.run_tests!(
       content: "program {\nDibujarLinea3(Este, Verde)\nMover(Este)\nDibujarLinea3(Norte, Rojo)\nMover(Norte)\nDibujarLinea3(Oeste, Negro)\nMover(Oeste)\nDibujarLinea3(Sur, Azul)\n}",
       extra: "procedure DibujarLinea3(color, direccion) {\n  Poner(color)\n  Mover(direccion)\n  Poner(color)\n  Mover(direccion)\n  Poner(color)\n }",
