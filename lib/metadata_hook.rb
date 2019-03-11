@@ -17,10 +17,11 @@ class GobstonesMetadataHook < Mumukit::Hook
       },
       editor_assets_urls: {
         js: [
-          'assets/editor/editor.js'
+          'assets/editor/editor.js',
+          'assets/editor/hammer.min.js'
         ],
         html: [
-          'assets/editor/editor.html',
+          'assets/editor/editor.html'
         ],
         css: [
           'assets/editor/editor.css'

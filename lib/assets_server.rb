@@ -43,6 +43,7 @@ class Mumukit::Server::App < Sinatra::Base
   get_local_asset 'editor/editor.js', 'lib/render/editor/editor.js', 'application/javascript'
   get_local_asset 'editor/editor.css', 'lib/render/editor/editor.css', 'text/css'
   get_local_asset 'editor/editor.html', 'lib/render/editor/editor.html', 'text/html'
+  get_local_asset 'editor/hammer.min.js', 'lib/render/editor/hammer.min.js', 'application/javascript'
   get_local_asset 'boom.png', 'lib/public/boom.png', 'image/png'
   ['red', 'blue', 'green', 'black', 'attires_enabled', 'attires_disabled'].each { |name|
     get_local_asset "editor/#{name}.svg", "lib/public/#{name}.svg", 'image/svg+xml'
