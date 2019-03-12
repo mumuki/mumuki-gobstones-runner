@@ -136,6 +136,8 @@
           }
         };
 
+        this.$exerciseContainer = $('.mu-kids-exercise');
+
         const setTrashPosition = () => {
           var width = $('#blocklyDiv').width() - 68;
           var height = $('#blocklyDiv').height() - 210;
@@ -176,6 +178,8 @@
 
             this.setTeacherActions(blockly);
             this._setInitialXml(blockly);
+            this.interactiveMode = blockly.initialXml.indexOf("block type=\"InteractiveProgram\"") !== -1;
+            if (this.interactiveMode) this.setInteractiveLayout();
             this._initializeWorkspace(blockly, () => {
               localOnResize();
               blockly._onresize();
@@ -187,6 +191,27 @@
 
         setBlocklyCustomSettings();
         initialize();
+      },
+
+      toggleInteractiveMode() {
+        this.$exerciseContainer.toggleClass('play-mode');
+        this.triggerResize();
+      },
+
+      triggerResize() {
+        let event = document.createEvent('HTMLEvents');
+        event.initEvent('resize', true, false);
+        document.dispatchEvent(event);
+      },
+
+      setInteractiveLayout() {
+        this.$exerciseContainer.addClass('mu-kids-interactive');
+        $('.mu-state-final').html('<gs-keyboard/>');
+        $('.mu-editor').append($('<kids-interactive-submit-button/>'));
+        // In order to avoid triggering click on enter or space
+        $('#gbsPlayButton')[0].addEventListener('focus', function () {
+          this.blur();
+        })
       },
 
       setTeacherActions(blockly) {
@@ -332,6 +357,54 @@
   </script>
 </dom-module>
 
+<dom-module id="kids-interactive-submit-button">
+  <style>
+    .mu-kids-interactive-submit-button {
+      position: absolute;
+      right: 80px;
+      width: 56px;
+      height: 56px;
+      bottom: 15px;
+      z-index: 70;
+    }
+
+    .mu-kids-interactive-submit-button paper-fab {
+      background-color: #0B456D;
+    }
+
+  </style>
+
+  <template>
+    <div class="mu-kids-interactive-submit-button">
+      <paper-fab icon="av:skip-next"
+                 on-click="_onButtonClick"
+      ></paper-fab>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'kids-interactive-submit-button',
+
+      ready: function () {
+        this.submitButton = $("kids-submit-button")[0];
+        this.codeRunner = this.submitButton.$.runner;
+      },
+
+      _onButtonClick: function () {
+        const currentPromise = this.submitButton.serverPromise;
+        if(!currentPromise) return;
+        currentPromise.always(() => {
+          const currentResponse = this.submitButton.serverResponse;
+          this.codeRunner.stop();
+          mumuki.kids.showResult(currentResponse);
+          this.codeRunner.isDirty = true;
+        })
+      },
+    });
+  </script>
+</dom-module>
+
 <dom-module id="kids-reset-button">
   <template>
     <div>
@@ -433,6 +506,7 @@
 
         _createMultipleScenarios();
         setInitialState();
+        this.$editor = $("mu-gobstones-custom-editor")[0];
       },
 
       _boardToState : function ({size, table, header, boom}) {
@@ -442,7 +516,7 @@
       _onRunRequest: function (event) {
         const {detail: controller} = event;
 
-        const editor = this._getEditor();
+        const editor = this.$editor;
         const xml = editor.getStudentXml();
         const code = editor.getStudentCode();
         const teacherCode = editor.getTeacherCode() || "";
@@ -459,12 +533,14 @@
           .then((results) => {
             if (promise !== this.serverPromise) return;
 
-            this._onRemoteExecutionStop(results)
+            this._onRemoteExecutionStop(results);
           })
           .catch(() => {
             mumuki.kids.showResult({status: 'aborted'})
           });
         this.serverPromise = promise;
+
+        editor.toggleInteractiveMode();
 
         controller.start({
           initialState: this.targetState,
@@ -490,12 +566,32 @@
       _onStop: function (event) {
         const reason = event.detail;
 
+        const editor = this.$editor;
+
         if (reason === "end") {
-          this._onLocalExecutionStop();
-          this._toggleInitialState();
-          this.$.runner.isDirty = true;
+          this._onExecutionEnd(editor);
+        }
+        else if (reason === "cancel" && editor.interactiveMode) {
+          this._onInteractiveStop(editor);
         }
         else this.serverPromise = undefined;
+      },
+
+      _onExecutionEnd: function (editor) {
+        if(editor.interactiveMode) {
+          editor.toggleInteractiveMode();
+        } else {
+          this._onLocalExecutionStop();
+          this._toggleInitialState();
+        }
+        this.$.runner.isDirty = true;
+      },
+
+      _onInteractiveStop: function (editor) {
+        this._removeBlockErrors();
+        this._cleanState();
+        this._resetBoards();
+        editor.toggleInteractiveMode();
       },
 
       _onLocalExecutionStop: function () {
@@ -505,8 +601,9 @@
 
       _onRemoteExecutionStop: function (serverResponse) {
         this.serverResponse = serverResponse;
-
-        if (!this.$.runner.isRunning) this._onExecutionStop(serverResponse);
+        if (!this.$.runner.isRunning && !this.$editor.interactiveMode) {
+          this._onExecutionStop(serverResponse);
+        }
       },
 
       _onExecutionStop: function (data) {
@@ -572,7 +669,7 @@
 
       _showError: function (region, error) {
         const expectsTimeout = /expect_endless_while *: *true/.test(
-          this._getEditor().getEditorTest().value
+          this.$editor.getEditorTest().value
         );
 
         const isExpectedTimeout = (
@@ -592,8 +689,12 @@
       },
 
       _cleanErrors: function (finalBoard) {
-        this._getBlockly().workspace.removeBlockErrors();
+        this._removeBlockErrors();
         finalBoard.boom = false;
+      },
+
+      _removeBlockErrors: function () {
+        this._getBlockly().workspace.removeBlockErrors();
       },
 
       _getLastRegion: function (context = {}) {
@@ -602,11 +703,7 @@
       },
 
       _getBlockly: function () {
-        return this._getEditor().getBlockly();
-      },
-
-      _getEditor: function () {
-        return $("mu-gobstones-custom-editor")[0];
+        return this.$editor.getBlockly();
       },
 
       _getInitialBoards: function () {
@@ -643,6 +740,7 @@
       },
 
       _toggleInitialState: function () {
+        if(this.$editor.interactiveMode) return;
         $("#mu-initial-state-text").toggle();
         $("#mu-actual-state-text").toggle();
       }
@@ -696,6 +794,274 @@
           blockly.toolbox = { defaultToolbox: toolboxXml };
           editor.setTeacherActions(blockly);
         });
+      }
+    });
+  </script>
+</dom-module>
+
+<dom-module id="gs-keyboard-arrow-keys">
+  <template>
+    <div class="gs-keyboard-arrow-keys-container">
+      <svg class="keys-svg" viewBox="0 0 100 100" height="100%">
+        <path d="M50,0 60,10 60,26 40,26 40,10Z" data-direction="DIRECTION_UP" on-tap="dispatchArrowPressed"></path>
+        <path d="M50,100 60,90 60,74 40,74 40,90Z" data-direction="DIRECTION_DOWN" on-tap="dispatchArrowPressed"></path>
+        <path d="M0,50 10,60 26,60 26,40 10,40Z" data-direction="DIRECTION_LEFT" on-tap="dispatchArrowPressed"></path>
+        <path d="M100,50 90,60 74,60 74,40 90,40Z" data-direction="DIRECTION_RIGHT" on-tap="dispatchArrowPressed"></path>
+      </svg>
+    </div>
+  </template>
+
+  <style>
+    .gs-keyboard-arrow-keys path {
+      fill: #0B456D;
+      cursor: pointer;
+    }
+
+    .gs-keyboard-arrow-keys-container {
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
+
+    .keys-svg {
+      display: block;
+      margin: 0 auto;
+      padding-left: 10px;
+      overflow: visible;
+    }
+
+    .keys-svg path {
+      filter: drop-shadow(2px 2px 2px rgba(11, 70, 93, .4));
+      -webkit-filter: drop-shadow(2px 2px 2px rgba(11, 70, 93, .4));
+    }
+
+    .keys-svg path.pressed {
+      filter: drop-shadow(1px 1px 1px rgba(11, 70, 93, .4));
+      -webkit-filter: drop-shadow(1px 1px 1px rgba(11, 70, 93, .4));
+      transform: translate(1px, 1px);
+    }
+  </style>
+
+  <script>
+    Polymer({
+      is: 'gs-keyboard-arrow-keys',
+      properties: {
+        dispatchKeydown: {
+          type: Object
+        }
+      },
+      ready: function () {
+      },
+      clickTransition: function (direction) {
+        const arrow = $(this).find('path[data-direction=' + direction +']');
+        arrow.toggleClass('pressed');
+        setTimeout(() => arrow.toggleClass('pressed'), 300);
+      },
+      dispatchArrowPressed: function (event) {
+        const direction = event.target.dataset.direction;
+        this.dispatchKeydown(Hammer[direction]);
+        this.clickTransition(direction);
+      }
+    })
+  </script>
+</dom-module>
+
+<dom-module id="gs-keyboard-key">
+  <template>
+    <button class="gs-keyboard-button" on-tap="dispatch" type="button" class="btn btn-secondary gs-keyboard-key">
+      {{ key }}
+    </button>
+  </template>
+
+  <style>
+    .gs-keyboard-key {
+      background-color: #ecf0f1;
+      border: 1px solid #dce4ec;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 3px;
+    }
+
+    .gs-keyboard-key {
+      height: 100%;
+      width: 100%;
+    }
+
+    .gs-keyboard-key:hover {
+      color: unset;
+    }
+
+    .gs-keyboard-key:focus {
+      outline-color: #0B456D;
+    }
+  </style>
+
+  <script>
+    Polymer({
+      is: 'gs-keyboard-key',
+      properties: {
+        key: {
+          type: String
+        },
+        keyCode: {
+          type: String,
+        },
+        dispatchKeydown: {
+          type: Object
+        }
+      },
+      ready: function () {
+        if(!this.keyCode) {
+          this.keyCode = this.key;
+        }
+      },
+      dispatch: function () {
+        this.dispatchKeydown(this.keyCode)
+      }
+    })
+  </script>
+</dom-module>
+
+<dom-module id="gs-keyboard">
+  <style>
+    .gs-keyboard-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .gs-keyboard-container .section {
+      flex-grow: 4;
+      height: 100%;
+      width: 100%;
+    }
+
+    .arrow-keys {
+      padding: 15px 0;
+    }
+
+    .gs-keyboard-key-container.small {
+      flex-basis: 33%;
+    }
+
+    .gs-keyboard-key-container {
+      flex-grow: 1;
+      padding: 1px;
+    }
+    
+    .gs-keyboard-keys-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+  </style>
+
+  <template>
+    <template is="dom-if" if="{{configLoaded}}">
+      <div class="gs-keyboard-container">
+        <div class="section gs-keyboard-keys-container">
+          <template is="dom-repeat" items="{{keyboardConfig.keys}}" as="key">
+            <gs-keyboard-key class="gs-keyboard-key-container small" dispatch-keydown="{{dispatchKeydown}}" key="{{key}}"></gs-keyboard-key>
+          </template>
+          <!-- Should definitely internationalize the space key below -->
+          <gs-keyboard-key class="gs-keyboard-key-container" dispatch-keydown="{{dispatchKeydown}}" key="ESPACIO" key-code="space"></gs-keyboard-key>
+        </div>
+        <template is="dom-if" if="[[_shouldDisplayArrows(keyboardConfig)]]">
+          <div class="section arrow-keys">
+            <gs-keyboard-arrow-keys dispatch-keydown="{{dispatchKeydown}}">
+            </gs-keyboard-arrow-keys>
+          </div>
+        </template>
+      </div>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'gs-keyboard',
+      properties: {
+        keyboardConfig: {
+          type: Object
+        },
+        dispatchKeydown: {
+          type: Object,
+          value: function () {
+            return function (key) {
+              const keyCode = GobstonesKeyboard.keyboardMap[key] || key.charCodeAt(0);
+              const event = new KeyboardEvent('keydown', {'keyCode': keyCode, 'which': keyCode});
+              document.dispatchEvent(event);
+            };
+          }
+        },
+        configLoaded: {
+          type: Boolean,
+          value: false,
+          observer: '_onConfigLoaded'
+        }
+      },
+      ready: function () {
+        document.addEventListener('gs-keyboard-config-changed', this._loadConfig.bind(this));
+        this._loadConfig();
+      },
+      _onConfigLoaded: function () {
+        if(this.configLoaded) this._createSwipeListener();
+      },
+      _createSwipeListener: function () {
+        const $swipeListenerArea = $('.mu-state-initial gs-board')[0];
+        const hammer = new Hammer($swipeListenerArea);
+        hammer.get('swipe').set({direction: Hammer.DIRECTION_ALL});
+        hammer.on('swipe', (event) => {
+          this.dispatchKeydown(event.direction)
+        });
+      },
+      _loadConfig: function () {
+        if (typeof GobstonesKeyboard !== "undefined") {
+          this.keyboardConfig = GobstonesKeyboard.config;
+          this.configLoaded = true;
+        }
+      },
+      _shouldDisplayArrows: function (keyboardConfig) {
+        return keyboardConfig && keyboardConfig.showArrows;
+      }
+    })
+  </script>
+</dom-module>
+
+<dom-module id="gs-keyboard-config">
+  <script>
+    Polymer({
+      is: 'gs-keyboard-config',
+      properties: {
+        keyboardUrl: Object,
+        observer: '_keyboardChanged'
+      },
+
+      attached: function () {
+        this._createKeyboardConfig();
+        this._setKeyboard();
+      },
+
+      _createKeyboardConfig: function () {
+        if(typeof GobstonesKeyboard === 'undefined') GobstonesKeyboard = {};
+        GobstonesKeyboard.keyboardMap = {
+          [Hammer.DIRECTION_LEFT]: 37,
+          [Hammer.DIRECTION_UP]: 38,
+          [Hammer.DIRECTION_RIGHT]: 39,
+          [Hammer.DIRECTION_DOWN]: 40,
+          'space': 32
+        }
+      },
+
+      _keyboardChanged: function () {
+        this._setKeyboard();
+      },
+
+      _setKeyboard: function () {
+        $.getJSON(this.keyboardUrl, (keyboardConfig) => {
+          GobstonesKeyboard.config = keyboardConfig;
+          this.fire('gs-keyboard-config-changed');
+        })
       }
     });
   </script>
@@ -756,17 +1122,22 @@
         });
       },
 
+      _getEditor: function () {
+        return $("mu-gobstones-custom-editor")[0];
+      },
+
       _relocateButton: function () {
         const $container = $('.mu-kids-gbs-board-initial');
-        if(!$container.length) return;
+        if(!$container.length || this._getEditor().interactiveMode) return;
         const $header = $('.mu-initial-state-header');
+        const headerWidth = $header.width() || $container.width();
         const $attireToggle = $container.find('.button.gs-attire-toggle-button');
         if(!$attireToggle.length) return setTimeout(() => this._relocateButton());
         const margin = 4; // Leave a margin between text and image
         const maxSize = 65.75; // Original width
         mumuki.resize(() => {
           $attireToggle.css('transform', 'scale(1)');
-          let buttonSize = (($container.width() - $header.width()) / 2) - margin;
+          let buttonSize = (($container.width() - headerWidth) / 2) - margin;
           let scaleX = Math.min(buttonSize, maxSize) / $attireToggle.width();
           $attireToggle.css('transform', `scale(${scaleX})`);
         });
