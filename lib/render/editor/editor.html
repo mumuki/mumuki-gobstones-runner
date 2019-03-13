@@ -153,7 +153,7 @@
         };
 
         const triggerResizeOnContextModalClose = () => {
-          $('#kids-context, #kids-results, #kids-results-aborted').on('hidden.bs.modal shown.bs.modal', function () {
+          $('.mu-kids-context, .mu-kids-results').on('hidden.bs.modal shown.bs.modal', function () {
             localOnResize();
           })
         };
@@ -407,13 +407,13 @@
 
       ready: function () {
         const resetStatusAfterAborted = () => {
-          $('#kids-results-aborted').on('hidden.bs.modal', () => {
+          $('.mu-kids-results-aborted').on('hidden.bs.modal', () => {
             this.$.runner.isDirty = false;
             this._onResetState();
           })
         };
         const _getScenarioSelector = function (scenario) {
-          return `.mu-state-${scenario} .mu-kids-state-image > *`;
+          return `.mu-${scenario}-state .mu-kids-state-image > *`;
         };
 
         const _createMultipleScenarios = () => {
@@ -610,7 +610,7 @@
       },
 
       _getInitialBoards: function () {
-        return $(".mu-kids-gbs-board-initial gs-board");
+        return $(".mu-initial-state gs-board");
       },
 
       _getTargetBoard: function () {
