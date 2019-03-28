@@ -453,7 +453,9 @@
         this._cleanState();
         this._cleanErrors(finalBoard);
 
-        this.targetState = this._boardToState(finalBoard);
+        const targetStateIndex = this.multipleScenarios.currentScenarioIndex;
+        this.targetState = this.initialState[targetStateIndex];
+        
         const promise = new mumuki.bridge.Laboratory()
           .runTests(solution)
           .then((results) => {
