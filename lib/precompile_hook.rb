@@ -4,7 +4,7 @@ class GobstonesPrecompileHook < Mumukit::Templates::FileHook
   DEFAULT_TIMEOUT = 2
 
   structured true
-  isolated false
+  isolated true
 
   def tempfile_extension
     '.json'

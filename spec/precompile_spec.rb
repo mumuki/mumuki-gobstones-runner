@@ -85,6 +85,7 @@ examples:
                                         show_final_board: true,
                                         check_head_position: true,
                                         expect_endless_while: true,
+                                        interactive: false,
                                         subject: nil }
       it { expect(runner.batch.examples).to eq expected_examples }
     end
@@ -121,6 +122,7 @@ examples:
         show_final_board: false,
         check_head_position: false,
         expect_endless_while: false,
+        interactive: false,
         subject: "aName"
       }) }
       it { expect(runner.batch.examples).to eq expected_examples }

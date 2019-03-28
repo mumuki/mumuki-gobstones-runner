@@ -206,7 +206,7 @@
 
       setInteractiveLayout() {
         this.$exerciseContainer.addClass('mu-kids-interactive');
-        $('.mu-state-final').html('<gs-keyboard/>');
+        $('.mu-final-state').html('<gs-keyboard/>');
         $('.mu-editor').append($('<kids-interactive-submit-button/>'));
         // In order to avoid triggering click on enter or space
         $('#gbsPlayButton')[0].addEventListener('focus', function () {
@@ -1008,7 +1008,7 @@
         if(this.configLoaded) this._createSwipeListener();
       },
       _createSwipeListener: function () {
-        const $swipeListenerArea = $('.mu-state-initial gs-board')[0];
+        const $swipeListenerArea = $('.mu-initial-state gs-board')[0];
         const hammer = new Hammer($swipeListenerArea);
         hammer.get('swipe').set({direction: Hammer.DIRECTION_ALL});
         hammer.on('swipe', (event) => {

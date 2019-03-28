@@ -71,7 +71,7 @@
   display: none;
 }
 
-.mu-kids-interactive .mu-state-initial {
+.mu-kids-interactive .mu-initial-state {
   height: 70%;
 }
 
@@ -79,7 +79,7 @@
   height: 100%;
 }
 
-.mu-kids-interactive .mu-state-final {
+.mu-kids-interactive .mu-final-state {
   height: 30%;
 }
 
