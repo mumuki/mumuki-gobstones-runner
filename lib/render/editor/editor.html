@@ -543,12 +543,13 @@
       },
 
       _updateBoardFromResult: function (originalBoard, resultBoard) {
-        resultBoard = resultBoard.cloneNode(); // To force initialization
-        if (resultBoard.textContent) {
-          const boardAttrs = gbbReader.fromString(resultBoard.textContent);
-          originalBoard.update(boardAttrs.table, boardAttrs.header);
+        const resultGbb = resultBoard.textContent;
+        if (resultGbb) {
+          const boardAttrs = gbbReader.fromString(resultGbb);
+          originalBoard.update(boardAttrs.table, boardAttrs.head);
         }
         else {
+          resultBoard = resultBoard.cloneNode(); // To force initialization
           originalBoard.boom = resultBoard.boom;
         }
       },
