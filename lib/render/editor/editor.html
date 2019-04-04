@@ -2,6 +2,7 @@
 
 <link href="./gs-element-blockly.html" rel="import"/>
 <link href="./gobstones-code-runner.html" rel="import"/>
+<script src="./hammer.min.js"></script>
 
 <dom-module id="mu-gobstones-custom-editor">
 
@@ -1008,6 +1009,7 @@
         if(this.configLoaded) this._createSwipeListener();
       },
       _createSwipeListener: function () {
+        if(typeof Hammer === "undefined") return postpone(this._createSwipeListener);
         const $swipeListenerArea = $('.mu-initial-state gs-board')[0];
         const hammer = new Hammer($swipeListenerArea);
         hammer.get('swipe').set({direction: Hammer.DIRECTION_ALL});
@@ -1044,6 +1046,7 @@
 
       _createKeyboardConfig: function () {
         if(typeof GobstonesKeyboard === 'undefined') GobstonesKeyboard = {};
+        if(typeof Hammer === "undefined") return postpone(this._createKeyboardConfig);
         GobstonesKeyboard.keyboardMap = {
           [Hammer.DIRECTION_LEFT]: 37,
           [Hammer.DIRECTION_UP]: 38,
