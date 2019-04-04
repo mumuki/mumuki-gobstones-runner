@@ -148,3 +148,13 @@ Because of the layout and the pedagogic considerations, there are certain operat
 * `show_initial_board` and `show_final_board`: Because of kids layout, the boards are always being displayed.
 * `check_head_position`: For the kids this may be a bit difficult to understand and there is no pedagogic benefit in using it.
 * `title` for boards: The title is set in laboratory, so a custom title won't be display initially. It'll only appear when the success pop-up appears.
+
+## Interactive programs
+
+In order to use interactive programs there are two requirements:
+
+1) Set the option interactive to true in the test.
+2) Provide a default code that has an interactive program in it.
+
+Also, it is desirable to provide a gs-keyboard-config.
+ 
