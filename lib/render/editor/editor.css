@@ -63,6 +63,52 @@
   outline: 1px solid #cc0000 !important;
 }
 
+.mu-kids-interactive #mu-initial-state-text {
+  display: none;
+}
+
+.mu-kids-interactive #mu-final-state-text {
+  display: none;
+}
+
+.mu-kids-interactive .mu-initial-state {
+  height: 70%;
+}
+
+.mu-kids-interactive gs-keyboard {
+  height: 100%;
+}
+
+.mu-kids-interactive .mu-final-state {
+  height: 30%;
+}
+
+.mu-kids-interactive .mu-scenario-control {
+  z-index: -1;
+}
+
+.mu-kids-interactive.play-mode .blocklyToolboxDiv {
+  display: none;
+}
+
+.mu-kids-interactive .mu-kids-interactive-submit-button paper-fab {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.mu-kids-interactive.play-mode .mu-kids-interactive-submit-button paper-fab {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.mu-kids-interactive.play-mode .mu-kids-exercise-description {
+  width: 65% !important;
+}
+
+.mu-kids-interactive.play-mode .mu-kids-states {
+  width: 35% !important;
+}
+
 @-moz-document url-prefix() {
   .mu-kids-exercise gs-board table.gbs_board {
     position: absolute;

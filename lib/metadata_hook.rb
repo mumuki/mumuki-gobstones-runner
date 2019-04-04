@@ -20,7 +20,7 @@ class GobstonesMetadataHook < Mumukit::Hook
           'assets/editor/editor.js'
         ],
         html: [
-          'assets/editor/editor.html',
+          'assets/editor/editor.html'
         ],
         css: [
           'assets/editor/editor.css'

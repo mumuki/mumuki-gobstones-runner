@@ -577,5 +577,23 @@ examples:
                                                {binding: '*', inspection: "Declares:RecolectarPolen", result: :failed},
                                                {binding: 'RecolectarPolen', inspection: "UsesRepeat", result: :failed}]
     end
+
+    it 'doesn\'t run tests in interactive mode' do
+      response = bridge.run_tests!(
+        {
+          content: "function rojoEsDominante(){\nreturn (nroBolitas(Rojo)\u003enroBolitasTotal()-nroBolitas(Rojo))\n}",
+          test: "subject: rojoEsDominante\n\ninteractive: true\n\nexamples:\n - initial_board: |\n     GBB/1.0\n     size 2 2\n     cell 0 0 Azul 3 Negro 2 Rojo 4 Verde 3\n     head 0 0\n   return: 'False'\n \n - initial_board: |\n     GBB/1.0\n     size 2 2\n     cell 0 0 Azul 3 Negro 2 Rojo 10 Verde 3\n     head 0 0\n   return: 'False'",
+          expectations: [
+            {
+              binding: "rojoEsDominante",
+              inspection: "HasUsage:todasMenos"
+            }
+          ],
+          extra: "function nroBolitasTotal() {\n  return (nroBolitas(Azul) + nroBolitas(Negro) + nroBolitas(Rojo) + nroBolitas(Verde))\n}\n\nfunction todasMenos(color) {\n    return (nroBolitasTotal() - nroBolitas(color))\n}"
+        }
+      )
+      expect(response[:status]).to eq :passed_with_warnings
+      expect(response[:response_type]).to eq :unstructured
+    end
   end
 end
