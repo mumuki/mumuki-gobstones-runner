@@ -92,13 +92,14 @@
 }
 
 .mu-kids-interactive .mu-kids-interactive-submit-button paper-fab {
-  cursor: default;
   opacity: 0.5;
+  pointer-events: none;
 }
 
 .mu-kids-interactive.play-mode .mu-kids-interactive-submit-button paper-fab {
   cursor: pointer;
   opacity: 1;
+  pointer-events: auto;
 }
 
 .mu-kids-interactive.play-mode .mu-kids-exercise-description {
