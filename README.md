@@ -151,10 +151,15 @@ Because of the layout and the pedagogic considerations, there are certain operat
 
 ## Interactive programs
 
-In order to use interactive programs there are two requirements:
+In order to use interactive programs there are three requirements:
 
 1) Set the option interactive to true in the test.
 2) Provide a default code that has an interactive program in it.
+3) Provide at least one expectation. The syntax for a listener name is the following:
+
+onK_Pressed, where _ can be any letter, Up, Down, Right, Left (arrows) or Space. 
 
 Also, it is desirable to provide a gs-keyboard-config.
+
+
  
