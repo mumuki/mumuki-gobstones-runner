@@ -641,7 +641,7 @@
       },
 
       _updateBoardFromResult: function (originalBoard, resultBoard) {
-        const resultGbb = resultBoard.textContent;
+        const resultGbb = resultBoard.textContent || resultBoard.gbb;
         if (resultGbb) {
           const boardAttrs = gbbReader.fromString(resultGbb);
           originalBoard.update(boardAttrs.table, boardAttrs.head);
