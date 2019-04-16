@@ -641,6 +641,7 @@
       },
 
       _updateBoardFromResult: function (originalBoard, resultBoard) {
+        // In Firefox the gbb is present in the textContent attribute while in Chrome it's in the gbb attribute.
         const resultGbb = resultBoard.textContent || resultBoard.gbb;
         if (resultGbb) {
           const boardAttrs = gbbReader.fromString(resultGbb);
