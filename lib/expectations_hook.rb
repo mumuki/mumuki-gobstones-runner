@@ -7,7 +7,7 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
 
   def mulang_code(request)
     output, status = request.result
-    Mulang::Code.new(mulang_language, extract_ast(output.first))
+    Mulang::Code.new(mulang_language, extract_ast(output))
   end
 
   def compile_expectations(request)
@@ -29,7 +29,7 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
       logger.warn(precompiled_output)
       {tag: :None} # this happens when gobstones cli miserably fails on parsing the submission or the extra code
     else
-      precompiled_output[:result][:mulangAst]
+      precompiled_output.first[:result][:mulangAst]
     end
   end
 end
