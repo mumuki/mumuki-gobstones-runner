@@ -684,6 +684,7 @@
 
         if (isExpectedTimeout) return;
 
+        this._getBlockly().scrollToBlock(region);
         this._getBlockly().showBlockError(region, error.message);
       },
 
