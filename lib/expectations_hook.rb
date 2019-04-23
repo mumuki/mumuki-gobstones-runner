@@ -7,9 +7,7 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
 
   def mulang_code(request)
     output, status = request.result
-
-    ast = output.first[:result][:mulangAst]
-    Mulang::Code.new(mulang_language, ast)
+    Mulang::Code.new(mulang_language, extract_ast(output.first))
   end
 
   def compile_expectations(request)
@@ -22,5 +20,16 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
 
   def default_smell_exceptions
     LOGIC_SMELLS + FUNCTIONAL_SMELLS + OBJECT_ORIENTED_SMELLS
+  end
+
+  private
+
+  def extract_ast(precompiled_output)
+    if precompiled_output.is_a?(String)
+      logger.warn(precompiled_output)
+      {tag: :None} # this happens when gobstones cli miserably fails on parsing the submission or the extra code
+    else
+      precompiled_output[:result][:mulangAst]
+    end
   end
 end
