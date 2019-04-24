@@ -4,8 +4,7 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
   # no need to implement `language` and `compile_content`
   # since we are completly overriding `mulang_code`
   def mulang_code(request)
-    output, status = request.result
-    Mulang::Code.external extract_ast(output)
+    Mulang::Code.external extract_ast(request)
   end
 
   def compile_expectations(request)
@@ -22,17 +21,19 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
 
   private
 
-  def extract_ast(precompiled_output)
+  def extract_ast(request)
+    precompiled_output, _ = request.result
+
     if precompiled_output.is_a?(String)
       # gobstones cli miserably failed on parsing the submission or the extra code
       logger.warn("Unprocessable GobstonesCLI output:\n\n#{precompiled_output}")
       {tag: :None}
-    elsif precompiled_output.first.dig(:result, :mulangAst).blank?
+    elsif (ast = precompiled_output.first.dig(:result, :mulangAst)).blank?
       # gobstones cli could not produce a valid ast
       logger.warn("GobstonesCLI produced an empty AST:\n\n#{precompiled_output}")
       {tag: :None}
     else
-      precompiled_output.first[:result][:mulangAst]
+      ast
     end
   end
 end
