@@ -9,7 +9,7 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
 
   def compile_expectations(request)
     super(request).tap do |expectations|
-      request.batch.options[:subject].try do |subject|
+      request.precompiled_batch.options[:subject].try do |subject|
         expectations[:ast] << { binding: '*', inspection: "Declares:=#{subject}" }
       end
     end
@@ -22,7 +22,7 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
   private
 
   def extract_ast(request)
-    precompiled_output, _ = request.result
+    precompiled_output, _ = request.precompiled_result
 
     if precompiled_output.is_a?(String)
       # gobstones cli miserably failed on parsing the submission or the extra code
