@@ -22,9 +22,11 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
   private
 
   def extract_ast(request)
-    precompiled_output, _ = request.precompiled_result
+    precompiled_output, precompiled_status = request.precompiled_result
 
-    if precompiled_output.is_a?(String)
+    if precompiled_status.aborted?
+      {tag: :None}
+    elsif precompiled_output.is_a?(String)
       # gobstones cli miserably failed on parsing the submission or the extra code
       logger.warn("Unprocessable GobstonesCLI output:\n\n#{precompiled_output}")
       {tag: :None}

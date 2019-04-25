@@ -43,7 +43,7 @@ module Gobstones
                   initial: result[:initialBoard],
                   expected: :boom,
                   final: result[:finalBoard]
-                } if status == :passed
+                } if status.passed?
 
       reason_code = convert_known_reason_code result[:finalBoardError][:reason][:code]
       fail_with status: :check_error_failed_another_reason,

@@ -4,7 +4,7 @@ class GobstonesTestHook < Mumukit::Defaults::TestHook
 
     if request.precompiled_batch.options[:interactive]
       ['', :passed]
-    elsif status == :passed
+    elsif status.passed?
       request.precompiled_batch.run_tests! output
     else
       request.precompiled_result
