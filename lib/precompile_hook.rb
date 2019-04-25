@@ -31,8 +31,8 @@ class GobstonesPrecompileHook < Mumukit::Templates::FileHook
     @locale = request[:locale]
     file = super request
 
-    struct request.to_h.merge batch: @batch,
-                              result: run!(file)
+    struct request.to_h.merge precompiled_batch: @batch,
+                              precompiled_result: run!(file)
   end
 
   def add_missing_headers!(request)
