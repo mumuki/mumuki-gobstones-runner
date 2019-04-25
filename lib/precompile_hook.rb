@@ -45,7 +45,7 @@ class GobstonesPrecompileHook < Mumukit::Templates::FileHook
   end
 
   def post_process_file(_file, result, status)
-    if status == :passed
+    if status.passed?
       result = result.parse_as_json
       status = :aborted if is_timeout? result and !expects_timeout?
     end
