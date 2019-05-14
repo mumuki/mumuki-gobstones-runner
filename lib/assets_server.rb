@@ -1,19 +1,5 @@
-require 'sinatra/base'
-require 'sinatra/cross_origin'
-
 class Mumukit::Server::App < Sinatra::Base
-  register Sinatra::CrossOrigin
-
-  configure do
-    enable :cross_origin
-    set :allow_origin, '*'
-  end
-
-  def self.get_asset(route, absolute_path, type)
-    get "/assets/#{route}" do
-      send_file absolute_path, type: type
-    end
-  end
+  include Mumukit::Server::WithAssets
 
   def self.get_board_asset(route, path, type)
     get_asset route, Gobstones::Board.assets_path_for(path), type
@@ -25,10 +11,6 @@ class Mumukit::Server::App < Sinatra::Base
 
   def self.get_submit_asset(route, path, type)
     get_asset route, Gobstones::CodeRunner.assets_path_for(path), type
-  end
-
-  def self.get_local_asset(route, path, type)
-    get_asset route, File.join(__dir__, '..', path), type
   end
 
   ['polymer', 'polymer-mini', 'polymer-micro'].each { |name|
