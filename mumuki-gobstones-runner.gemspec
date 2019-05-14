@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'mumukit', '~> 2.26'
+  spec.add_dependency 'mumukit', '~> 2.33'
   spec.add_dependency 'sinatra-cross_origin', '~> 0.4'
   spec.add_dependency 'gobstones-board', '~> 1.18'
   spec.add_dependency 'gobstones-blockly', '~> 0.24.0'
