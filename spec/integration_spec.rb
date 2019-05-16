@@ -141,6 +141,56 @@ examples:
     expect(response[:test_results].size).to eq 2
   end
 
+  it 'executes each test with the proper argument' do
+    response = bridge.run_tests!(
+      content: '
+procedure PonerUna(color) {
+    Poner (color)
+}',
+      extra: '',
+      expectations: [
+      ],
+      test: '
+check_head_position: true
+
+subject: PonerUna
+
+examples:
+
+ - arguments:
+   - Rojo
+   initial_board: |
+     GBB/1.0
+     size 4 4
+     head 0 0
+   final_board: |
+     GBB/1.0
+     size 4 4
+     cell 0 0 Rojo 1
+     head 0 0
+
+ - arguments:
+   - Azul
+   initial_board: |
+     GBB/1.0
+     size 5 5
+     head 3 3
+   final_board: |
+     GBB/1.0
+     size 5 5
+     cell 3 3 Azul 1
+     head 3 3')
+
+    expect(response[:test_results].pluck(:status)).to eq [:passed, :passed]
+    expect(response.except(:test_results)).to eq response_type: :structured,
+                                                 status: :passed,
+                                                 feedback: '',
+                                                 expectation_results: [
+                                                   {:binding=>"*", :inspection=>"Declares:=PonerUna", :result=>:passed}
+                                                 ],
+                                                 result: ''
+  end
+
   it 'answers a valid hash when submission is aborted and expected' do
     response = bridge.run_tests!(
       content: '
