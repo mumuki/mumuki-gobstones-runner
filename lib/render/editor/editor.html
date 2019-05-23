@@ -187,6 +187,9 @@
 
               this._subscribeToWorkspace(blockly, updateFields);
             });
+            if(mumuki.assetsLoader && !$('gs-toolbox').length) {
+              mumuki.assetsLoader.editor.onFinishLoading();
+            }
           });
         };
 
@@ -800,6 +803,7 @@
         $.get(this.toolboxUrl, function (toolboxXml) {
           blockly.toolbox = { defaultToolbox: toolboxXml };
           editor.setTeacherActions(blockly);
+          mumuki.assetsLoader && mumuki.assetsLoader.editor.onFinishLoading();
         });
       }
     });
