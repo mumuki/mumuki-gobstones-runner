@@ -6,7 +6,7 @@ class Gobstones::ExampleCodeBuilder
   end
 
   def build
-    return @code unless subject
+    return nil unless subject
 <<GBS
 #{@code}
 program {

@@ -133,19 +133,19 @@ examples:
       context 'when there is no subject' do
         let(:expected_code) { "program {\n  PonerDosRojas()\n}" }
         let(:expected_compilation) {
-          [
-            {
-              initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
-              code: expected_code,
-              extraCode: extra.chop,
-              extraBoard: "GBB/1.0\nsize 3 3\nhead 0 1\n"
-            },
-            {
-              initialBoard: "GBB/1.0\nsize 1 1\nhead 0 0\n",
-              code: expected_code,
-              extraCode: extra.chop
-            }
-          ].to_json
+          {
+            code: expected_code,
+            extraCode: extra.chop,
+            examples: [
+              {
+                initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
+                extraBoard: "GBB/1.0\nsize 3 3\nhead 0 1\n"
+              },
+              {
+                initialBoard: "GBB/1.0\nsize 1 1\nhead 0 0\n"
+              }
+            ]
+          }.to_json
         }
 
         it { expect(result).to eq expected_compilation }
@@ -154,14 +154,16 @@ examples:
       context 'when there is a subject' do
         let(:content) { "things" }
         let(:expected_compilation) {
-          [
-            {
-              initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
-              code: expected_code,
-              extraCode: extra.chop,
-              originalCode: content
-            }
-          ].to_json
+          {
+            code: content,
+            extraCode: extra.chop,
+            examples: [
+              {
+                initialBoard: "GBB/1.0\nsize 3 3\nhead 0 0\n",
+                generatedCode: expected_code
+              }
+            ]
+          }.to_json
         }
 
         context 'when there is a function subject' do
