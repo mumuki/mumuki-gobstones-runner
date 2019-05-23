@@ -15,7 +15,11 @@ class Gobstones::Batch
   end
 
   def to_json
-    examples.map { |example| example_json(example) }.to_json
+    {
+      code: content,
+      extraCode: extra,
+      examples: examples.map { |example| example_json(example) }
+    }.to_json
   end
 
   private
@@ -27,12 +31,9 @@ class Gobstones::Batch
   end
 
   def example_base_json(example)
-    json = {initialBoard: example[:preconditions][:initial_board],
-            code: example_code(example),
-            extraCode: extra}
-
-    json[:originalCode] = content if json[:code] != content
-    json
+    example_code = example_code(example)
+    base = { initialBoard: example[:preconditions][:initial_board] }
+    example_code ? base.merge(generatedCode: example_code) : base
   end
 
   def example_code(example)
