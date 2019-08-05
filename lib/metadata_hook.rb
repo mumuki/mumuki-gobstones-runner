@@ -24,7 +24,8 @@ class GobstonesMetadataHook < Mumukit::Hook
         ],
         css: [
           'assets/editor/editor.css'
-        ]
+        ],
+        shows_loading_content: true
       },
       test_framework: {
         name: 'metatest',
