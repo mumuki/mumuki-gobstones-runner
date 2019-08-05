@@ -187,8 +187,8 @@
 
               this._subscribeToWorkspace(blockly, updateFields);
             });
-            if(mumuki.assetsLoader && !$('gs-toolbox').length) {
-              mumuki.assetsLoader.editor.onFinishLoading();
+            if(mumuki.assetsLoadedFor && !$('gs-toolbox').length) {
+              mumuki.assetsLoadedFor('editor');
             }
           });
         };
@@ -533,7 +533,7 @@
 
         const targetStateIndex = this.multipleScenarios.currentScenarioIndex;
         this.targetState = this.initialState[targetStateIndex];
-        
+
         const promise = new mumuki.bridge.Laboratory()
           .runTests(solution)
           .then((results) => {
@@ -803,7 +803,7 @@
         $.get(this.toolboxUrl, function (toolboxXml) {
           blockly.toolbox = { defaultToolbox: toolboxXml };
           editor.setTeacherActions(blockly);
-          mumuki.assetsLoader && mumuki.assetsLoader.editor.onFinishLoading();
+          mumuki.assetsLoadedFor && mumuki.assetsLoadedFor('editor');
         });
       }
     });
@@ -960,12 +960,12 @@
       flex-grow: 1;
       padding: 1px;
     }
-    
+
     .gs-keyboard-keys-container {
       display: flex;
       flex-wrap: wrap;
     }
-    
+
   </style>
 
   <template>
