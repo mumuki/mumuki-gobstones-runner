@@ -187,9 +187,9 @@
 
               this._subscribeToWorkspace(blockly, updateFields);
             });
-            if(mumuki.assetsLoadedFor && !$('gs-toolbox').length) {
-              mumuki.assetsLoadedFor('editor');
-            }
+
+            const hasCustomToolbox = $('gs-toolbox').length;
+            if(!hasCustomToolbox) mumuki.assetsLoadedFor('editor');
           });
         };
 
@@ -803,7 +803,8 @@
         $.get(this.toolboxUrl, function (toolboxXml) {
           blockly.toolbox = { defaultToolbox: toolboxXml };
           editor.setTeacherActions(blockly);
-          mumuki.assetsLoadedFor && mumuki.assetsLoadedFor('editor');
+        }).always(function () {
+          mumuki.assetsLoadedFor('editor');
         });
       }
     });
