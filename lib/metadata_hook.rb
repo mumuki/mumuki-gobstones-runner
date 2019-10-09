@@ -12,7 +12,8 @@ class GobstonesMetadataHook < Mumukit::Hook
       layout_assets_urls: {
         html: [
           'assets/polymer.html',
-          'assets/gs-board.html'
+          'assets/gs-board.html',
+          'assets/layout/layout.html'
         ]
       },
       editor_assets_urls: {

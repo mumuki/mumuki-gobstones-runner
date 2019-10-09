@@ -766,30 +766,6 @@
   </script>
 </dom-module>
 
-<dom-module id="gs-attire">
-  <script>
-    Polymer({
-      is: 'gs-attire',
-      properties: {
-        attireUrl: Object,
-        observer: '_attireChanged'
-      },
-
-      attached: function () {
-        this._setAttire();
-      },
-      _attireChanged: function () {
-        this._setAttire();
-      },
-      _setAttire: function () {
-        $.getJSON(this.attireUrl, function (attire) {
-          GobstonesBoard && GobstonesBoard.setDefaultAttire(attire);
-        });
-      }
-    });
-  </script>
-</dom-module>
-
 <dom-module id="gs-toolbox">
   <script>
     Polymer({
