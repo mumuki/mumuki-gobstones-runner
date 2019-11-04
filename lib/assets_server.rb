@@ -22,6 +22,7 @@ class Mumukit::Server::App < Sinatra::Base
 
   get_submit_asset 'editor/gobstones-code-runner.html', 'htmls/gobstones-code-runner.html', 'text/html'
 
+  get_local_asset 'layout/layout.html', 'lib/render/layout/layout.html', 'text/html'
   get_local_asset 'editor/editor.js', 'lib/render/editor/editor.js', 'application/javascript'
   get_local_asset 'editor/editor.css', 'lib/render/editor/editor.css', 'text/css'
   get_local_asset 'editor/editor.html', 'lib/render/editor/editor.html', 'text/html'
