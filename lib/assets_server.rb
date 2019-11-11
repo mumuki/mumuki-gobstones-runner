@@ -13,6 +13,10 @@ class Mumukit::Server::App < Sinatra::Base
     get_asset route, Gobstones::CodeRunner.assets_path_for(path), type
   end
 
+  def self.get_local_svg(name, asset_type)
+    get_local_asset "#{asset_type}/#{name}.svg", "lib/public/#{name}.svg", 'image/svg+xml'
+  end
+
   ['polymer', 'polymer-mini', 'polymer-micro'].each { |name|
     get_board_asset "#{name}.html", "htmls/vendor/#{name}.html", 'text/html'
   }
@@ -28,7 +32,12 @@ class Mumukit::Server::App < Sinatra::Base
   get_local_asset 'editor/editor.html', 'lib/render/editor/editor.html', 'text/html'
   get_local_asset 'editor/hammer.min.js', 'lib/render/editor/hammer.min.js', 'application/javascript'
   get_local_asset 'boom.png', 'lib/public/boom.png', 'image/png'
-  ['red', 'blue', 'green', 'black', 'attires_enabled', 'attires_disabled'].each { |name|
-    get_local_asset "editor/#{name}.svg", "lib/public/#{name}.svg", 'image/svg+xml'
-  }
+
+  ['red', 'blue', 'green', 'black'].each do |name|
+    get_local_svg(name, 'editor')
+  end
+
+  ['attires_enabled', 'attires_disabled'].each do |name|
+    get_local_svg(name, 'layout')
+  end
 end
