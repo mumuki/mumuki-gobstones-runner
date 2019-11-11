@@ -70,7 +70,7 @@
       },
 
       _updateVisibility: function () {
-        this.boards = $(".mu-kids-states, .boards-container").find("gs-board");
+        this.boards = $(this).parents(".mu-kids-states, .boards-container").find("gs-board");
         this.shouldDisplay = this.boards.toArray().some(board => board.attire);
       },
 
