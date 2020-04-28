@@ -191,6 +191,109 @@ examples:
                                                  result: ''
   end
 
+  it 'produces a faied when the header position does not match but there were no changes in the board' do
+    response = bridge.run_tests!(
+      content: '
+procedure MoverConCuidado(color) {
+    Mover(Norte)
+    Mover(Este)
+}',
+      extra: '',
+      expectations: [],
+      test: '
+check_head_position: true
+
+subject: MoverConCuidado
+
+examples:
+
+ - arguments:
+   - Rojo
+   initial_board: |
+     GBB/1.0
+     size 4 4
+     cell 0 0 Rojo 1
+     head 0 0
+   final_board: |
+     GBB/1.0
+     size 4 4
+     cell 0 0 Rojo 1
+     head 2 0
+
+ - arguments:
+   - Azul
+   initial_board: |
+     GBB/1.0
+     size 5 5
+     cell 0 0 Rojo 1
+     head 0 0
+   final_board: |
+     GBB/1.0
+     size 5 5
+     cell 0 0 Rojo 1
+     head 2 0')
+
+    expect(response[:test_results].pluck(:status)).to eq [:failed, :failed]
+    expect(response.except(:test_results)).to eq response_type: :structured,
+                                                 status: :failed,
+                                                 feedback: '',
+                                                 expectation_results: [
+                                                   {:binding=>"*", :inspection=>"Declares:=MoverConCuidado", :result=>:passed}
+                                                 ],
+                                                 result: ''
+  end
+
+  it 'produces a passed_with_warnings when the header position does not match and there were changesin the board' do
+    response = bridge.run_tests!(
+      content: '
+procedure PonerUna(color) {
+    Poner (color) ; Mover(Este)
+}',
+      extra: '',
+      expectations: [
+      ],
+      test: '
+check_head_position: true
+
+subject: PonerUna
+
+examples:
+
+ - arguments:
+   - Rojo
+   initial_board: |
+     GBB/1.0
+     size 4 4
+     head 0 0
+   final_board: |
+     GBB/1.0
+     size 4 4
+     cell 0 0 Rojo 1
+     head 0 0
+
+ - arguments:
+   - Azul
+   initial_board: |
+     GBB/1.0
+     size 5 5
+     head 3 3
+   final_board: |
+     GBB/1.0
+     size 5 5
+     cell 3 3 Azul 1
+     head 3 3')
+
+    expect(response[:test_results].pluck(:status)).to eq [:passed, :passed]
+    expect(response.except(:test_results)).to eq response_type: :structured,
+                                                 status: :passed_with_warnings,
+                                                 feedback: '',
+                                                 expectation_results: [
+                                                   {:binding=>"*", :inspection=>"Declares:=PonerUna", :result=>:passed},
+                                                   {:binding=>"*", :inspection=>"HeadPositionMatch", :result=>:false}
+                                                 ],
+                                                 result: ''
+  end
+
   it 'answers a valid hash when submission is aborted and expected' do
     response = bridge.run_tests!(
       content: '

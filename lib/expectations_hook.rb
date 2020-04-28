@@ -19,6 +19,21 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
     LOGIC_SMELLS + FUNCTIONAL_SMELLS + OBJECT_ORIENTED_SMELLS
   end
 
+  def run!(spec)
+    super(spec) + custom_smells(spec[:request])
+  end
+
+  def custom_smells(request)
+    return unless request.precompiled_batch
+    request.precompiled_batch.warnings.uniq.map { |assertion| as_smell(assertion) }.compact
+  end
+
+  def as_smell(assertion)
+    case assertion
+    when :head_position_not_match then {expectation: {binding: '*', inspection: 'HeadPositionMatch'}, result: :failed}
+    end
+  end
+
   private
 
   def extract_ast(request)
