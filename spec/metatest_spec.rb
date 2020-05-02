@@ -151,7 +151,7 @@ describe 'metatest' do
           it { expect(result[0][0][1]).to eq :passed }
           it { expect(result[0][0][2]).to_not include "different board was obtained" }
           it { expect(result[0][0][2]).to include "head doesn't match" }
-          it { expect(checker.warnings).to include :head_position_not_match }
+          it { expect(checker.warnings).to include :state_changes_expected_and_ocurred_but_head_did_not_match }
         end
 
       end

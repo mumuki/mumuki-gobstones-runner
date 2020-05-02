@@ -30,7 +30,7 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
 
   def as_smell(assertion)
     case assertion
-    when :head_position_not_match then {expectation: {binding: '*', inspection: 'HeadPositionMatch'}, result: :failed}
+    when :state_changes_expected_and_ocurred_but_head_did_not_match then {expectation: {binding: '*', inspection: 'HeadPositionMatch'}, result: :failed}
     end
   end
 

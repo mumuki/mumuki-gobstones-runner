@@ -28,7 +28,7 @@ module Gobstones
           :check_final_board_failed_different_boards
 
         if status == :check_final_board_failed_different_headers && board_changes_expected(initial_board, expected_board)
-          @warnings << :head_position_not_match
+          @warnings << :state_changes_expected_and_ocurred_but_head_did_not_match
         else
           fail_with status: status,
             result: {
