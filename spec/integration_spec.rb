@@ -289,7 +289,7 @@ examples:
                                                  feedback: '',
                                                  expectation_results: [
                                                    {:binding=>"*", :inspection=>"Declares:=PonerUna", :result=>:passed},
-                                                   {:binding=>"*", :inspection=>"HeadPositionMatch", :result=>:false}
+                                                   {:binding=>"*", :inspection=>"HeadPositionMatch", :result=>:failed}
                                                  ],
                                                  result: ''
   end
