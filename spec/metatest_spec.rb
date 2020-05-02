@@ -2,7 +2,7 @@ require_relative './spec_helper'
 
 describe 'metatest' do
 
-  let(:result) { framework.test compilation, examples }
+  let!(:result) { framework.test compilation, examples }
   let(:options) { { show_initial_board: false, check_head_position: true } }
   let(:checker) { Gobstones::Checker.new(options) }
   let(:framework) do
@@ -146,9 +146,9 @@ describe 'metatest' do
         end
 
         context 'state changes were expected and ocurred, but head does not match' do
-          let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 2, altered_cell: {blue: 2}), actual: board_with_stones(2, 2, altered_cell: {blue: 2}) }
+          let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 2, altered_cell: {blue: 2}), actual: board_with_stones(2, 3, altered_cell: {blue: 2}) }
 
-          it { expect(result[0][0][1]).to eq :passed }
+          it { expect(result[0][0][1]).to eq :passed_with_warnings }
           it { expect(result[0][0][2]).to_not include "different board was obtained" }
           it { expect(result[0][0][2]).to include "head doesn't match" }
           it { expect(checker.warnings).to include :state_changes_expected_and_ocurred_but_head_did_not_match }

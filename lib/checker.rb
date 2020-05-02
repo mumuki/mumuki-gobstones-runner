@@ -19,23 +19,24 @@ module Gobstones
       initial_board = result[:initialBoard]
       expected_board = result[:extraBoard]
       actual_board = result[:finalBoard]
-      boards_match = board_json(expected_board).eql? board_json(actual_board)
-      headers_match = !@options[:check_head_position] || expected_board[:head].eql?(actual_board[:head])
 
-      if !boards_match || !headers_match
-        status = boards_match && !headers_match ?
-          :check_final_board_failed_different_headers :
-          :check_final_board_failed_different_boards
 
-        if status == :check_final_board_failed_different_headers && board_changes_expected(initial_board, expected_board)
-          @warnings << :state_changes_expected_and_ocurred_but_head_did_not_match
-        else
-          fail_with status: status,
-            result: {
-              initial: initial_board,
-              expected: expected_board,
-              actual: actual_board
-            }
+      if @options[:check_head_position]
+        classifier = Gobstones::TestClassifier.new
+        classifier.classify_boards! initial_board, expected_board, actual_board
+
+        unless classifier.status.passed?
+          @warnings << classifier.error_class
+        end
+
+        if classifier.status.failed?
+          fail_with status: classifier.error_kind, result: { initial: initial_board, expected: expected_board, actual: actual_board }
+        end
+      else
+        boards_match = board_json(expected_board).eql? board_json(actual_board)
+        # TODO use classifier here too
+        if !boards_match
+          fail_with status: :check_final_board_failed_different_boards, result: { initial: initial_board, expected: expected_board, actual: actual_board }
         end
       end
     end
