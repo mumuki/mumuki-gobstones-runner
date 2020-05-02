@@ -93,7 +93,7 @@ describe 'metatest' do
           compilation_board board_with_stones 0, 1
         }
 
-        it { expect(result[0][0]).to include :passed }
+        it { expect(result[0][0][1]).to eq :passed }
       end
 
       context 'when passes with check_head_position=false' do
@@ -103,7 +103,7 @@ describe 'metatest' do
 
         let(:options) { { show_initial_board: false, check_head_position: false } }
 
-        it { expect(result[0][0]).to include :passed }
+        it { expect(result[0][0][1]).to eq :passed }
       end
 
       context 'when fails by different boards (header)' do
@@ -111,7 +111,7 @@ describe 'metatest' do
           compilation_board board_with_stones 2, 2
         }
 
-        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][1]).to eq :failed }
         it { expect(result[0][0][2]).to include "head doesn't match" }
       end
 
@@ -120,7 +120,7 @@ describe 'metatest' do
           compilation_board board_with_stones 0, 1, { blue: 9 }
         }
 
-        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][1]).to eq :failed }
         it { expect(result[0][0][2]).to include "different board was obtained" }
       end
 
@@ -129,7 +129,7 @@ describe 'metatest' do
     context 'when the program does boom' do
       let(:compilation) { compilation_boom }
 
-      it { expect(result[0][0]).to include :failed }
+      it { expect(result[0][0][1]).to eq :failed }
       it { expect(result[0][0][2]).to include "The program did BOOM." }
     end
 
@@ -149,7 +149,7 @@ describe 'metatest' do
     context 'when the program returns a final board' do
       let(:compilation) { compilation_board }
 
-      it { expect(result[0][0]).to include :failed }
+      it { expect(result[0][0][1]).to eq :failed }
       it { expect(result[0][0][2]).to include "The program was expected to BOOM but a final board was obtained." }
     end
 
@@ -157,7 +157,7 @@ describe 'metatest' do
       let(:compilation) { compilation_boom }
 
       context 'with the same reason as expected' do
-        it { expect(result[0][0]).to include :passed }
+        it { expect(result[0][0][1]).to eq :passed }
       end
 
       context 'with another reason' do
@@ -170,7 +170,7 @@ describe 'metatest' do
            }]
         }
 
-        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][1]).to eq :failed }
         it { expect(result[0][0][2]).to include "The program was expected to fail by <strong>out of board</strong>, but it failed by another reason." }
       end
 
@@ -193,13 +193,13 @@ describe 'metatest' do
       let(:compilation) { compilation_board }
 
       context 'when passes with equal value' do
-        it { expect(result[0][0]).to include :passed }
+        it { expect(result[0][0][1]).to eq :passed }
       end
 
       context 'when fails by no return value' do
         let(:exit_status) { nil }
 
-        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][1]).to eq :failed }
         it { expect(result[0][0][2]).to include "<strong>29</strong> was expected but no value was obtained." }
       end
 
@@ -213,7 +213,7 @@ describe 'metatest' do
           }]
         }
 
-        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][1]).to eq :failed }
         it { expect(result[0][0][2]).to include "<strong>11</strong> was expected but <strong>29</strong> was obtained." }
       end
 
@@ -223,7 +223,7 @@ describe 'metatest' do
       let(:compilation) { compilation_boom }
 
       context 'when fails because the program did boom' do
-        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][1]).to eq :failed }
         it { expect(result[0][0][2]).to include "The program did BOOM." }
       end
     end
