@@ -283,13 +283,12 @@ examples:
      cell 3 3 Azul 1
      head 3 3')
 
-    expect(response[:test_results].pluck(:status)).to eq [:passed, :passed]
+    expect(response[:test_results].pluck(:status)).to eq [:failed, :failed]
     expect(response.except(:test_results)).to eq response_type: :structured,
-                                                 status: :passed_with_warnings,
+                                                 status: :failed,
                                                  feedback: '',
                                                  expectation_results: [
-                                                   {:binding=>"*", :inspection=>"Declares:=PonerUna", :result=>:passed},
-                                                   {:binding=>"*", :inspection=>"HeadPositionMatch", :result=>:failed}
+                                                   {:binding=>"*", :inspection=>"Declares:=PonerUna", :result=>:passed}
                                                  ],
                                                  result: ''
   end

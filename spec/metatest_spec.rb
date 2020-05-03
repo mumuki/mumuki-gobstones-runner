@@ -103,19 +103,19 @@ describe 'metatest' do
         context 'no movement nor state change was expected, but she moved' do
           let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 2), actual: board_with_stones(0, 0) }
           it { expect(result[0][0][1]).to eq :failed }
-          it { expect(checker.warnings).to include :no_movement_nor_state_change_expected_but_moved }
+          it { expect(result[0][0][3]).to eq :no_movement_nor_state_change_expected_but_moved }
         end
 
         context 'movement expected, but she didn\'t move movement' do
           let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 3), actual: board_with_stones(2, 2) }
           it { expect(result[0][0][1]).to eq :failed }
-          it { expect(checker.warnings).to include :only_movement_expected_but_did_not_move }
+          it { expect(result[0][0][3]).to eq :only_movement_expected_but_did_not_move }
         end
 
         context 'movement expected, but she didn\'t move properly' do
           let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 3), actual: board_with_stones(3, 2) }
           it { expect(result[0][0][1]).to eq :failed }
-          it { expect(checker.warnings).to include :only_movement_expected_but_moved_in_wrong_direction }
+          it { expect(result[0][0][3]).to eq :only_movement_expected_but_moved_in_wrong_direction }
         end
 
         context 'state changes were expected, but didn\'t change properly' do
@@ -124,7 +124,7 @@ describe 'metatest' do
           it { expect(result[0][0][1]).to eq :failed }
           it { expect(result[0][0][2]).to include "different board was obtained" }
           it { expect(result[0][0][2]).to_not include "head doesn't match" }
-          it { expect(checker.warnings).to include :state_changes_expected_but_changed_improperly }
+          it { expect(result[0][0][3]).to eq :state_changes_expected_but_changed_improperly }
         end
 
         context 'state changes were expected, but didn\'t change' do
@@ -133,7 +133,7 @@ describe 'metatest' do
           it { expect(result[0][0][1]).to eq :failed }
           it { expect(result[0][0][2]).to include "different board was obtained" }
           it { expect(result[0][0][2]).to_not include "head doesn't match" }
-          it { expect(checker.warnings).to include :state_changes_expected_but_did_not_change }
+          it { expect(result[0][0][3]).to eq :state_changes_expected_but_did_not_change }
         end
 
         context 'passed' do
@@ -142,16 +142,16 @@ describe 'metatest' do
           it { expect(result[0][0][1]).to eq :passed }
           it { expect(result[0][0][2]).to_not include "different board was obtained" }
           it { expect(result[0][0][2]).to_not include "head doesn't match" }
-          it { expect(checker.warnings).to be_empty }
+          it { expect(result[0][0][3]).to be nil }
         end
 
         context 'state changes were expected and ocurred, but head does not match' do
           let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 2, altered_cell: {blue: 2}), actual: board_with_stones(2, 3, altered_cell: {blue: 2}) }
 
-          it { expect(result[0][0][1]).to eq :passed_with_warnings }
-          it { expect(result[0][0][2]).to_not include "different board was obtained" }
+          it { expect(result[0][0][1]).to eq :failed }
+          it { expect(result[0][0][2]).to include "different board was obtained" }
           it { expect(result[0][0][2]).to include "head doesn't match" }
-          it { expect(checker.warnings).to include :state_changes_expected_and_ocurred_but_head_did_not_match }
+          it { expect(result[0][0][3]).to eq :state_changes_expected_and_ocurred_but_head_did_not_match }
         end
 
       end

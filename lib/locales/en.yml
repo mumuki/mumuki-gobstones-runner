@@ -1,12 +1,18 @@
 en:
   actual_board: 'Actual final board'
   check_failed_unexpected_boom: 'The program did BOOM.'
-  check_final_board_failed_different_boards: 'A different board was obtained'
-  check_final_board_failed_different_headers: "The obtained board is almost as expected, but the head doesn't match"
   check_error_failed_expected_boom: 'The program was expected to BOOM but a final board was obtained.'
   check_error_failed_another_reason: 'The program was expected to fail by <strong>%{expected_code}</strong>, but it failed by another reason.'
   check_return_failed_different_values: '<strong>%{expected_value}</strong> was expected but <strong>%{actual_value}</strong> was obtained.'
   check_return_failed_no_return: '<strong>%{expected_value}</strong> was expected but no value was obtained.'
+  check:
+    summary:
+      no_movement_nor_state_change_expected_but_moved: 'No movement nor stones change was expected, but the head changed position'
+      only_movement_expected_but_did_not_move: 'Only movement was expected, but the head remained in the same position'
+      only_movement_expected_but_moved_in_wrong_direction: 'Only movement was expected, but the head moved in the wrong direction'
+      state_changes_expected_but_changed_improperly: "Stones change was expected, but stones don't match"
+      state_changes_expected_but_did_not_change: 'Stones change was expected, but stones did not change'
+      state_changes_expected_and_ocurred_but_head_did_not_match: "The obtained board is almost as expected, but the head doesn't match"
   code_no_stones: 'no stones left'
   code_out_of_board: 'out of board'
   code_wrong_argument_type: 'wrong arguments type'

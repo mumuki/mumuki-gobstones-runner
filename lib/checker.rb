@@ -1,12 +1,9 @@
 module Gobstones
   class Checker < Mumukit::Metatest::Checker
-    attr_reader :warnings
-
     include Gobstones::WithRenderer
 
     def initialize(options)
       @options = options
-      @warnings = []
     end
 
     def check_final_board(output, expected)
@@ -26,17 +23,13 @@ module Gobstones
         classifier.classify_boards! initial_board, expected_board, actual_board
 
         unless classifier.status.passed?
-          @warnings << classifier.error_class
-        end
-
-        if classifier.status.failed?
-          fail_with status: classifier.error_kind, result: { initial: initial_board, expected: expected_board, actual: actual_board }
+          fail_with status: :check_final_board_failed, result: { initial: initial_board, expected: expected_board, actual: actual_board, summary: classifier.error_class }
         end
       else
         boards_match = board_json(expected_board).eql? board_json(actual_board)
         # TODO use classifier here too
         if !boards_match
-          fail_with status: :check_final_board_failed_different_boards, result: { initial: initial_board, expected: expected_board, actual: actual_board }
+          fail_with status: :check_final_board_failed, result: { initial: initial_board, expected: expected_board, actual: actual_board }
         end
       end
     end
