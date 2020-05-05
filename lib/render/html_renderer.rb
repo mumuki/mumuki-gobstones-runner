@@ -77,7 +77,7 @@ module Gobstones
     def visible_board(result, board_types)
       board = result[board_types]
 
-      if board == 'boom'
+      if board.like? :boom
         HtmlBoard.new(result[:initial], boom: true)
       else
         HtmlBoard.new(board)

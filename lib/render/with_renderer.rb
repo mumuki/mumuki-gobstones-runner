@@ -8,9 +8,9 @@ module Gobstones
                               reason: result[:finalBoardError]
     end
 
-    def render_error_output(_output, error)
-      report = error.parse_as_json
-      renderer.send "render_error_#{report[:status]}", report[:result]
+    def render_error_output_with_details(_output, error_message, error_details)
+      error_details.deep_symbolize_keys!
+      renderer.send "render_error_#{error_message}", error_details
     end
 
     private

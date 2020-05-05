@@ -102,7 +102,7 @@ module Gobstones
     end
 
     def fail_with(error)
-      fail error.to_json
+      fail error[:status], details: error[:result]
     end
 
     def board_json(board)
