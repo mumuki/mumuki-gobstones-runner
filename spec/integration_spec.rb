@@ -2,6 +2,9 @@ require 'active_support/all'
 require 'mumukit/bridge'
 
 describe 'Server' do
+  def test_results(response)
+    response[:test_results].map { |it| it.except(:result) }
+  end
 
   let(:bridge) { Mumukit::Bridge::Runner.new('http://localhost:4568') }
 
@@ -129,7 +132,8 @@ examples:
      cell 3 3 Azul 1 Rojo 1 Verde 1 Negro 1
      head 3 3')
 
-    expect(response.except(:test_results)).to eq response_type: :structured,
+    expect(test_results response).to eq [{status: :passed, title: nil}, {status: :passed, title: nil}]
+     expect(response.except(:test_results)).to eq response_type: :structured,
                                                  status: :passed_with_warnings,
                                                  feedback: '',
                                                  expectation_results: [
@@ -181,7 +185,7 @@ examples:
      cell 3 3 Azul 1
      head 3 3')
 
-    expect(response[:test_results].pluck(:status)).to eq [:passed, :passed]
+    expect(test_results response).to eq [{status: :passed, title: nil}, {status: :passed, title: nil}]
     expect(response.except(:test_results)).to eq response_type: :structured,
                                                  status: :passed,
                                                  feedback: '',
@@ -216,7 +220,8 @@ examples:
      size 2 2
      head 0 0')
 
-    expect(response.except(:test_results)).to eq response_type: :structured,
+    expect(test_results response).to eq [{status: :passed, title: nil}]
+     expect(response.except(:test_results)).to eq response_type: :structured,
                                                  status: :passed,
                                                  feedback: '',
                                                  expectation_results: [
@@ -551,6 +556,7 @@ examples:
      head 0 1
     ')
 
+    expect(test_results response).to eq [{status: :passed, title: nil}]
     expect(response.except(:test_results)).to eq response_type: :structured,
                                                  status: :passed,
                                                  feedback: '',
@@ -584,6 +590,7 @@ examples:
      head 0 0
     ')
 
+    expect(test_results response).to eq [{status: :passed, title: nil}]
     expect(response.except(:test_results)).to eq response_type: :structured,
                                                  status: :passed,
                                                  feedback: '',
