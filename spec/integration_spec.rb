@@ -71,8 +71,8 @@ program {
 }}, expectations: [])
 
     expect(response[:status]).to eq :passed
-    expect(response[:test_results].size).to eq 2
     expect(response[:response_type]).to eq :structured
+    expect(test_results response).to eq [{status: :passed, title: nil}, {status: :passed, title: nil}]
   end
 
   it 'answers a valid hash when submission passes and boards do not have a GBB spec' do
@@ -90,6 +90,7 @@ program {
 
     expect(response[:status]).to eq :passed
     expect(response[:response_type]).to eq :structured
+    expect(test_results response).to eq [{status: :passed, title: nil}]
   end
 
   it 'answers a valid hash when submission passes, with expectations' do
@@ -133,7 +134,7 @@ examples:
      head 3 3')
 
     expect(test_results response).to eq [{status: :passed, title: nil}, {status: :passed, title: nil}]
-     expect(response.except(:test_results)).to eq response_type: :structured,
+    expect(response.except(:test_results)).to eq response_type: :structured,
                                                  status: :passed_with_warnings,
                                                  feedback: '',
                                                  expectation_results: [
@@ -142,7 +143,6 @@ examples:
                                                    {binding: "*", inspection: "Declares:=PonerUnaDeCada", result: :passed}
                                                  ],
                                                  result: ''
-    expect(response[:test_results].size).to eq 2
   end
 
   it 'executes each test with the proper argument' do
@@ -221,7 +221,7 @@ examples:
      head 0 0')
 
     expect(test_results response).to eq [{status: :passed, title: nil}]
-     expect(response.except(:test_results)).to eq response_type: :structured,
+    expect(response.except(:test_results)).to eq response_type: :structured,
                                                  status: :passed,
                                                  feedback: '',
                                                  expectation_results: [
@@ -240,6 +240,7 @@ examples:
 
     expect(response[:status]).to eq :passed
     expect(response[:response_type]).to eq :structured
+    expect(test_results response).to eq [{status: :passed, title: "¡BOOM!"}]
   end
 
   it 'answers a valid hash when the expected boom type is wrong_argument_type' do
@@ -251,6 +252,7 @@ examples:
 
     expect(response[:status]).to eq :passed
     expect(response[:response_type]).to eq :structured
+    expect(test_results response).to eq [{status: :passed, title: "¡BOOM!"}]
   end
 
   it 'answers a valid hash when the expected boom type is unassigned_variable and the initial board is not defined' do
@@ -263,6 +265,7 @@ examples:
 
     expect(response[:status]).to eq :passed
     expect(response[:response_type]).to eq :structured
+    expect(test_results response).to eq [{status: :passed, title: nil}]
   end
 
   it 'answers a valid hash when the return checker has to compare a return value of True' do
@@ -280,6 +283,7 @@ examples:
 
      expect(response[:status]).to eq :passed
      expect(response[:response_type]).to eq :structured
+     expect(test_results response).to eq [{status: :passed, title: "esLibreCostados() -> False"}, {status: :passed, title: "esLibreCostados() -> True"}]
   end
 
   it 'answers a valid hash when the return checker has to compare a numeric value and it is defined in the test as string' do
@@ -301,6 +305,7 @@ examples:
 
     expect(response[:status]).to eq :passed
     expect(response[:response_type]).to eq :structured
+    expect(test_results response).to eq [{status: :passed, title: "numero() -> 132"}, {status: :passed, title: "numero() -> 678"}]
   end
 
   it 'answers a valid hash when the error checker is waiting for a wrong_arguments_quantity error' do
@@ -322,6 +327,7 @@ examples:
 
     expect(response[:status]).to eq :passed
     expect(response[:response_type]).to eq :structured
+    expect(test_results response).to eq [{status: :passed, title: nil}]
   end
 
   it 'answers a well formed error when the content has no program definition' do
@@ -403,7 +409,7 @@ examples:
     )
     expect(response[:status]).to eq :passed_with_warnings
     expect(response[:response_type]).to eq :structured
-
+    expect(test_results response).to eq [{status: :passed, title: "rojoEsDominante() -> False"}, {status: :passed, title: "rojoEsDominante() -> True"}]
   end
 
   it 'answers a valid hash when locale is pt, with directions' do
@@ -426,6 +432,7 @@ examples:
       })
     expect(response[:status]).to eq :passed
     expect(response[:response_type]).to eq :structured
+    expect(test_results response).to eq [{status: :passed, title: nil}]
   end
 
   it 'answers a valid hash when locale is pt and submission is wrong, with directions' do
@@ -448,6 +455,7 @@ examples:
       })
     expect(response[:status]).to eq :failed
     expect(response[:response_type]).to eq :structured
+    expect(test_results response).to eq [{status: :failed, title: nil}]
   end
 
   it 'answers a valid hash when locale is pt, with colors' do
@@ -472,6 +480,7 @@ examples:
     )
     expect(response[:status]).to eq :passed
     expect(response[:response_type]).to eq :structured
+    expect(test_results response).to eq [{status: :passed, title: nil}]
   end
 
 
@@ -498,6 +507,7 @@ examples:
     )
     expect(response[:status]).to eq :failed
     expect(response[:response_type]).to eq :structured
+    expect(test_results response).to eq [{status: :failed, title: nil}]
   end
 
   it 'responds a properly structured response when there are unexpected booms and no expected final boards' do
@@ -529,8 +539,9 @@ examples:
       }
     )
 
-    expect(response[:response_type]).to eq :structured
     expect(response[:status]).to eq :failed
+    expect(response[:response_type]).to eq :structured
+    expect(test_results response).to eq [{status: :failed, title: "hayBolitasLejosAl() -> True"}]
   end
 
   it 'can accept Blockly XML as content' do
