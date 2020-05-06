@@ -8,9 +8,12 @@ module Gobstones
                               reason: result[:finalBoardError]
     end
 
-    def render_error_output_with_details(_output, error_message, error_details)
-      error_details.deep_symbolize_keys!
-      renderer.send "render_error_#{error_message}", error_details
+    def build_error_output(builder, example, _, error)
+      error.details.deep_symbolize_keys!
+
+      builder.result          = renderer.send "render_error_#{error.message}", error.details
+      builder.summary_type    = error.message
+      builder.summary_message = I18n.t error.message, error.details
     end
 
     private
