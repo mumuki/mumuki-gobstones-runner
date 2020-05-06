@@ -455,7 +455,9 @@ examples:
       })
     expect(response[:status]).to eq :failed
     expect(response[:response_type]).to eq :structured
-    expect(test_results response).to eq [{status: :failed, title: nil}]
+    expect(test_results response).to eq [
+      {status: :failed, title: nil, summary: {type: 'check_final_board_failed_different_headers', message: 'O tabuleiro é quase o mesmo que esperava-se, mas a cabeça não coincide'}}
+    ]
   end
 
   it 'answers a valid hash when locale is pt, with colors' do
@@ -507,7 +509,9 @@ examples:
     )
     expect(response[:status]).to eq :failed
     expect(response[:response_type]).to eq :structured
-    expect(test_results response).to eq [{status: :failed, title: nil}]
+    expect(test_results response).to eq [
+      {status: :failed, title: nil, summary: {type: 'check_final_board_failed_different_boards', message: 'Um tabuleiro diferente foi obtido do que o esperado'}}
+    ]
   end
 
   it 'responds a properly structured response when there are unexpected booms and no expected final boards' do
@@ -541,7 +545,7 @@ examples:
 
     expect(response[:status]).to eq :failed
     expect(response[:response_type]).to eq :structured
-    expect(test_results response).to eq [{status: :failed, title: "hayBolitasLejosAl() -> True"}]
+    expect(test_results response).to eq [{status: :failed, title: "hayBolitasLejosAl() -> True", summary: {type: 'check_failed_unexpected_boom', message: 'The program did BOOM.'}}]
   end
 
   it 'can accept Blockly XML as content' do
