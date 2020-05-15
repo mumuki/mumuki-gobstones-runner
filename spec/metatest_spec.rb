@@ -112,7 +112,7 @@ describe 'metatest' do
         }
 
         it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "head doesn't match" }
+        it { expect(result[0][0][3][:message]).to include "head doesn't match" }
       end
 
       context 'when fails by different boards (stones)' do
@@ -121,7 +121,7 @@ describe 'metatest' do
         }
 
         it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "different board was obtained" }
+        it { expect(result[0][0][3][:message]).to include "different board was obtained" }
       end
 
     end
@@ -130,7 +130,7 @@ describe 'metatest' do
       let(:compilation) { compilation_boom }
 
       it { expect(result[0][0]).to include :failed }
-      it { expect(result[0][0][2]).to include "The program did BOOM." }
+      it { expect(result[0][0][3][:message]).to include "The program did BOOM." }
     end
 
   end
@@ -150,7 +150,7 @@ describe 'metatest' do
       let(:compilation) { compilation_board }
 
       it { expect(result[0][0]).to include :failed }
-      it { expect(result[0][0][2]).to include "The program was expected to BOOM but a final board was obtained." }
+      it { expect(result[0][0][3][:message]).to include "The program was expected to BOOM but a final board was obtained." }
     end
 
     context 'when the program does boom' do
@@ -171,7 +171,7 @@ describe 'metatest' do
         }
 
         it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "The program was expected to fail by <strong>out of board</strong>, but it failed by another reason." }
+        it { expect(result[0][0][3][:message]).to include "The program was expected to fail by <strong>out of board</strong>, but it failed by another reason." }
       end
 
     end
@@ -200,7 +200,7 @@ describe 'metatest' do
         let(:exit_status) { nil }
 
         it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "<strong>29</strong> was expected but no value was obtained." }
+        it { expect(result[0][0][3][:message]).to include "<strong>29</strong> was expected but no value was obtained." }
       end
 
       context 'when fails by different values' do
@@ -214,7 +214,7 @@ describe 'metatest' do
         }
 
         it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "<strong>11</strong> was expected but <strong>29</strong> was obtained." }
+        it { expect(result[0][0][3][:message]).to include "<strong>11</strong> was expected but <strong>29</strong> was obtained." }
       end
 
     end
@@ -224,7 +224,7 @@ describe 'metatest' do
 
       context 'when fails because the program did boom' do
         it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "The program did BOOM." }
+        it { expect(result[0][0][3][:message]).to include "The program did BOOM." }
       end
     end
 
