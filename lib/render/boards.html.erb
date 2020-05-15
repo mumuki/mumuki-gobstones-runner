@@ -25,12 +25,6 @@
 
 </style>
 
-<% if @result[:error] %>
-  <p class="error-text">
-    <%=I18n.t @result[:error], @result %>
-  </p>
-<% end %>
-
 <div class="boards-container">
 
   <% @result[:boards].each do |it| %>
