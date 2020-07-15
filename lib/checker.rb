@@ -1,9 +1,12 @@
 module Gobstones
   class Checker < Mumukit::Metatest::Checker
+    attr_reader :warnings
+
     include Gobstones::WithRenderer
 
     def initialize(options)
       @options = options
+      @warnings = []
     end
 
     def check_final_board(output, expected)
@@ -13,22 +16,28 @@ module Gobstones
       return if is_expected_timeout(result)
       assert_not_boom status, result
 
+      initial_board = result[:initialBoard]
       expected_board = result[:extraBoard]
       actual_board = result[:finalBoard]
-      boards_match = board_json(expected_board).eql? board_json(actual_board)
-      headers_match = expected_board[:head].eql?(actual_board[:head]) || !@options[:check_head_position]
 
-      if !boards_match || !headers_match
-        status = boards_match && !headers_match ?
-          :check_final_board_failed_different_headers :
-          :check_final_board_failed_different_boards
 
-        fail_with status: status,
-                  result: {
-                    initial: result[:initialBoard],
-                    expected: expected_board,
-                    actual: actual_board
-                  }
+      if @options[:check_head_position]
+        classifier = Gobstones::TestClassifier.new
+        classifier.classify_boards! initial_board, expected_board, actual_board
+
+        unless classifier.status.passed?
+          @warnings << classifier.error_class
+        end
+
+        if classifier.status.failed?
+          fail_with status: classifier.error_kind, result: { initial: initial_board, expected: expected_board, actual: actual_board }
+        end
+      else
+        boards_match = board_json(expected_board).eql? board_json(actual_board)
+        # TODO use classifier here too
+        if !boards_match
+          fail_with status: :check_final_board_failed_different_boards, result: { initial: initial_board, expected: expected_board, actual: actual_board }
+        end
       end
     end
 
@@ -130,6 +139,10 @@ module Gobstones
       return value.to_s.capitalize if type == 'Bool'
 
       value
+    end
+
+    def board_changes_expected(initial_board, expected_board)
+      !board_json(initial_board).eql?(board_json(expected_board))
     end
   end
 end

@@ -6,12 +6,17 @@ class Gobstones::Batch
     @examples = examples
     @extra = extra
     @options = options
+    @checker = Gobstones::Checker.new(options)
   end
 
   def run_tests!(output)
     Mumukit::Metatest::Framework.new(
-      checker: Gobstones::Checker.new(options),
+      checker: @checker,
       runner: Gobstones::MultipleExecutionsRunner.new).test output, examples
+  end
+
+  def warnings
+    @checker.warnings
   end
 
   def to_json
