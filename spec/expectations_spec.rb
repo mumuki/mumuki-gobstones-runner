@@ -17,7 +17,8 @@ examples:
   end
 
   let(:runner) { GobstonesExpectationsHook.new(mulang_path: './bin/mulang') }
-  let(:result) { compile_and_run(req(expectations, code)) }
+  let(:result) { compile_and_run(request) }
+  let(:request) { req(expectations, code) }
 
   context 'basic expectations' do
     let(:code) { 'program { foo := 1 }' }

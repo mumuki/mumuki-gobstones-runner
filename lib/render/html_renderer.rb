@@ -13,13 +13,8 @@ module Gobstones
                   reason: prepare_reason(result[:reason])
     end
 
-    def render_error_check_final_board_failed_different_boards(result)
-      bind_result error: :check_final_board_failed_different_boards,
-                  boards: prepare_boards([:initial, :expected, :actual], result)
-    end
-
-    def render_error_check_final_board_failed_different_headers(result)
-      bind_result error: :check_final_board_failed_different_headers,
+    def render_error_check_final_board_failed(result)
+      bind_result error: "check.summary.#{result[:summary]}",
                   boards: prepare_boards([:initial, :expected, :actual], result)
     end
 

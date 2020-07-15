@@ -2,10 +2,11 @@ require_relative './spec_helper'
 
 describe 'metatest' do
 
-  let(:result) { framework.test compilation, examples }
+  let!(:result) { framework.test compilation, examples }
   let(:options) { { show_initial_board: false, check_head_position: true } }
+  let(:checker) { Gobstones::Checker.new(options) }
   let(:framework) do
-    Mumukit::Metatest::Framework.new checker: Gobstones::Checker.new(options),
+    Mumukit::Metatest::Framework.new checker: checker,
                                      runner: Gobstones::MultipleExecutionsRunner.new
   end
   let(:dummy_view_board) do
@@ -45,7 +46,7 @@ describe 'metatest' do
 
   before { allow(Mumukit).to receive(:runner_url) { 'http://gobstones.runners.mumuki.io' } }
 
-  def board_with_stones(headX, headY, cell10 = {})
+  def board_with_stones(headX, headY, altered_cell: {})
     {
       head: { x: headX, y: headY },
       width: 3,
@@ -55,21 +56,21 @@ describe 'metatest' do
         json: [
           [{}, {}, {}],
           [{}, {}, {}],
-          [{ black: 1, green: 1 }, cell10, {}]
+          [{ black: 1, green: 1 }, altered_cell, {}]
         ]
       },
       returnValue: exit_status
     }
   end
 
-  def compilation_board(expected_board = dummy_view_board)
+  def compilation_board(initial: dummy_view_board, expected: dummy_view_board, actual: board_with_stones(0, 1))
     [
       {
         status: "passed",
         result: {
-          extraBoard: expected_board,
-          initialBoard: dummy_view_board,
-          finalBoard: board_with_stones(0, 1)
+          extraBoard: expected,
+          initialBoard: initial,
+          finalBoard: actual
         }
       }
     ]
@@ -87,49 +88,81 @@ describe 'metatest' do
     }
 
     context 'when the program returns a final board' do
-
-      context 'when passes with check_head_position=true' do
-        let(:compilation) {
-          compilation_board board_with_stones 0, 1
-        }
-
-        it { expect(result[0][0]).to include :passed }
-      end
-
       context 'when passes with check_head_position=false' do
         let(:compilation) {
-          compilation_board board_with_stones 5, 5
+          compilation_board expected: board_with_stones(5, 5)
         }
 
         let(:options) { { show_initial_board: false, check_head_position: false } }
 
-        it { expect(result[0][0]).to include :passed }
+        it { expect(result[0][0][1]).to eq :passed }
       end
 
-      context 'when fails by different boards (header)' do
-        let(:compilation) {
-          compilation_board board_with_stones 2, 2
-        }
+      describe 'when check_head_position=true' do
 
-        it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "head doesn't match" }
+        context 'no movement nor state change was expected, but she moved' do
+          let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 2), actual: board_with_stones(0, 0) }
+          it { expect(result[0][0][1]).to eq :failed }
+          it { expect(result[0][0][3]).to eq :no_movement_nor_state_change_expected_but_moved }
+        end
+
+        context 'movement expected, but she didn\'t move movement' do
+          let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 3), actual: board_with_stones(2, 2) }
+          it { expect(result[0][0][1]).to eq :failed }
+          it { expect(result[0][0][3]).to eq :only_movement_expected_but_did_not_move }
+        end
+
+        context 'movement expected, but she didn\'t move properly' do
+          let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 3), actual: board_with_stones(3, 2) }
+          it { expect(result[0][0][1]).to eq :failed }
+          it { expect(result[0][0][3]).to eq :only_movement_expected_but_moved_in_wrong_direction }
+        end
+
+        context 'state changes were expected, but didn\'t change properly' do
+          let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 2, altered_cell: {blue: 2}), actual: board_with_stones(2, 2, altered_cell: {red: 1}) }
+
+          it { expect(result[0][0][1]).to eq :failed }
+          it { expect(result[0][0][2]).to include "different board was obtained" }
+          it { expect(result[0][0][2]).to_not include "head doesn't match" }
+          it { expect(result[0][0][3]).to eq :state_changes_expected_but_changed_improperly }
+        end
+
+        context 'state changes were expected, but didn\'t change' do
+          let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 2, altered_cell: {blue: 2}), actual: board_with_stones(2, 2) }
+
+          it { expect(result[0][0][1]).to eq :failed }
+          it { expect(result[0][0][2]).to include "different board was obtained" }
+          it { expect(result[0][0][2]).to_not include "head doesn't match" }
+          it { expect(result[0][0][3]).to eq :state_changes_expected_but_did_not_change }
+        end
+
+        context 'passed' do
+          let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 2, altered_cell: {blue: 2}), actual: board_with_stones(2, 2, altered_cell: {blue: 2}) }
+
+          it { expect(result[0][0][1]).to eq :passed }
+          it { expect(result[0][0][2]).to_not include "different board was obtained" }
+          it { expect(result[0][0][2]).to_not include "head doesn't match" }
+          it { expect(result[0][0][3]).to be nil }
+        end
+
+        context 'state changes were expected and ocurred, but head does not match' do
+          let(:compilation) { compilation_board initial: board_with_stones(2, 2), expected: board_with_stones(2, 2, altered_cell: {blue: 2}), actual: board_with_stones(2, 3, altered_cell: {blue: 2}) }
+
+          it { expect(result[0][0][1]).to eq :failed }
+          it { expect(result[0][0][2]).to include "different board was obtained" }
+          it { expect(result[0][0][2]).to include "head doesn't match" }
+          it { expect(result[0][0][3]).to eq :state_changes_expected_and_ocurred_but_head_did_not_match }
+        end
+
       end
 
-      context 'when fails by different boards (stones)' do
-        let(:compilation) {
-          compilation_board board_with_stones 0, 1, { blue: 9 }
-        }
-
-        it { expect(result[0][0]).to include :failed }
-        it { expect(result[0][0][2]).to include "different board was obtained" }
-      end
 
     end
 
     context 'when the program does boom' do
       let(:compilation) { compilation_boom }
 
-      it { expect(result[0][0]).to include :failed }
+      it { expect(result[0][0][1]).to eq :failed }
       it { expect(result[0][0][2]).to include "The program did BOOM." }
     end
 
@@ -149,7 +182,7 @@ describe 'metatest' do
     context 'when the program returns a final board' do
       let(:compilation) { compilation_board }
 
-      it { expect(result[0][0]).to include :failed }
+      it { expect(result[0][0][1]).to eq :failed }
       it { expect(result[0][0][2]).to include "The program was expected to BOOM but a final board was obtained." }
     end
 
@@ -157,7 +190,7 @@ describe 'metatest' do
       let(:compilation) { compilation_boom }
 
       context 'with the same reason as expected' do
-        it { expect(result[0][0]).to include :passed }
+        it { expect(result[0][0][1]).to eq :passed }
       end
 
       context 'with another reason' do
@@ -170,7 +203,7 @@ describe 'metatest' do
            }]
         }
 
-        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][1]).to eq :failed }
         it { expect(result[0][0][2]).to include "The program was expected to fail by <strong>out of board</strong>, but it failed by another reason." }
       end
 
@@ -193,13 +226,13 @@ describe 'metatest' do
       let(:compilation) { compilation_board }
 
       context 'when passes with equal value' do
-        it { expect(result[0][0]).to include :passed }
+        it { expect(result[0][0][1]).to eq :passed }
       end
 
       context 'when fails by no return value' do
         let(:exit_status) { nil }
 
-        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][1]).to eq :failed }
         it { expect(result[0][0][2]).to include "<strong>29</strong> was expected but no value was obtained." }
       end
 
@@ -213,7 +246,7 @@ describe 'metatest' do
           }]
         }
 
-        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][1]).to eq :failed }
         it { expect(result[0][0][2]).to include "<strong>11</strong> was expected but <strong>29</strong> was obtained." }
       end
 
@@ -223,7 +256,7 @@ describe 'metatest' do
       let(:compilation) { compilation_boom }
 
       context 'when fails because the program did boom' do
-        it { expect(result[0][0]).to include :failed }
+        it { expect(result[0][0][1]).to eq :failed }
         it { expect(result[0][0][2]).to include "The program did BOOM." }
       end
     end
