@@ -173,6 +173,8 @@
 
             if (!blockly || !blockly.workspace) return initialize();
 
+            blockly.showCategories = !this._isKindergarten();
+
             if (!this.readOnly) {
               relocateTrash(blockly);
             }
@@ -206,6 +208,12 @@
         let event = document.createEvent('HTMLEvents');
         event.initEvent('resize', true, false);
         document.dispatchEvent(event);
+      },
+
+      reset() {
+        const blockly = this.getBlockly();
+        blockly.workspaceXml = blockly.initialXml;
+        blockly.scrollToBlock();
       },
 
       setInteractiveLayout() {
@@ -273,6 +281,10 @@
 
       getEditorTest: function() {
         return $("#mu-custom-editor-test")[0];
+      },
+
+      _isKindergarten() {
+        return mumuki && mumuki.currentExerciseLayout === 'input_kindergarten';
       },
 
       _setInitialXml: function (blockly) {
@@ -433,13 +445,7 @@
       is: 'kids-reset-button',
 
       _onButtonClick: function () {
-        const blockly = this._getBlockly();
-        blockly.workspaceXml = blockly.initialXml;
-        blockly.scrollToBlock();
-      },
-
-      _getBlockly: function () {
-        return this._getEditor().getBlockly();
+        this._getEditor().reset();
       },
 
       _getEditor: function () {
@@ -788,6 +794,10 @@
         $.get(this.toolboxUrl, function (toolboxXml) {
           blockly.toolbox = { defaultToolbox: toolboxXml };
           editor.setTeacherActions(blockly);
+          // TODO: this `postpone` usages cause concurrency issues... we should get rid of them.
+          postpone(() => {
+            editor.reset();
+          });
         }).always(function () {
           editor.enableContextButton();
         });
