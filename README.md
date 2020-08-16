@@ -22,8 +22,7 @@ gem install bundler
 ## Install local dependencies
 
 ```bash
-bundle install
-./bin/pull_worker.sh
+./devinit
 ```
 
 # Run tests
@@ -34,9 +33,13 @@ bundle exec rake
 
 # Run the server
 
+If you want to start the server quickly in developer environment, you can just do the following:
+
 ```bash
-RACK_ENV=development bundle exec rackup -p 4000 --host 0.0.0.0
+./devstart
 ```
+
+This will install your dependencies and boot the server.
 
 # Deploy docker image
 

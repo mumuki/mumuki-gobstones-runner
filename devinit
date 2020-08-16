@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+
+echo ''
+echo '  ________       ___             __                               '
+echo ' /  _____/  ____ \_ |__   ______/  |_  ____   ____   ____   ______'
+echo '/   \  ___ / __ \ | __ \ /  ___/   __\/ __ \ /    \_/ __ \ /  ___/'
+echo '\    \_\  \  \_\ )| \_\ \\___ \ |  | (  \_\ )   |  \  ___/_\___ \ '
+echo ' \______  /\____/ |___  /____  \|__|  \____/|___|  /\___  /____  \'
+echo '        \/            \/     \/                  \/     \/     \/ '
+echo ''
+
+echo "[MumukiDevstart::GobstonesRunner] Installing dependencies...."
+bundle install --quiet
+
+echo "[MumukiDevstart::GobstonesRunner] Pulling worker Docker image...."
+./bin/pull_worker.sh
