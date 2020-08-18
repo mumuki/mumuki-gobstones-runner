@@ -47,6 +47,19 @@
         teacherMode: {
           type: Boolean,
           default: false
+        },
+        defaultIcons: {
+          type: Object,
+          value: {
+            procedureDeclarations: {
+              SacarFoto: 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/device-camera-icon.png',
+              TrasladarLuna: 'http://icons.iconarchive.com/icons/goodstuff-no-nonsense/free-space/1024/moon-full-moon-icon.png'
+            },
+
+            functionDeclarations: {
+              dioUnaVueltaCompleta: 'https://d30y9cdsu7xlg0.cloudfront.net/png/4994-200.png'
+            }
+          }
         }
       },
 
@@ -108,6 +121,7 @@
 
         const setBlocklyCustomSettings = () => {
           if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS) return postpone(setBlocklyCustomSettings);
+          Blockly.displayMode = this._isKindergarten() ? 'iconic' : 'text';
           setBlocklySounds();
           setBlocklyColors();
 
@@ -234,14 +248,15 @@
         if (teacherCode) {
           setTimeout(() => {
             const actions = new Parser().getActionsFromSource(teacherCode);
-            blockly.primitiveProcedures = actions.procedureDeclarations;
-            blockly.primitiveFunctions = actions.functionDeclarations;
+
+            blockly.primitiveProcedures = this._withDefaultIcons(actions, 'procedureDeclarations');
+            blockly.primitiveFunctions = this._withDefaultIcons(actions, 'functionDeclarations');
           });
         }
       },
 
       enableContextButton() {
-        if(typeof mumuki !== "undefined" && mumuki.kids && mumuki.assetsLoadedFor) {
+        if(mumuki.kids && mumuki.assetsLoadedFor) {
           return mumuki.assetsLoadedFor('editor');
         } else {
           return postpone(this.enableContextButton.bind(this));
@@ -284,6 +299,20 @@
 
       getEditorTest: function() {
         return $("#mu-custom-editor-test")[0];
+      },
+
+      _withDefaultIcons(actions, type) {
+        const addIcon = (declaration, block_icon) =>
+          ({ ...declaration, attributes: { ...declaration.attributes, block_icon } });
+
+        return actions[type].map((declaration) => {
+          const defaultIcon = this.defaultIcons[type][declaration.name];
+          if (defaultIcon) {
+            return addIcon(declaration, defaultIcon);
+          } else {
+            return declaration;
+          }
+        });
       },
 
       _isKindergarten() {
