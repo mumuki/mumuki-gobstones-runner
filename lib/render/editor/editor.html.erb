@@ -34,11 +34,11 @@
       properties: {
         mediaUrl: {
           type: String,
-          value: "https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"
+          value: "<%= @assets_url %>/media/"
         },
         localMediaUrl: {
           type: String,
-          value: "https://github.com/Program-AR/gs-element-blockly/raw/0.19.1/media/"
+          value: "<%= @assets_url %>/local-media/"
         },
         readOnly: {
           type: Boolean,
@@ -55,7 +55,6 @@
               SacarFoto: 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/device-camera-icon.png',
               TrasladarLuna: 'http://icons.iconarchive.com/icons/goodstuff-no-nonsense/free-space/1024/moon-full-moon-icon.png'
             },
-
             functionDeclarations: {
               dioUnaVueltaCompleta: 'https://d30y9cdsu7xlg0.cloudfront.net/png/4994-200.png'
             }

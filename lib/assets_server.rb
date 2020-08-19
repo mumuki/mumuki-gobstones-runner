@@ -17,6 +17,12 @@ class Mumukit::Server::App < Sinatra::Base
     get_local_asset "#{asset_type}/#{name}.svg", "lib/public/#{name}.svg", 'image/svg+xml'
   end
 
+  def self.get_media_assets(folder)
+    Dir.glob("lib/public/#{folder}/*").each do |path|
+      get_local_asset "#{folder}/#{File.basename path}", path
+    end
+  end
+
   ['polymer', 'polymer-mini', 'polymer-micro'].each { |name|
     get_board_asset "#{name}.html", "htmls/vendor/#{name}.html", 'text/html'
   }
@@ -29,9 +35,11 @@ class Mumukit::Server::App < Sinatra::Base
   get_local_asset 'layout/layout.html', 'lib/render/layout/layout.html', 'text/html'
   get_local_asset 'editor/editor.js', 'lib/render/editor/editor.js', 'application/javascript'
   get_local_asset 'editor/editor.css', 'lib/render/editor/editor.css', 'text/css'
-  get_local_asset 'editor/editor.html', 'lib/render/editor/editor.html', 'text/html'
   get_local_asset 'editor/hammer.min.js', 'lib/render/editor/hammer.min.js', 'application/javascript'
   get_local_asset 'boom.png', 'lib/public/boom.png', 'image/png'
+
+  get_media_assets 'media'
+  get_media_assets 'local-media'
 
   ['red', 'blue', 'green', 'black'].each do |name|
     get_local_svg(name, 'editor')
@@ -39,5 +47,11 @@ class Mumukit::Server::App < Sinatra::Base
 
   ['attires_enabled', 'attires_disabled'].each do |name|
     get_local_svg(name, 'layout')
+  end
+
+  get '/assets/editor/editor.html' do
+    cross_origin
+    @assets_url = "//#{request.host_with_port}/assets"
+    erb File.read('lib/render/editor/editor.html.erb')
   end
 end
