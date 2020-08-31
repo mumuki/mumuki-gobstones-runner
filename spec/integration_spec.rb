@@ -495,6 +495,29 @@ examples:
     expect(response[:response_type]).to eq :structured
   end
 
+  it 'answers a valid hash when locale contains region' do
+    response = bridge.run_tests!({
+        content: "program {\n  Mover(Norte); Mover(Este)   \n}",
+        test: "
+        check_head_position: true
+        examples:
+         - initial_board: |
+             GBB/1.0
+             size 3 3
+             head 0 0
+           final_board: |
+             GBB/1.0
+             size 3 3
+             head 1 1",
+        expectations: [ ],
+        locale: "es-CL",
+        extra: ""
+      }
+    )
+    expect(response[:status]).to eq :passed
+    expect(response[:response_type]).to eq :structured
+  end
+
   it 'responds a properly structured response when there are unexpected booms and no expected final boards' do
     response = bridge.run_tests!(
       {
