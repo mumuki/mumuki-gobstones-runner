@@ -9,6 +9,7 @@ services:
 - docker
 before_install:
 - ./bin/pull_worker.sh
+- gem install bundler -v 2.0.2
 deploy:
   provider: rubygems
   api_key:
