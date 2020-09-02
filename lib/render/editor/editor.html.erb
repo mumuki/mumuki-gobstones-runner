@@ -34,11 +34,11 @@
       properties: {
         mediaUrl: {
           type: String,
-          value: "https://github.com/Program-AR/blockly-package/raw/v0.0.15/media/"
+          value: "<%= @assets_url %>/media/"
         },
         localMediaUrl: {
           type: String,
-          value: "https://github.com/Program-AR/gs-element-blockly/raw/0.19.1/media/"
+          value: "<%= @assets_url %>/local-media/"
         },
         readOnly: {
           type: Boolean,
@@ -47,6 +47,18 @@
         teacherMode: {
           type: Boolean,
           default: false
+        },
+        defaultIcons: {
+          type: Object,
+          value: {
+            procedureDeclarations: {
+              SacarFoto: 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/device-camera-icon.png',
+              TrasladarLuna: 'http://icons.iconarchive.com/icons/goodstuff-no-nonsense/free-space/1024/moon-full-moon-icon.png'
+            },
+            functionDeclarations: {
+              dioUnaVueltaCompleta: 'https://d30y9cdsu7xlg0.cloudfront.net/png/4994-200.png'
+            }
+          }
         }
       },
 
@@ -70,7 +82,8 @@
           Blockly.MUMUKI_COLORS = {
             pink: "#FF5C82",
             blue: "#5CBEFF",
-            yellow: "#FFC95C"
+            yellow: "#FFC95C",
+            green: "#5CED71"
           };
 
           // reserved
@@ -81,8 +94,10 @@
           Blockly.CUSTOM_COLORS.function = Blockly.MUMUKI_COLORS.pink;
           Blockly.CUSTOM_COLORS.complete = Blockly.MUMUKI_COLORS.pink;
 
+          // control structures
+          Blockly.CUSTOM_COLORS.controlStructure = Blockly.MUMUKI_COLORS.green;
+
           // commands
-          Blockly.CUSTOM_COLORS.controlStructure = Blockly.MUMUKI_COLORS.yellow;
           Blockly.CUSTOM_COLORS.primitiveCommand = Blockly.MUMUKI_COLORS.yellow;
           Blockly.CUSTOM_COLORS.primitiveProcedure = Blockly.MUMUKI_COLORS.yellow;
           Blockly.CUSTOM_COLORS.procedure_call = Blockly.MUMUKI_COLORS.yellow;
@@ -105,6 +120,11 @@
 
         const setBlocklyCustomSettings = () => {
           if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS) return postpone(setBlocklyCustomSettings);
+
+          // The display mode configuration could be monkey-patched here, like this:
+          // Blockly.displayModes.iconic.iconSize = 64;
+
+          Blockly.displayMode = this._isKindergarten() ? 'iconic' : 'text';
           setBlocklySounds();
           setBlocklyColors();
 
@@ -231,14 +251,15 @@
         if (teacherCode) {
           setTimeout(() => {
             const actions = new Parser().getActionsFromSource(teacherCode);
-            blockly.primitiveProcedures = actions.procedureDeclarations;
-            blockly.primitiveFunctions = actions.functionDeclarations;
+
+            blockly.primitiveProcedures = this._withDefaultIcons(actions, 'procedureDeclarations');
+            blockly.primitiveFunctions = this._withDefaultIcons(actions, 'functionDeclarations');
           });
         }
       },
 
       enableContextButton() {
-        if(typeof mumuki !== "undefined" && mumuki.kids && mumuki.assetsLoadedFor) {
+        if(mumuki.kids && mumuki.assetsLoadedFor) {
           return mumuki.assetsLoadedFor('editor');
         } else {
           return postpone(this.enableContextButton.bind(this));
@@ -281,6 +302,20 @@
 
       getEditorTest: function() {
         return $("#mu-custom-editor-test")[0];
+      },
+
+      _withDefaultIcons(actions, type) {
+        const addIcon = (declaration, block_icon) =>
+          ({ ...declaration, attributes: { ...declaration.attributes, block_icon } });
+
+        return actions[type].map((declaration) => {
+          const defaultIcon = this.defaultIcons[type][declaration.name];
+          if (defaultIcon) {
+            return addIcon(declaration, defaultIcon);
+          } else {
+            return declaration;
+          }
+        });
       },
 
       _isKindergarten() {
