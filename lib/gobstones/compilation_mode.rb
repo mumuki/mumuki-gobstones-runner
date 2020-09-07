@@ -15,7 +15,7 @@ module Gobstones
     module GameFramework
       class << self
         def compile_extra(extra)
-          [extra, render_framework_file('extra.gbs')]
+          [extra, extra_code]
         end
 
         def compile_content(content)
@@ -27,10 +27,18 @@ module Gobstones
             <<~GBS
             #{content}
 
-            #{render_framework_file 'program.gbs'}
+            #{program_code}
             GBS
                 .chop
           end
+        end
+
+        def extra_code
+          render_framework_file 'extra.gbs'
+        end
+
+        def program_code
+          render_framework_file 'program.gbs'
         end
 
         private

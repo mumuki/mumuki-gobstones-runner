@@ -29,6 +29,26 @@
       board.updateStyles();
     }
 
+    const compilationModes = {
+      gameFramework: {
+        compile: ({ main, teacher, ...args }) => {
+          const extra = `<%= @game_framework_extra %>`;
+          const program = `<%= @game_framework_program %>`;
+
+          const append = (code, anotherCode) => `${code}\n\n${anotherCode}`
+
+          return {
+            main: append(main, program),
+            teacher: append(teacher, extra),
+            ...args
+          };
+        }
+      },
+      classic: {
+        compile: (code) => code
+      }
+    };
+
     Polymer({
       is: 'mu-gobstones-custom-editor',
       properties: {
@@ -304,6 +324,10 @@
         return $("#mu-custom-editor-test")[0];
       },
 
+      compile(code) {
+        return this._compilationMode().compile(code);
+      },
+
       _withDefaultIcons(actions, type) {
         const addIcon = (declaration, block_icon) =>
           ({ ...declaration, attributes: { ...declaration.attributes, block_icon } });
@@ -319,7 +343,11 @@
       },
 
       _isKindergarten() {
-        return mumuki && mumuki.exercise.layout === 'input_kindergarten';
+        return mumuki.exercise.layout === 'input_kindergarten';
+      },
+
+      _compilationMode() {
+        return this._isKindergarten() ? compilationModes.gameFramework : compilationModes.classic;
       },
 
       _setInitialXml: function (blockly) {
@@ -600,11 +628,11 @@
 
         controller.start({
           initialState: this.targetState,
-          code: {
+          code: editor.compile({
             main: code,
             library: "",
             teacher: teacherCode
-          }
+          })
         }, {
           onResult: (state, fullState) => {
             const region = this._getLastRegion(fullState);
