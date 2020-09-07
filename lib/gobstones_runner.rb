@@ -1,5 +1,6 @@
 require 'mumukit'
 require 'erb'
+require 'nokogiri'
 
 I18n.load_translations_path File.join(__dir__, 'locales', '*.yml')
 

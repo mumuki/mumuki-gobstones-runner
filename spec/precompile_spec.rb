@@ -64,7 +64,6 @@ examples:
       let(:content) do
         <<~GBS
           procedure Main() {
-            MoverIzquierda()
             MorderManzana()
           }
         GBS
@@ -72,10 +71,6 @@ examples:
 
       let(:extra) do
         <<~GBS
-          procedure MoverIzquierda() {
-            Mover(Este)
-          }
-
           procedure MorderManzana() {
             Sacar(Rojo)
           }
@@ -94,22 +89,72 @@ examples:
       end
 
       context 'adds framework program to content' do
-        let(:expected_content) do
-          <<~GBS
-            procedure Main() {
-              MoverIzquierda()
-              MorderManzana()
-            }
+        context 'for text solutions' do
+          let(:expected_content) do
+            <<~GBS
+              procedure Main() {
+                MorderManzana()
+              }
 
-            program {
-              Before()
-              Main()
-              After()
-            }
-          GBS
+              program {
+                Before()
+                Main()
+                After()
+              }
+            GBS
+          end
+
+          it { expect(result_h['code']).to eq expected_content }
         end
 
-        it { expect(result_h['code']).to eq expected_content }
+        context 'for blocks solutions' do
+          let(:content) do
+            <<~BLOCKLY
+              <xml xmlns="http://www.w3.org/1999/xhtml">
+                  <variables></variables>
+                  <block type="procedures_defnoreturnnoparams" id="kKyOWf9`nkEG}qW-%QG[" x="69" y="-85">
+                      <field name="NAME">Main</field>
+                      <statement name="STACK">
+                          <block type="ComerManzana" id="{aeaW=W7yAMpejAXZc{+"></block>
+                      </statement>
+                  </block>
+              </xml>
+            BLOCKLY
+          end
+
+          let(:expected_content) do
+            <<~BLOCKLY
+              <xml xmlns="http://www.w3.org/1999/xhtml">
+                  <variables></variables>
+                  <block type="procedures_defnoreturnnoparams" id="kKyOWf9`nkEG}qW-%QG[" x="69" y="-85">
+                      <field name="NAME">Main</field>
+                      <statement name="STACK">
+                          <block type="ComerManzana" id="{aeaW=W7yAMpejAXZc{+"></block>
+                      </statement>
+                  </block>
+                  <block type="Program" deletable="false" x="189" y="177">
+                    <statement name="program">
+                      <block type="procedures_callnoreturnnoparams">
+                        <mutation name="Before"></mutation>
+                        <next>
+                          <block type="procedures_callnoreturnnoparams">
+                            <mutation name="Main"></mutation>
+                            <next>
+                              <block type="procedures_callnoreturnnoparams">
+                                <mutation name="After"></mutation>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </statement>
+                  </block>
+              </xml>
+            BLOCKLY
+          end
+
+          it { expect(result_h['code']).to eq expected_content.gsub(/\n\s*/, '') }
+        end
       end
     end
 

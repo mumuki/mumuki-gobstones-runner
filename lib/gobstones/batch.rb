@@ -41,12 +41,22 @@ class Gobstones::Batch
   end
 
   def content_with_framework_program
-    <<~GBS
-      #{content}
+    if blockly_content?
+      xml = Nokogiri::XML(content)
+      xml.root.add_child render_framework_file('program.xml')
+      xml.to_xhtml.gsub(/\n\s*/, '')
+    else
+      <<~GBS
+        #{content}
 
-      #{render_framework_file 'program.gbs'}
-    GBS
-      .chop
+        #{render_framework_file 'program.gbs'}
+      GBS
+        .chop
+    end
+  end
+
+  def blockly_content?
+    Nokogiri::XML(content).errors.empty?
   end
 
   def render_framework_file(name)
