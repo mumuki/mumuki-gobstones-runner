@@ -122,7 +122,7 @@
           if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS) return postpone(setBlocklyCustomSettings);
 
           // The display mode configuration could be monkey-patched here, like this:
-          // Blockly.displayModes.iconic.iconSize = 64;
+          Blockly.displayModes.iconic.iconSize = 64;
 
           Blockly.displayMode = this._isKindergarten() ? 'iconic' : 'text';
           setBlocklySounds();
