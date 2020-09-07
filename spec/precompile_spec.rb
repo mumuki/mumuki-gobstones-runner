@@ -2,9 +2,9 @@ require_relative './spec_helper'
 
 describe 'running' do
 
-  def req(content, extra, test = 'examples: [{}]')
+  def req(content, extra, test, settings)
     runner.compile(
-      struct content: content.strip, extra: extra.strip, test: test
+      struct(content: content.strip, extra: extra.strip, test: test, settings: settings)
     )
   end
 
@@ -12,19 +12,19 @@ describe 'running' do
 
   describe '#compile_file_content' do
     let(:content) {
-<<EOF
-program {
-  PonerDosRojas()
-}
+<<~EOF
+        program {
+          PonerDosRojas()
+        }
 EOF
     }
 
     let(:extra) {
-<<EOF
-procedure PonerDosRojas() {
-  Poner(Rojo)
-  Poner(Rojo)
-}
+<<~EOF
+        procedure PonerDosRojas() {
+          Poner(Rojo)
+          Poner(Rojo)
+        }
 EOF
     }
 
@@ -51,8 +51,67 @@ examples:
   error: out_of_board
 }}
 
-    let(:request) { req content, extra, test }
+    let(:settings) { nil }
+
+    let(:request) { req content, extra, test, settings }
     let!(:result) { runner.compile_file_content request }
+
+    context 'when game framework is enabled' do
+      let(:settings) do
+        { 'game_framework' => true }
+      end
+
+      let(:content) do
+        <<~GBS
+          procedure Main() {
+            MoverIzquierda()
+            MorderManzana()
+          }
+        GBS
+      end
+
+      let(:extra) do
+        <<~GBS
+          procedure MoverIzquierda() {
+            Mover(Este)
+          }
+
+          procedure MorderManzana() {
+            Sacar(Rojo)
+          }
+        GBS
+      end
+
+      let(:result_h) { JSON.parse result }
+
+      context 'includes framework code in extraCode' do
+        let(:framework_extra) { ERB.new(File.read('lib/game_framework/extra.gbs.erb')).result }
+        it { expect(result_h['extraCode']).to include framework_extra }
+      end
+
+      context 'includes exercise extra code in extraCode' do
+        it { expect(result_h['extraCode']).to include extra.chop }
+      end
+
+      context 'adds framework program to content' do
+        let(:expected_content) do
+          <<~GBS
+            procedure Main() {
+              MoverIzquierda()
+              MorderManzana()
+            }
+
+            program {
+              Before()
+              Main()
+              After()
+            }
+          GBS
+        end
+
+        it { expect(result_h['code']).to eq expected_content }
+      end
+    end
 
     context 'parses the examples' do
       let(:expected_examples) {
@@ -81,12 +140,15 @@ examples:
         ]
       }
 
-      it { expect(runner.batch.options).to eq show_initial_board: true,
-                                        show_final_board: true,
-                                        check_head_position: true,
-                                        expect_endless_while: true,
-                                        interactive: false,
-                                        subject: nil }
+      it {
+        expect(runner.batch.options).to eq show_initial_board: true,
+                                           show_final_board: true,
+                                           game_framework: false,
+                                           check_head_position: true,
+                                           expect_endless_while: true,
+                                           interactive: false,
+                                           subject: nil
+      }
       it { expect(runner.batch.examples).to eq expected_examples }
     end
 
@@ -117,11 +179,13 @@ examples:
         ]
       }
 
-      it { expect(runner.batch.options).to eq({
+      it {
+        expect(runner.batch.options).to eq({
         show_initial_board: true,
         show_final_board: false,
         check_head_position: false,
         expect_endless_while: false,
+        game_framework: false,
         interactive: false,
         subject: "aName"
       }) }

@@ -16,13 +16,42 @@ class Gobstones::Batch
 
   def to_json
     {
-      code: content,
-      extraCode: extra,
+      code: make_content,
+      extraCode: make_extra,
       examples: examples.map { |example| example_json(example) }
     }.to_json
   end
 
   private
+
+  def make_extra
+    if @options[:game_framework]
+      [extra, render_framework_file('extra.gbs')]
+    else
+      extra
+    end
+  end
+
+  def make_content
+    if @options[:game_framework]
+      content_with_framework_program
+    else
+      content
+    end
+  end
+
+  def content_with_framework_program
+    <<~GBS
+      #{content}
+
+      #{render_framework_file 'program.gbs'}
+    GBS
+      .chop
+  end
+
+  def render_framework_file(name)
+    ERB.new(File.read("lib/game_framework/#{name}.erb")).result
+  end
 
   def example_json(example)
     expected_board = example[:postconditions][:final_board]

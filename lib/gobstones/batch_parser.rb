@@ -3,13 +3,17 @@ module Gobstones::BatchParser
     def parse(request)
       test = parse_test(request)
 
-      options = parse_options test
+      options = parse_options(test).merge(parse_settings(request))
       examples = parse_examples test, options
 
       Gobstones::Batch.new request.content, examples, request.extra, options
     end
 
     private
+
+    def parse_settings(request)
+      { game_framework: request.settings.try { |s| s['game_framework'] } || false }
+    end
 
     def parse_test(request)
       YAML.load(request.test).deep_symbolize_keys
