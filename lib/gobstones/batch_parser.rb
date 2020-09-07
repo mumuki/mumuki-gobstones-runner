@@ -12,7 +12,7 @@ module Gobstones::BatchParser
     private
 
     def parse_settings(request)
-      { game_framework: request.settings.try { |s| s['game_framework'] } || false }
+      { game_framework: !!request.dig(:settings, 'game_framework') }
     end
 
     def parse_test(request)
