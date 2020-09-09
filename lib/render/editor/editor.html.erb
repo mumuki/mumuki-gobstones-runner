@@ -251,9 +251,9 @@
         document.dispatchEvent(event);
       },
 
-      reset() {
+      reset(code) {
         const blockly = this.getBlockly();
-        blockly.workspaceXml = blockly.initialXml;
+        blockly.workspaceXml = code || blockly.initialXml;
         blockly.scrollToBlock();
       },
 
@@ -855,12 +855,14 @@
         const editor = $("mu-gobstones-custom-editor")[0];
         const blockly = editor.getBlockly();
         if(blockly.readOnly) return;
+        const previousCode = editor.getEditorValue().value;
         $.get(this.toolboxUrl, function (toolboxXml) {
           blockly.toolbox = { defaultToolbox: toolboxXml };
           editor.setTeacherActions(blockly);
-          // TODO: this `postpone` usages cause concurrency issues... we should get rid of them.
+          // @faloi - I couldn't figure out why the workspace gets replaced with a generic code,
+          // so here I force a reset with the code previously saved. Sorry not sorry.
           postpone(() => {
-            editor.reset();
+            editor.reset(previousCode);
           });
         }).always(function () {
           editor.enableContextButton();
