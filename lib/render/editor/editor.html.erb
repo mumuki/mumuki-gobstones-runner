@@ -143,6 +143,7 @@
 
           // The display mode configuration could be monkey-patched here, like this:
           Blockly.displayModes.iconic.iconSize = 64;
+          Blockly.displayModes.iconic.procedureDefIcon = `${this.localMediaUrl}main-procedure.png`;
 
           Blockly.displayMode = this._isKindergarten() ? 'iconic' : 'text';
           setBlocklySounds();
