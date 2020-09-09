@@ -42,10 +42,19 @@
             teacher: append(teacher, extra),
             ...args
           };
+        },
+
+        scrollToMainBlock: (blockly) => {
+          const mainBlock = blockly.getBlocksOfType('procedures_defnoreturnnoparams')[0];
+          blockly.scrollToBlock(mainBlock.id);
         }
       },
       classic: {
-        compile: (code) => code
+        compile: (code) => code,
+
+        scrollToMainBlock: (blockly) => {
+          blockly.scrollToBlock();
+        }
       }
     };
 
@@ -254,7 +263,7 @@
       reset(code) {
         const blockly = this.getBlockly();
         blockly.workspaceXml = code || blockly.initialXml;
-        blockly.scrollToBlock();
+        this._scrollToMainBlock();
       },
 
       setInteractiveLayout() {
@@ -329,6 +338,10 @@
         return this._compilationMode().compile(code);
       },
 
+      _scrollToMainBlock() {
+        this._compilationMode().scrollToMainBlock(this.getBlockly());
+      },
+
       _withDefaultIcons(actions, type) {
         const addIcon = (declaration, block_icon) =>
           ({ ...declaration, attributes: { ...declaration.attributes, block_icon } });
@@ -369,7 +382,7 @@
               ? "<xml></xml>"
               : blockly.initialXml
           );
-          blockly.scrollToBlock();
+          this._scrollToMainBlock();
 
           callback();
         });
