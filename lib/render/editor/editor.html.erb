@@ -29,6 +29,35 @@
       board.updateStyles();
     }
 
+    const compilationModes = {
+      gameFramework: {
+        compile: ({ main, teacher, ...args }) => {
+          const extra = `<%= @game_framework_extra %>`;
+          const program = `<%= @game_framework_program %>`;
+
+          const append = (code, anotherCode) => `${code}\n\n${anotherCode}`
+
+          return {
+            main: append(main, program),
+            teacher: append(teacher, extra),
+            ...args
+          };
+        },
+
+        scrollToMainBlock: (blockly) => {
+          const mainBlock = blockly.getBlocksOfType('procedures_defnoreturnnoparams')[0];
+          blockly.scrollToBlock(mainBlock.id);
+        }
+      },
+      classic: {
+        compile: (code) => code,
+
+        scrollToMainBlock: (blockly) => {
+          blockly.scrollToBlock();
+        }
+      }
+    };
+
     Polymer({
       is: 'mu-gobstones-custom-editor',
       properties: {
@@ -122,7 +151,8 @@
           if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS) return postpone(setBlocklyCustomSettings);
 
           // The display mode configuration could be monkey-patched here, like this:
-          // Blockly.displayModes.iconic.iconSize = 64;
+          Blockly.displayModes.iconic.iconSize = 64;
+          Blockly.displayModes.iconic.procedureDefIcon = `${this.localMediaUrl}main-procedure.png`;
 
           Blockly.displayMode = this._isKindergarten() ? 'iconic' : 'text';
           setBlocklySounds();
@@ -230,10 +260,10 @@
         document.dispatchEvent(event);
       },
 
-      reset() {
+      reset(code) {
         const blockly = this.getBlockly();
-        blockly.workspaceXml = blockly.initialXml;
-        blockly.scrollToBlock();
+        blockly.workspaceXml = code || blockly.initialXml;
+        this._scrollToMainBlock();
       },
 
       setInteractiveLayout() {
@@ -304,6 +334,14 @@
         return $("#mu-custom-editor-test")[0];
       },
 
+      compile(code) {
+        return this._compilationMode().compile(code);
+      },
+
+      _scrollToMainBlock() {
+        this._compilationMode().scrollToMainBlock(this.getBlockly());
+      },
+
       _withDefaultIcons(actions, type) {
         const addIcon = (declaration, block_icon) =>
           ({ ...declaration, attributes: { ...declaration.attributes, block_icon } });
@@ -319,7 +357,11 @@
       },
 
       _isKindergarten() {
-        return mumuki && mumuki.exercise.layout === 'input_kindergarten';
+        return mumuki.exercise.layout === 'input_kindergarten';
+      },
+
+      _compilationMode() {
+        return this._isKindergarten() ? compilationModes.gameFramework : compilationModes.classic;
       },
 
       _setInitialXml: function (blockly) {
@@ -340,7 +382,7 @@
               ? "<xml></xml>"
               : blockly.initialXml
           );
-          blockly.scrollToBlock();
+          this._scrollToMainBlock();
 
           callback();
         });
@@ -600,11 +642,11 @@
 
         controller.start({
           initialState: this.targetState,
-          code: {
+          code: editor.compile({
             main: code,
             library: "",
             teacher: teacherCode
-          }
+          })
         }, {
           onResult: (state, fullState) => {
             const region = this._getLastRegion(fullState);
@@ -826,12 +868,14 @@
         const editor = $("mu-gobstones-custom-editor")[0];
         const blockly = editor.getBlockly();
         if(blockly.readOnly) return;
+        const previousCode = editor.getEditorValue().value;
         $.get(this.toolboxUrl, function (toolboxXml) {
           blockly.toolbox = { defaultToolbox: toolboxXml };
           editor.setTeacherActions(blockly);
-          // TODO: this `postpone` usages cause concurrency issues... we should get rid of them.
+          // @faloi - I couldn't figure out why the workspace gets replaced with a generic code,
+          // so here I force a reset with the code previously saved. Sorry not sorry.
           postpone(() => {
-            editor.reset();
+            editor.reset(previousCode);
           });
         }).always(function () {
           editor.enableContextButton();

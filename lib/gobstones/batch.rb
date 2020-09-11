@@ -1,11 +1,13 @@
 class Gobstones::Batch
   attr_accessor :options, :examples, :content, :extra
+  delegate :compile_content, :compile_extra, to: :@compilation_mode
 
   def initialize(content, examples, extra, options)
     @content = content
     @examples = examples
     @extra = extra
     @options = options
+    @compilation_mode = @options[:game_framework] ? Gobstones::CompilationMode::GameFramework : Gobstones::CompilationMode::Classic
   end
 
   def run_tests!(output)
@@ -16,8 +18,8 @@ class Gobstones::Batch
 
   def to_json
     {
-      code: content,
-      extraCode: extra,
+      code: compile_content(content),
+      extraCode: compile_extra(extra),
       examples: examples.map { |example| example_json(example) }
     }.to_json
   end
