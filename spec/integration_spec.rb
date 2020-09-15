@@ -719,4 +719,27 @@ examples:
       expect(response[:response_type]).to eq :unstructured
     end
   end
+
+  describe 'game framework' do
+    it 'answers a valid hash when submission is blank and game framework is enabled' do
+      response = bridge.run_tests!(
+        test: %q{
+examples:
+- initial_board: |
+    size 3 3
+    cell 0 0 Rojo 1
+    head 0 0
+  final_board: |
+    size 3 3
+    cell 0 1 Rojo 1
+    head 0 1},
+        extra: '',
+        content: '',
+        settings: {game_framework: true})
+
+      expect(response[:status]).to eq :errored
+      expect(response[:response_type]).to eq :unstructured
+      expect(response[:result]).to eq "<pre>[3:3]: El procedimiento \"Main\" no está definido.</pre>"
+    end
+  end
 end
