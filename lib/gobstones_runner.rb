@@ -9,6 +9,7 @@ Mumukit.configure do |config|
   config.docker_image = 'mumuki/mumuki-gobstones-worker:9.1'
   config.content_type = 'html'
   config.structured = true
+  config.settings = true
 end
 
 require_relative './gobstones'
