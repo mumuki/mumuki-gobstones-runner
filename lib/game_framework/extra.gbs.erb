@@ -1,13 +1,34 @@
 procedure Before() {
+  x := 0
+  y := 0
+
+  while(puedeMover(Sur)) {
+    x := x + 1
+    Mover(Sur)
+  }
+  while(puedeMover(Oeste)) {
+    y := y + 1
+    Mover(Oeste)
+  }
+
   NextStage()
+
+  while(x > 0) {
+    x := x - 1
+    Mover(Norte)
+  }
+  while(y > 0) {
+    y := y - 1
+    Mover(Este)
+  }
 }
 
 procedure After() {
+  GoToOrigin()
   NextStage()
 }
 
 procedure NextStage() {
-  GoToOrigin()
   while(puedeMover(Norte)) {
     NexRowStage()
     Mover(Norte)
