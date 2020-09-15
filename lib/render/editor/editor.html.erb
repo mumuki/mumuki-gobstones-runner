@@ -124,7 +124,7 @@
           Blockly.CUSTOM_COLORS.complete = Blockly.MUMUKI_COLORS.pink;
 
           // control structures
-          Blockly.CUSTOM_COLORS.controlStructure = Blockly.MUMUKI_COLORS.green;
+          Blockly.CUSTOM_COLORS.controlStructure = this._isKindergarten() ? Blockly.MUMUKI_COLORS.green : Blockly.MUMUKI_COLORS.yellow;
 
           // commands
           Blockly.CUSTOM_COLORS.primitiveCommand = Blockly.MUMUKI_COLORS.yellow;
