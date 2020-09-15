@@ -386,7 +386,7 @@
       },
 
       _compilationMode() {
-        return this._isKindergarten() ? compilationModes.gameFramework : compilationModes.classic;
+        return this._isGame() ? compilationModes.gameFramework : compilationModes.classic;
       },
 
       _setInitialXml: function (blockly) {
