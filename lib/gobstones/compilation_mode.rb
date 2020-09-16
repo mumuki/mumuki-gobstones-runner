@@ -41,6 +41,10 @@ module Gobstones
           render_framework_file 'program.gbs'
         end
 
+        def default_code
+          render_framework_file 'default.xml'
+        end
+
         private
 
         def blockly_code?(content)

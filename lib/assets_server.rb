@@ -53,6 +53,7 @@ class Mumukit::Server::App < Sinatra::Base
     cross_origin
     @game_framework_extra = Gobstones::CompilationMode::GameFramework.extra_code
     @game_framework_program = Gobstones::CompilationMode::GameFramework.program_code
+    @game_framework_default = Gobstones::CompilationMode::GameFramework.default_code
     @assets_url = "//#{request.host_with_port}/assets"
     erb File.read('lib/render/editor/editor.html.erb')
   end
