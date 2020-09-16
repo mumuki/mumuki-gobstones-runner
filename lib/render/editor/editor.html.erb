@@ -47,14 +47,18 @@
         scrollToMainBlock: (blockly) => {
           const mainBlock = blockly.getBlocksOfType('procedures_defnoreturnnoparams')[0];
           blockly.scrollToBlock(mainBlock.id);
-        }
+        },
+
+        defaultCode: `<%= @game_framework_default %>`
       },
       classic: {
         compile: (code) => code,
 
         scrollToMainBlock: (blockly) => {
           blockly.scrollToBlock();
-        }
+        },
+
+        defaultCode: ''
       }
     };
 
@@ -242,6 +246,8 @@
 
             const hasCustomToolbox = $('gs-toolbox').length;
             if(!hasCustomToolbox) this.enableContextButton();
+
+            this._registerLayoutChangedEvent();
           });
         };
 
@@ -336,6 +342,16 @@
 
       compile(code) {
         return this._compilationMode().compile(code);
+      },
+
+      _registerLayoutChangedEvent() {
+        if (!this.teacherMode) {
+          return;
+        }
+
+        mumuki.events.on('layoutChanged', () => {
+          this.getEditorDefaultValue().value = this._compilationMode().defaultCode;
+        });
       },
 
       _scrollToMainBlock() {
