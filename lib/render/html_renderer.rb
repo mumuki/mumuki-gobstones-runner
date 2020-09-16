@@ -49,7 +49,7 @@ module Gobstones
 
     def render_error_check_error_failed_another_reason(result)
       bind_result error: :check_error_failed_another_reason,
-                  expected_code: I18n.t("code_#{result[:expected_code]}"),
+                  expected_code: result[:expected_code],
                   reason: prepare_reason(result[:reason])
     end
 
