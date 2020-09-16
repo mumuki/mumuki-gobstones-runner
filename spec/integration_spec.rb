@@ -790,6 +790,29 @@ examples:
       expect(test_results response).to eq [{status: :passed, title: nil}]
     end
 
+    it 'answers a valid hash when submission is textual and moves out of board, but still passes' do
+      response = bridge.run_tests!(
+        test: %q{
+check_head_position: false
+examples:
+- initial_board: |
+    size 2 2
+    cell 0 0 Rojo 1
+    head 0 0
+  final_board: |
+    size 2 2
+    cell 0 0 Verde 2
+    cell 1 0 Verde 2
+    cell 0 1 Rojo 1 Verde 2
+    cell 1 1 Verde 2},
+        extra: '',
+        content: 'procedure Main() { ShiftDown(); ShiftDown(); ShiftUp() }',
+        settings: {game_framework: true})
+      expect(response[:status]).to eq :passed
+      expect(response[:response_type]).to eq :structured
+      expect(test_results response).to eq [{status: :passed, title: nil}]
+    end
+
     it 'answers a valid hash when submission is textual, initial position is not origin and passes' do
       response = bridge.run_tests!(
         test: %q{

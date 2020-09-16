@@ -63,10 +63,12 @@ procedure ShiftDown() {
 }
 
 procedure ShiftTo(dir) {
-  Sacar(Rojo)
-  Mover(dir)
-  Poner(Rojo)
-  CheckCollision()
+  if (puedeMover(dir)) {
+    Sacar(Rojo)
+    Mover(dir)
+    Poner(Rojo)
+    CheckCollision()
+  }
 }
 
 procedure CheckCollision() {
