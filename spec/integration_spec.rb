@@ -724,7 +724,6 @@ examples:
     it 'answers a valid hash when submission is blank is enabled' do
       response = bridge.run_tests!(
         test: %q{
-check_head_position: false
 examples:
 - initial_board: |
     size 2 2
@@ -746,7 +745,6 @@ examples:
     it 'answers a valid hash when submission is textual and fails' do
       response = bridge.run_tests!(
         test: %q{
-check_head_position: false
 examples:
 - initial_board: |
     size 2 2
@@ -770,7 +768,6 @@ examples:
     it 'answers a valid hash when submission is textual and passes' do
       response = bridge.run_tests!(
         test: %q{
-check_head_position: false
 examples:
 - initial_board: |
     size 2 2
@@ -793,7 +790,6 @@ examples:
     it 'answers a valid hash when submission is textual and moves out of board, but still passes' do
       response = bridge.run_tests!(
         test: %q{
-check_head_position: false
 examples:
 - initial_board: |
     size 2 2
@@ -816,7 +812,6 @@ examples:
     it 'answers a valid hash when submission is textual, initial position is not origin and passes' do
       response = bridge.run_tests!(
         test: %q{
-check_head_position: false
 examples:
 - initial_board: |
     size 2 2
