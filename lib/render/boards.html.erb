@@ -4,6 +4,10 @@
     display: inline-flex;
   }
 
+  .results-list .boards-container {
+    margin: 20px 10px 30px;
+  }
+
   .error-text {
     color: #d9534f;
   }
@@ -24,12 +28,6 @@
   }
 
 </style>
-
-<% if @result[:error] %>
-  <p class="error-text">
-    <%=I18n.t @result[:error], @result %>
-  </p>
-<% end %>
 
 <div class="boards-container">
 

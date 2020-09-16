@@ -49,7 +49,7 @@ module Gobstones
       fail_with status: :check_error_failed_another_reason,
                 result: {
                   reason: result[:finalBoardError],
-                  expected_code: expected
+                  expected_code: I18n.t("code_#{expected}")
                 } if reason_code != expected
     end
 
