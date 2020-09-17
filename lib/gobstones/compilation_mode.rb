@@ -48,7 +48,7 @@ module Gobstones
         private
 
         def blockly_code?(content)
-          content.start_with? '<xml'
+          content.strip.start_with? '<xml'
         end
 
         def render_framework_file(name)
