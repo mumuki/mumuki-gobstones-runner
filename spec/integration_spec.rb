@@ -824,7 +824,7 @@ examples:
     cell 0 1 Verde 2
     cell 1 1 Verde 2},
         extra: '',
-        content: 'procedure Main() { ShiftDown() ; ShiftRight() }',
+        content: 'procedure Main() { ShiftDown() ; ShiftLeft() }',
         settings: {game_framework: true})
       expect(response[:status]).to eq :passed
       expect(response[:response_type]).to eq :structured
