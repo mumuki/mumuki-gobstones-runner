@@ -84,13 +84,8 @@
         defaultIcons: {
           type: Object,
           value: {
-            procedureDeclarations: {
-              SacarFoto: 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/device-camera-icon.png',
-              TrasladarLuna: 'http://icons.iconarchive.com/icons/goodstuff-no-nonsense/free-space/1024/moon-full-moon-icon.png'
-            },
-            functionDeclarations: {
-              dioUnaVueltaCompleta: 'https://d30y9cdsu7xlg0.cloudfront.net/png/4994-200.png'
-            }
+            procedureDeclarations: { /** for future use */ },
+            functionDeclarations: { /** for future use */ }
           }
         }
       },
@@ -292,6 +287,22 @@
             blockly.primitiveFunctions = this._withDefaultIcons(actions, 'functionDeclarations');
           });
         }
+      },
+
+      setGameActions(blockly) {
+        if (this._isGame()) {
+          blockly.primitiveProcedures = blockly.primitiveProcedures || [];
+          blockly.primitiveProcedures = blockly.primitiveProcedures.concat([
+            this.gamePrimitive('ShiftUp'),
+            this.gamePrimitive('ShiftDown'),
+            this.gamePrimitive('ShiftLeft'),
+            this.gamePrimitive('ShiftRight')
+          ]);
+        }
+      },
+
+      gamePrimitive(name) {
+        return { alias: 'procedureDeclaration', name: name, attributes: {block_icon: `<%= @assets_url %>/media/${name}.png`} };
       },
 
       enableContextButton() {
@@ -897,6 +908,7 @@
         $.get(this.toolboxUrl, function (toolboxXml) {
           blockly.toolbox = { defaultToolbox: toolboxXml };
           editor.setTeacherActions(blockly);
+          editor.setGameActions(blockly);
           // @faloi - I couldn't figure out why the workspace gets replaced with a generic code,
           // so here I force a reset with the code previously saved. Sorry not sorry.
           postpone(() => {
