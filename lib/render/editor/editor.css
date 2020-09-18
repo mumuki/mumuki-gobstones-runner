@@ -115,3 +115,12 @@
     position: absolute;
   }
 }
+
+
+.mu-kids-exercise.mu-kindergarten .gbs_boom {
+  display: none;
+}
+
+.mu-kids-exercise.mu-kindergarten .mu-scenario.active table.gbs_board {
+  display: block !important;
+}
