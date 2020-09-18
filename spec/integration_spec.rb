@@ -787,6 +787,29 @@ examples:
       expect(test_results response).to eq [{status: :passed, title: nil}]
     end
 
+    it 'answers a valid hash when submission is textual, collides and fails' do
+      response = bridge.run_tests!(
+        test: %q{
+examples:
+- initial_board: |
+    size 2 2
+    cell 0 0 Rojo 1
+    cell 1 0 Azul 2
+    head 0 0
+  final_board: |
+    size 2 2
+    cell 0 0 Verde 2
+    cell 1 0 Azul 2 Verde 2
+    cell 0 1 Rojo 1 Verde 2
+    cell 1 1 Verde 2},
+        extra: '',
+        content: 'procedure Main() { ShiftRight() }',
+        settings: {game_framework: true})
+      expect(response[:status]).to eq :failed
+      expect(response[:response_type]).to eq :structured
+      expect(test_results response).to eq [{status: :failed, title: nil, summary: {message: 'The program did BOOM.', type: 'check_failed_unexpected_boom'}}]
+    end
+
     it 'answers a valid hash when submission is block-based and passes' do
       response = bridge.run_tests!(
         test: %q{
