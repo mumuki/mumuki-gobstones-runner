@@ -376,8 +376,17 @@
         return mumuki.exercise.layout === 'input_kindergarten';
       },
 
+      _isGame() {
+        if (mumuki.exercise.settings) {
+          return mumuki.exercise.settings.game_framework;
+        } else {
+          // for backwards compatibility
+          return this._isKindergarten();
+        }
+      },
+
       _compilationMode() {
-        return this._isKindergarten() ? compilationModes.gameFramework : compilationModes.classic;
+        return this._isGame() ? compilationModes.gameFramework : compilationModes.classic;
       },
 
       _setInitialXml: function (blockly) {
