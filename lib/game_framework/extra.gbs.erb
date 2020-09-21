@@ -30,14 +30,14 @@ procedure After() {
 
 procedure NextStage() {
   while(puedeMover(Norte)) {
-    NexRowStage()
+    NextRowStage()
     Mover(Norte)
   }
-  NexRowStage()
+  NextRowStage()
   GoToOrigin()
 }
 
-procedure NexRowStage() {
+procedure NextRowStage() {
   while(puedeMover(Este)) {
     Poner(Verde)
     Mover(Este)
