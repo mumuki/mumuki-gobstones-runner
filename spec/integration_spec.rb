@@ -719,4 +719,147 @@ examples:
       expect(response[:response_type]).to eq :unstructured
     end
   end
+
+  describe 'game framework' do
+    it 'answers a valid hash when submission is blank is enabled' do
+      response = bridge.run_tests!(
+        test: %q{
+examples:
+- initial_board: |
+    size 2 2
+    cell 0 0 Rojo 1
+    head 0 0
+  final_board: |
+    size 2 2
+    cell 0 1 Rojo 1
+    head 0 1},
+        extra: '',
+        content: '',
+        settings: {game_framework: true})
+
+      expect(response[:status]).to eq :errored
+      expect(response[:response_type]).to eq :unstructured
+      expect(response[:result]).to eq "<pre>[3:3]: El procedimiento \"Main\" no está definido.</pre>"
+    end
+
+    it 'answers a valid hash when submission is textual and fails' do
+      response = bridge.run_tests!(
+        test: %q{
+examples:
+- initial_board: |
+    size 2 2
+    cell 0 0 Rojo 1
+    head 0 0
+  final_board: |
+    size 2 2
+    cell 0 1 Rojo 1
+    head 0 1},
+        extra: '',
+        content: 'procedure Main() {}',
+        settings: {game_framework: true})
+
+      expect(response[:status]).to eq :failed
+      expect(response[:response_type]).to eq :structured
+      expect(test_results response).to eq [
+        {status: :failed, title: nil, summary: {message: 'A different board was obtained', type: 'check_final_board_failed_different_boards'}}
+      ]
+    end
+
+    it 'answers a valid hash when submission is textual and passes' do
+      response = bridge.run_tests!(
+        test: %q{
+examples:
+- initial_board: |
+    size 2 2
+    cell 0 0 Rojo 1
+    head 0 0
+  final_board: |
+    size 2 2
+    cell 0 0 Verde 2
+    cell 1 0 Verde 2
+    cell 0 1 Rojo 1 Verde 2
+    cell 1 1 Verde 2},
+        extra: '',
+        content: 'procedure Main() { ShiftUp() }',
+        settings: {game_framework: true})
+      expect(response[:status]).to eq :passed
+      expect(response[:response_type]).to eq :structured
+      expect(test_results response).to eq [{status: :passed, title: nil}]
+    end
+
+    it 'answers a valid hash when submission is block-based and passes' do
+      response = bridge.run_tests!(
+        test: %q{
+examples:
+- initial_board: |
+    size 2 2
+    cell 0 0 Rojo 1
+    head 0 0
+  final_board: |
+    size 2 2
+    cell 0 0 Verde 2
+    cell 1 0 Verde 2
+    cell 0 1 Rojo 1 Verde 2
+    cell 1 1 Verde 2},
+        extra: '',
+        content: %{
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables></variables>
+    <block type="procedures_defnoreturnnoparams" id="1" x="396" y="81">
+      <field name="NAME">Main</field>
+        <statement name="STACK">
+      <block type="ShiftUp" id="2"></block>
+  </statement>
+  </block>
+</xml>},
+        settings: {game_framework: true})
+      expect(response[:status]).to eq :passed
+      expect(response[:response_type]).to eq :structured
+      expect(test_results response).to eq [{status: :passed, title: nil}]
+    end
+
+    it 'answers a valid hash when submission is textual and moves out of board, but still passes' do
+      response = bridge.run_tests!(
+        test: %q{
+examples:
+- initial_board: |
+    size 2 2
+    cell 0 0 Rojo 1
+    head 0 0
+  final_board: |
+    size 2 2
+    cell 0 0 Verde 2
+    cell 1 0 Verde 2
+    cell 0 1 Rojo 1 Verde 2
+    cell 1 1 Verde 2},
+        extra: '',
+        content: 'procedure Main() { ShiftDown(); ShiftDown(); ShiftUp() }',
+        settings: {game_framework: true})
+      expect(response[:status]).to eq :passed
+      expect(response[:response_type]).to eq :structured
+      expect(test_results response).to eq [{status: :passed, title: nil}]
+    end
+
+    it 'answers a valid hash when submission is textual, initial position is not origin and passes' do
+      response = bridge.run_tests!(
+        test: %q{
+examples:
+- initial_board: |
+    size 2 2
+    cell 1 1 Rojo 1
+    head 1 1
+  final_board: |
+    size 2 2
+    cell 0 0 Rojo 1 Verde 2
+    cell 1 0 Verde 2
+    cell 0 1 Verde 2
+    cell 1 1 Verde 2},
+        extra: '',
+        content: 'procedure Main() { ShiftDown() ; ShiftLeft() }',
+        settings: {game_framework: true})
+      expect(response[:status]).to eq :passed
+      expect(response[:response_type]).to eq :structured
+      expect(test_results response).to eq [{status: :passed, title: nil}]
+    end
+  end
 end

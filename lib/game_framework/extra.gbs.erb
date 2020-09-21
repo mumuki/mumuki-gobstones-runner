@@ -1,5 +1,83 @@
 procedure Before() {
+  x := 0
+  y := 0
+
+  while(puedeMover(Sur)) {
+    x := x + 1
+    Mover(Sur)
+  }
+  while(puedeMover(Oeste)) {
+    y := y + 1
+    Mover(Oeste)
+  }
+
+  NextStage()
+
+  while(x > 0) {
+    x := x - 1
+    Mover(Norte)
+  }
+  while(y > 0) {
+    y := y - 1
+    Mover(Este)
+  }
 }
 
 procedure After() {
+  GoToOrigin()
+  NextStage()
+}
+
+procedure NextStage() {
+  while(puedeMover(Norte)) {
+    NextRowStage()
+    Mover(Norte)
+  }
+  NextRowStage()
+  GoToOrigin()
+}
+
+procedure NextRowStage() {
+  while(puedeMover(Este)) {
+    Poner(Verde)
+    Mover(Este)
+  }
+  Poner(Verde)
+  IrAlBorde(Oeste)
+}
+
+procedure ShiftLeft() {
+  ShiftTo(Oeste)
+}
+
+procedure ShiftRight() {
+  ShiftTo(Este)
+}
+
+procedure ShiftUp() {
+  ShiftTo(Norte)
+}
+
+procedure ShiftDown() {
+  ShiftTo(Sur)
+}
+
+procedure ShiftTo(dir) {
+  if (puedeMover(dir)) {
+    Sacar(Rojo)
+    Mover(dir)
+    Poner(Rojo)
+    CheckCollision()
+  }
+}
+
+procedure CheckCollision() {
+  if (hayBolitas(Azul) && nroBolitas(Azul) mod 2 == 0) {
+    BOOM("Colision")
+  }
+}
+
+procedure GoToOrigin() {
+  IrAlBorde(Sur)
+  IrAlBorde(Oeste)
 }

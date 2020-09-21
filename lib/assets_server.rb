@@ -37,6 +37,8 @@ class Mumukit::Server::App < Sinatra::Base
   get_local_asset 'editor/editor.css', 'lib/render/editor/editor.css', 'text/css'
   get_local_asset 'editor/hammer.min.js', 'lib/render/editor/hammer.min.js', 'application/javascript'
   get_local_asset 'boom.png', 'lib/public/boom.png', 'image/png'
+  get_local_asset 'full-kindergarten-toolbox.xml', 'lib/public/full-kindergarten-toolbox.xml', 'text/plain'
+  get_local_asset 'minimal-kindergarten-toolbox.xml', 'lib/public/minimal-kindergarten-toolbox.xml', 'text/plain'
 
   get_media_assets 'media'
   get_media_assets 'local-media'
