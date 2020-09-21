@@ -73,6 +73,7 @@ procedure ShiftTo(dir) {
 
 procedure CheckCollision() {
   if (hayBolitas(Azul) && nroBolitas(Azul) mod 2 == 0) {
+    After();
     BOOM("Colision")
   }
 }
