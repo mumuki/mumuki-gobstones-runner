@@ -52,7 +52,7 @@ module Gobstones
         end
 
         def render_framework_file(name)
-          ERB.new(File.read("lib/game_framework/#{name}.erb")).result
+          ERB.new(File.read(File.join(__dir__, "../game_framework/#{name}.erb"))).result
         end
       end
     end
