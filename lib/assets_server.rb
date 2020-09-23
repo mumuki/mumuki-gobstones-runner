@@ -18,8 +18,9 @@ class Mumukit::Server::App < Sinatra::Base
   end
 
   def self.get_media_assets(folder)
-    Dir.glob("lib/public/#{folder}/*").each do |path|
-      get_local_asset "#{folder}/#{File.basename path}", path
+    Dir.glob(File.join(__dir__,"../lib/public/#{folder}/*")).each do |path|
+      relative_media_asset_path = "#{folder}/#{File.basename path}"
+      get_local_asset relative_media_asset_path, "lib/public/#{relative_media_asset_path}"
     end
   end
 
