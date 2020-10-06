@@ -212,7 +212,7 @@
 
         const relocateTrash = (blockly) => {
           blockly.workspace.trashcan.bottom_ = 150; //Setting vertical position programmatically to adjust the draggable area
-          $(window).resize((e) => localOnResize());
+          $(window).resize(() => localOnResize());
           triggerResizeOnContextModalClose();
         };
 
