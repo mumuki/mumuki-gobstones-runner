@@ -1,6 +1,8 @@
 language: ruby
 env:
 - RACK_ENV=development
+node_js:
+- 12
 rvm:
 - 2.6.3
 services:
