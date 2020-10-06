@@ -11,7 +11,7 @@
     "Blockly": "readonly",
     "gbbReader": "readonly",
     "GobstonesBoard": "readonly",
-    "GobstonesKeyboard": "readonly",
+    "GobstonesKeyboard": "writable",
     "goog": "readonly",
     "Hammer": "readonly",
     "Parser": "readonly",
