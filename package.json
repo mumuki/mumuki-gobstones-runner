@@ -2,7 +2,7 @@
   "name": "gobstones-runner",
   "description": "Gobstones Runner for Mumuki",
   "scripts": {
-    "test": "eslint --ext .html.erb,.js lib/render/"
+    "test": "eslint --ext .html,.html.erb,.js lib/render/"
   },
   "repository": {
     "type": "git",

@@ -1,8 +1,6 @@
 language: ruby
 env:
-  matrix:
-  - RACK_ENV=development
-sudo: false
+- RACK_ENV=development
 rvm:
 - 2.6.3
 services:
