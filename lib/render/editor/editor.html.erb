@@ -90,8 +90,17 @@
       attached() {
         this.$exerciseContainer = $('.mu-kids-exercise');
 
-        this.setBlocklyCustomSettings();
-        this.initialize();
+        /*
+        From Polymer docs: https://polymer-library.polymer-project.org/1.0/docs/devguide/registering-elements#initialization-order
+
+        There are no guarantees with regard to initialization timing between sibling elements.
+        This means that siblings may become ready in any order.
+        For accessing sibling elements when an element initializes, you can call async from inside the attached callback.
+        */
+        this.async(() => {
+          this.setBlocklyCustomSettings();
+          this.initialize();
+        });
       },
 
       initialize() {
@@ -108,48 +117,37 @@
           triggerResizeOnContextModalClose();
         };
 
-        postpone(() => {
-          const blockly = this.getBlockly();
+        const blockly = this.getBlockly();
+        blockly.showCategories = !this._isKindergarten();
 
-          if (!blockly || !blockly.workspace) return this.initialize();
+        if (!this.readOnly) {
+          relocateTrash(blockly);
+        }
 
-          blockly.showCategories = !this._isKindergarten();
+        this.setTeacherActions(blockly);
+        this._setInitialXml(blockly);
+        this.interactiveMode = blockly.initialXml.indexOf("block type=\"InteractiveProgram\"") !== -1;
+        if (this.interactiveMode) this.setInteractiveLayout();
+        this._initializeWorkspace(blockly);
+        this.localOnResize();
+        blockly._onresize();
+        this._subscribeToWorkspace(blockly, () => this.updateFields());
 
-          if (!this.readOnly) {
-            relocateTrash(blockly);
-          }
+        const hasCustomToolbox = $('gs-toolbox').length;
+        if(!hasCustomToolbox) this.enableContextButton();
 
-          this.setTeacherActions(blockly);
-          this._setInitialXml(blockly);
-          this.interactiveMode = blockly.initialXml.indexOf("block type=\"InteractiveProgram\"") !== -1;
-          if (this.interactiveMode) this.setInteractiveLayout();
-          this._initializeWorkspace(blockly, () => {
-            this.localOnResize();
-            blockly._onresize();
-
-            this._subscribeToWorkspace(blockly, () => this.updateFields());
-          });
-
-          const hasCustomToolbox = $('gs-toolbox').length;
-          if(!hasCustomToolbox) this.enableContextButton();
-
-          this._registerLayoutChangedEvent();
-        });
+        this._registerLayoutChangedEvent();
       },
 
       localOnResize() {
-        const setTrashPosition = () => {
-          var width = $('#blocklyDiv').width() - 68;
-          var height = $('#blocklyDiv').height() - 210;
-          $('.blocklyTrash').css("transform", `translate(${width}px, ${height}px)`);
-          $('.blocklyTrash').css("display", "unset");
-        };
+        this.setTrashPosition();
+      },
 
-        var setTrashTimeout;
-        clearTimeout(setTrashTimeout);
-        setTrashTimeout = setTimeout(() => {
-          setTrashPosition();
-        });
+      setTrashPosition() {
+        const width = $('#blocklyDiv').width() - 68;
+        const height = $('#blocklyDiv').height() - 210;
+        $('.blocklyTrash').css("transform", `translate(${width}px, ${height}px)`);
+        $('.blocklyTrash').css("display", "unset");
       },
 
       updateFields() {
@@ -226,16 +224,9 @@
         Blockly.CUSTOM_COLORS.parameter = Blockly.MUMUKI_COLORS.blue;
         Blockly.CUSTOM_COLORS.primitiveFunction = Blockly.MUMUKI_COLORS.blue;
         Blockly.CUSTOM_COLORS.function_call = Blockly.MUMUKI_COLORS.blue;
-
-        setTimeout(() => {
-          this.getBlockly().testColors(Blockly.CUSTOM_COLORS);
-        });
       },
 
       setBlocklyCustomSettings() {
-        if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS)
-          return postpone(() => this.setBlocklyCustomSettings());
-
         // The display mode configuration could be monkey-patched here, like this:
         Blockly.displayModes.iconic.iconSize = 64;
         Blockly.displayModes.iconic.procedureDefIcon = `${this.localMediaUrl}main-procedure.png`;
@@ -277,14 +268,13 @@
 
       setTeacherActions(blockly) {
         const teacherCode = this.getTeacherCode();
-        if (teacherCode) {
-          setTimeout(() => {
-            const actions = new Parser().getActionsFromSource(teacherCode);
-
-            blockly.primitiveProcedures = this._withDefaultIcons(actions, 'procedureDeclarations');
-            blockly.primitiveFunctions = this._withDefaultIcons(actions, 'functionDeclarations');
-          });
+        if (!teacherCode) {
+          return;
         }
+
+        const actions = new Parser().getActionsFromSource(teacherCode);
+        blockly.primitiveProcedures = this._withDefaultIcons(actions, 'procedureDeclarations');
+        blockly.primitiveFunctions = this._withDefaultIcons(actions, 'functionDeclarations');
       },
 
       setGameActions(blockly) {
@@ -304,12 +294,7 @@
       },
 
       enableContextButton() {
-        if(mumuki.kids && mumuki.assetsLoadedFor) {
-          return mumuki.assetsLoadedFor('editor');
-        } else {
-          return postpone(this.enableContextButton.bind(this));
-        }
-
+        mumuki.assetsLoadedFor('editor');
       },
 
       getBlockly: function () {
@@ -407,26 +392,36 @@
         }
       },
 
-      _initializeWorkspace: function(blockly, callback) {
-        postpone(() => {
-          const value = this.getEditorValue().value;
+      _initializeWorkspace(blockly) {
+        const value = this.getEditorValue().value;
 
-          blockly.workspaceXml = value || (
-            this.teacherMode
-              ? "<xml></xml>"
-              : blockly.initialXml
-          );
-          this._scrollToMainBlock();
+        /*
+        TODO: está tirando un error acá, que hace que nunca se dispare el updateActions
+        y por ende no se guarde la solución.
 
-          callback();
-        });
+        Uncaught TypeError: Cannot read property 'isConnected' of null
+          at Object.Blockly.Xml.domToBlockHeadless_ (gs-element-blockly.html.js:1228)
+          at Object.Blockly.Xml.domToBlockHeadless_ (gs-element-blockly.html.js:1228)
+          at Object.Blockly.Xml.domToBlock (gs-element-blockly.html.js:1223)
+          at Object.Blockly.Xml.domToWorkspace (gs-element-blockly.html.js:1219)
+          at HTMLElement._onWorkspaceUpdate (gs-element-blockly.html-9.js:709)
+          at HTMLElement._observerEffect (polymer.html.js:1614)
+          at HTMLElement._effectEffects (polymer.html.js:1459)
+          at HTMLElement._propertySetter (polymer.html.js:1443)
+          at HTMLElement.setter (polymer.html.js:1522)
+          at HTMLElement._initializeWorkspace (editor.html-1.js:465)
+        */
+        blockly.workspaceXml = value || (
+          this.teacherMode
+            ? "<xml></xml>"
+            : blockly.initialXml
+        );
+        this._scrollToMainBlock();
       },
 
       _subscribeToWorkspace: function(blockly, action) {
-        setTimeout(() => {
-          blockly.workspace.addChangeListener(action);
-          action();
-        });
+        blockly.workspace.addChangeListener(action);
+        action();
       }
     });
   </script>
@@ -914,9 +909,7 @@
           editor.setGameActions(blockly);
           // @faloi - I couldn't figure out why the workspace gets replaced with a generic code,
           // so here I force a reset with the code previously saved. Sorry not sorry.
-          postpone(() => {
-            editor.reset(previousCode);
-          });
+          editor.reset(previousCode);
         }).always(function () {
           editor.enableContextButton();
         });
