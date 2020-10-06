@@ -4,6 +4,12 @@
 <link href="./gobstones-code-runner.html" rel="import"/>
 <script src="./hammer.min.js"></script>
 
+<script>
+  function postpone(action) {
+    return setTimeout(action, 50);
+  }
+</script>
+
 <dom-module id="mu-gobstones-custom-editor">
 
   <template>
@@ -20,15 +26,6 @@
   </template>
 
   <script>
-    function postpone(action) {
-      return setTimeout(action, 50);
-    }
-
-    function gbsBoardRemoveBorder(board) {
-      board._setBorderOff();
-      board.updateStyles();
-    }
-
     const compilationModes = {
       gameFramework: {
         compile: ({ main, teacher, ...args }) => {
@@ -90,104 +87,57 @@
         }
       },
 
-      attached: function () {
-        const setBlocklySounds = () => {
-          Blockly.WorkspaceAudio.prototype.preload = () => {
-            for (var soundName in this.SOUNDS_) {
-              let sound = this.SOUNDS_[soundName];
-              sound.volume = 0.01;
-              let playPromise = sound.play();
-              playPromise && playPromise.then(sound.pause.bind(sound));
-              if (goog.userAgent.IPAD || goog.userAgent.IPHONE) break;
-            }
-          };
-        };
+      attached() {
+        this.$exerciseContainer = $('.mu-kids-exercise');
 
-        const setBlocklyColors = () => {
-          Blockly.HSV_SATURATION = 0.64;
-          Blockly.HSV_VALUE = 1;
+        this.setBlocklyCustomSettings();
+        this.initialize();
+      },
 
-          Blockly.MUMUKI_COLORS = {
-            pink: "#FF5C82",
-            blue: "#5CBEFF",
-            yellow: "#FFC95C",
-            green: "#5CED71"
-          };
-
-          // reserved
-          Blockly.CUSTOM_COLORS.program = Blockly.MUMUKI_COLORS.pink;
-          Blockly.CUSTOM_COLORS.interactiveProgram = Blockly.MUMUKI_COLORS.pink;
-          Blockly.CUSTOM_COLORS.interactiveBinding = Blockly.MUMUKI_COLORS.pink;
-          Blockly.CUSTOM_COLORS.procedure = Blockly.MUMUKI_COLORS.pink;
-          Blockly.CUSTOM_COLORS.function = Blockly.MUMUKI_COLORS.pink;
-          Blockly.CUSTOM_COLORS.complete = Blockly.MUMUKI_COLORS.pink;
-
-          // control structures
-          Blockly.CUSTOM_COLORS.controlStructure = this._isKindergarten() ? Blockly.MUMUKI_COLORS.green : Blockly.MUMUKI_COLORS.yellow;
-
-          // commands
-          Blockly.CUSTOM_COLORS.primitiveCommand = Blockly.MUMUKI_COLORS.yellow;
-          Blockly.CUSTOM_COLORS.primitiveProcedure = Blockly.MUMUKI_COLORS.yellow;
-          Blockly.CUSTOM_COLORS.procedure_call = Blockly.MUMUKI_COLORS.yellow;
-          Blockly.CUSTOM_COLORS.assignation = Blockly.MUMUKI_COLORS.yellow;
-
-          // expressions
-          Blockly.Msg.MATH_HUE = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.literalExpression = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.primitiveExpression = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.operator = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.variable = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.parameter = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.primitiveFunction = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.function_call = Blockly.MUMUKI_COLORS.blue;
-
-          setTimeout(() => {
-            this.getBlockly().testColors(Blockly.CUSTOM_COLORS);
+      initialize() {
+        const triggerResizeOnContextModalClose = () => {
+          $('.mu-kids-context, .mu-kids-results').on('hidden.bs.modal shown.bs.modal', () => {
+            this.localOnResize();
           });
         };
 
-        const setBlocklyCustomSettings = () => {
-          if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS) return postpone(setBlocklyCustomSettings);
-
-          // The display mode configuration could be monkey-patched here, like this:
-          Blockly.displayModes.iconic.iconSize = 64;
-          Blockly.displayModes.iconic.procedureDefIcon = `${this.localMediaUrl}main-procedure.png`;
-
-          Blockly.displayMode = this._isKindergarten() ? 'iconic' : 'text';
-          setBlocklySounds();
-          setBlocklyColors();
-
-          // Removing "/" from the block id character set to avoid syntax errors
-          Blockly.utils.genUid.soup_ = Blockly.utils.genUid.soup_.replace("/", "");
+        const relocateTrash = (blockly) => {
+          // Setting vertical position programmatically to adjust the draggable area
+          blockly.workspace.trashcan.bottom_ = 150;
+          $(window).resize(() => this.localOnResize());
+          triggerResizeOnContextModalClose();
         };
 
-        const updateFields = () => {
+        postpone(() => {
           const blockly = this.getBlockly();
 
-          const editorValue = this.getEditorValue();
-          if (editorValue) {
-            editorValue.value = blockly.workspaceXml;
+          if (!blockly || !blockly.workspace) return this.initialize();
+
+          blockly.showCategories = !this._isKindergarten();
+
+          if (!this.readOnly) {
+            relocateTrash(blockly);
           }
 
-          if (this.teacherMode) {
-            const editorExtra = this.getEditorExtra();
-            if (editorExtra) {
-              editorExtra.value = blockly.workspaceXml;
-            }
-          }
+          this.setTeacherActions(blockly);
+          this._setInitialXml(blockly);
+          this.interactiveMode = blockly.initialXml.indexOf("block type=\"InteractiveProgram\"") !== -1;
+          if (this.interactiveMode) this.setInteractiveLayout();
+          this._initializeWorkspace(blockly, () => {
+            this.localOnResize();
+            blockly._onresize();
 
-          if (typeof angular !== 'undefined') {
-            angular.element(editorValue).triggerHandler("change");
-          }
+            this._subscribeToWorkspace(blockly, () => this.updateFields());
+          });
 
-          const submit = $("kids-submit-button")[0];
-          if (submit && submit.$.runner.isRunning) {
-            submit.$.runner.stop();
-          }
-        };
+          const hasCustomToolbox = $('gs-toolbox').length;
+          if(!hasCustomToolbox) this.enableContextButton();
 
-        this.$exerciseContainer = $('.mu-kids-exercise');
+          this._registerLayoutChangedEvent();
+        });
+      },
 
+      localOnResize() {
         const setTrashPosition = () => {
           var width = $('#blocklyDiv').width() - 68;
           var height = $('#blocklyDiv').height() - 210;
@@ -196,58 +146,106 @@
         };
 
         var setTrashTimeout;
+        clearTimeout(setTrashTimeout);
+        setTrashTimeout = setTimeout(() => {
+          setTrashPosition();
+        });
+      },
 
-        const localOnResize = () => {
-          clearTimeout(setTrashTimeout);
-          setTrashTimeout = setTimeout(() => {
-            setTrashPosition();
-          });
+      updateFields() {
+        const blockly = this.getBlockly();
+
+        const editorValue = this.getEditorValue();
+        if (editorValue) {
+          editorValue.value = blockly.workspaceXml;
+        }
+
+        if (this.teacherMode) {
+          const editorExtra = this.getEditorExtra();
+          if (editorExtra) {
+            editorExtra.value = blockly.workspaceXml;
+          }
+        }
+
+        if (typeof angular !== 'undefined') {
+          angular.element(editorValue).triggerHandler("change");
+        }
+
+        const submit = $("kids-submit-button")[0];
+        if (submit && submit.$.runner.isRunning) {
+          submit.$.runner.stop();
+        }
+      },
+
+      setBlocklySounds() {
+        Blockly.WorkspaceAudio.prototype.preload = () => {
+          for (var soundName in this.SOUNDS_) {
+            let sound = this.SOUNDS_[soundName];
+            sound.volume = 0.01;
+            let playPromise = sound.play();
+            playPromise && playPromise.then(sound.pause.bind(sound));
+            if (goog.userAgent.IPAD || goog.userAgent.IPHONE) break;
+          }
+        };
+      },
+
+      setBlocklyColors() {
+        Blockly.HSV_SATURATION = 0.64;
+        Blockly.HSV_VALUE = 1;
+
+        Blockly.MUMUKI_COLORS = {
+          pink: "#FF5C82",
+          blue: "#5CBEFF",
+          yellow: "#FFC95C",
+          green: "#5CED71"
         };
 
-        const triggerResizeOnContextModalClose = () => {
-          $('.mu-kids-context, .mu-kids-results').on('hidden.bs.modal shown.bs.modal', function () {
-            localOnResize();
-          })
-        };
+        // reserved
+        Blockly.CUSTOM_COLORS.program = Blockly.MUMUKI_COLORS.pink;
+        Blockly.CUSTOM_COLORS.interactiveProgram = Blockly.MUMUKI_COLORS.pink;
+        Blockly.CUSTOM_COLORS.interactiveBinding = Blockly.MUMUKI_COLORS.pink;
+        Blockly.CUSTOM_COLORS.procedure = Blockly.MUMUKI_COLORS.pink;
+        Blockly.CUSTOM_COLORS.function = Blockly.MUMUKI_COLORS.pink;
+        Blockly.CUSTOM_COLORS.complete = Blockly.MUMUKI_COLORS.pink;
 
-        const relocateTrash = (blockly) => {
-          blockly.workspace.trashcan.bottom_ = 150; //Setting vertical position programmatically to adjust the draggable area
-          $(window).resize(() => localOnResize());
-          triggerResizeOnContextModalClose();
-        };
+        // control structures
+        Blockly.CUSTOM_COLORS.controlStructure = this._isKindergarten() ? Blockly.MUMUKI_COLORS.green : Blockly.MUMUKI_COLORS.yellow;
 
-        const initialize = () => {
-          postpone(() => {
-            const blockly = this.getBlockly();
+        // commands
+        Blockly.CUSTOM_COLORS.primitiveCommand = Blockly.MUMUKI_COLORS.yellow;
+        Blockly.CUSTOM_COLORS.primitiveProcedure = Blockly.MUMUKI_COLORS.yellow;
+        Blockly.CUSTOM_COLORS.procedure_call = Blockly.MUMUKI_COLORS.yellow;
+        Blockly.CUSTOM_COLORS.assignation = Blockly.MUMUKI_COLORS.yellow;
 
-            if (!blockly || !blockly.workspace) return initialize();
+        // expressions
+        Blockly.Msg.MATH_HUE = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.literalExpression = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.primitiveExpression = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.operator = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.variable = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.parameter = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.primitiveFunction = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.function_call = Blockly.MUMUKI_COLORS.blue;
 
-            blockly.showCategories = !this._isKindergarten();
+        setTimeout(() => {
+          this.getBlockly().testColors(Blockly.CUSTOM_COLORS);
+        });
+      },
 
-            if (!this.readOnly) {
-              relocateTrash(blockly);
-            }
+      setBlocklyCustomSettings() {
+        if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS)
+          return postpone(() => this.setBlocklyCustomSettings());
 
-            this.setTeacherActions(blockly);
-            this._setInitialXml(blockly);
-            this.interactiveMode = blockly.initialXml.indexOf("block type=\"InteractiveProgram\"") !== -1;
-            if (this.interactiveMode) this.setInteractiveLayout();
-            this._initializeWorkspace(blockly, () => {
-              localOnResize();
-              blockly._onresize();
+        // The display mode configuration could be monkey-patched here, like this:
+        Blockly.displayModes.iconic.iconSize = 64;
+        Blockly.displayModes.iconic.procedureDefIcon = `${this.localMediaUrl}main-procedure.png`;
 
-              this._subscribeToWorkspace(blockly, updateFields);
-            });
+        Blockly.displayMode = this._isKindergarten() ? 'iconic' : 'text';
+        this.setBlocklySounds();
+        this.setBlocklyColors();
 
-            const hasCustomToolbox = $('gs-toolbox').length;
-            if(!hasCustomToolbox) this.enableContextButton();
-
-            this._registerLayoutChangedEvent();
-          });
-        };
-
-        setBlocklyCustomSettings();
-        initialize();
+        // Removing "/" from the block id character set to avoid syntax errors
+        Blockly.utils.genUid.soup_ = Blockly.utils.genUid.soup_.replace("/", "");
       },
 
       toggleInteractiveMode() {
@@ -796,7 +794,12 @@
           finalBoard.update(table, head);
         }
 
-        gbsBoardRemoveBorder(finalBoard);
+        this._removeBorder(finalBoard);
+      },
+
+      _removeBorder(board) {
+        board._setBorderOff();
+        board.updateStyles();
       },
 
       _highlight: function (region) {
