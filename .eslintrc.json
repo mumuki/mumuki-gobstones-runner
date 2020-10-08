@@ -1,0 +1,26 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": "eslint:recommended",
+  "globals": {
+    "$": "readonly",
+    "angular": "readonly",
+    "mumuki": "readonly",
+    "Blockly": "readonly",
+    "gbbReader": "readonly",
+    "GobstonesBoard": "readonly",
+    "GobstonesKeyboard": "writable",
+    "goog": "readonly",
+    "Hammer": "readonly",
+    "Parser": "readonly",
+    "Polymer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": 12
+  },
+  "plugins": [
+    "html"
+  ]
+}

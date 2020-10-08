@@ -1,8 +1,6 @@
 language: ruby
 env:
-  matrix:
-  - RACK_ENV=development
-sudo: false
+- RACK_ENV=development
 rvm:
 - 2.6.3
 services:
@@ -10,6 +8,13 @@ services:
 before_install:
 - ./bin/pull_worker.sh
 - gem install bundler -v 2.0.2
+- nvm install
+install:
+- bundle install --jobs=3 --retry=3
+- npm ci
+script:
+- npm test
+- bundle exec rake
 deploy:
   provider: rubygems
   api_key:

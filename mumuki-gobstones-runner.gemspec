@@ -6,8 +6,8 @@ require 'version_hook'
 Gem::Specification.new do |spec|
   spec.name          = 'mumuki-gobstones-runner'
   spec.version       = GobstonesVersionHook::VERSION
-  spec.authors       = ['Rodrigo Alfonso']
-  spec.email         = ['rodri042@gmail.com']
+  spec.authors       = ['Rodrigo Alfonso', 'Federico Aloi']
+  spec.email         = ['rodri042@gmail.com', 'federico.aloi@gmail.com']
   spec.summary       = 'Gobstones Runner for Mumuki'
   spec.homepage      = 'http://github.com/mumuki/mumuki-gobstones-runner'
   spec.license       = 'MIT'

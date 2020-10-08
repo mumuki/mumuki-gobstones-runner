@@ -1,0 +1,24 @@
+{
+  "name": "gobstones-runner",
+  "description": "Gobstones Runner for Mumuki",
+  "scripts": {
+    "test": "eslint --ext .html,.html.erb,.js lib/render/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mumuki/mumuki-gobstones-runner.git"
+  },
+  "contributors": [
+    "Rodrigo Alfonso <rodri042@gmail.com>",
+    "Federico Aloi <federico.aloi@gmail.com>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mumuki/mumuki-gobstones-runner/issues"
+  },
+  "homepage": "https://github.com/mumuki/mumuki-gobstones-runner#readme",
+  "devDependencies": {
+    "eslint": "^7.10.0",
+    "eslint-plugin-html": "^6.1.0"
+  }
+}
