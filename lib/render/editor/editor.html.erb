@@ -87,6 +87,8 @@
         }
       },
 
+      // ==== Polymer events
+
       attached() {
         this.$exerciseContainer = $('.mu-kids-exercise');
 
@@ -98,77 +100,138 @@
         For accessing sibling elements when an element initializes, you can call async from inside the attached callback.
         */
         this.async(() => {
-          this.setBlocklyCustomSettings();
-          this.initialize();
+          this._configureBlocklyAppearance();
+          this._configureBlocklyBehavior();
         });
       },
 
-      initialize() {
-        this.getBlockly().showCategories = !this._isKindergarten();
+      // ==== Public methods (accesible from other components)
 
-        if (!this.readOnly) {
-          this.relocateTrashOnResize();
-        }
-
-        this.setTeacherActions();
-        this.setGameActions();
-
-        // Blockly's workspace is destroyed when toolbox changes, so it doesn't make sense to initialize it here.
-        if (!this.hasCustomToolbox()) {
-          this.initializeBlocklyWorkspace();
-        }
-
-        this._registerLayoutChangedEvent();
+      reset() {
+        const blockly = this._getBlockly();
+        blockly.workspaceXml = blockly.initialXml;
+        this._scrollToMainBlock();
       },
 
-      interactiveModeEnabled() {
-        return this.getBlockly().initialXml.indexOf("block type=\"InteractiveProgram\"") !== -1;
+      setToolbox(toolboxXml) {
+        this._getBlockly().toolbox = { defaultToolbox: toolboxXml };
+        // Blockly's workspace is destroyed when toolbox changes, so we initialize it here.
+        this._initializeBlocklyWorkspace();
+      },
+
+      compile(code) {
+        return this._compilationMode().compile(code);
+      },
+
+      hasInteractiveProgram() {
+        return this._getBlockly().initialXml.indexOf("block type=\"InteractiveProgram\"") !== -1;
       },
 
       hasCustomToolbox() {
         return $('gs-toolbox').length;
       },
 
-      relocateTrashOnResize() {
-        $('.mu-kids-context, .mu-kids-results').on('hidden.bs.modal shown.bs.modal', () => {
-          this.setTrashPosition();
-        });
-
-        $(window).resize(() => this.setTrashPosition());
+      toggleInteractiveMode() {
+        this.$exerciseContainer.toggleClass('play-mode');
+        this._triggerResize();
       },
 
-      initializeBlocklyWorkspace() {
-        this._setInitialXml();
-        this._initializeWorkspace();
-        this._subscribeToWorkspace(() => this.updateFields());
+      getTeacherCode: function () {
+        const { value } = this._getEditorExtra();
+        if (!value) return;
+        this.$.blocklyTmp.workspaceXml = value;
+        return this.$.blocklyTmp.generateCode();
+      },
 
-        if (this.interactiveModeEnabled()) {
-          this.setInteractiveLayout();
+      getStudentCode: function () {
+        return this
+          ._getBlockly()
+          .generateCode({withRegions: true, clearErrors: false});
+      },
+
+      getStudentXml: function () {
+        return this._getStudentSolution() || "";
+      },
+
+      getTestCode() {
+        return this._getEditorTest().value;
+      },
+
+      removeBlockErrors() {
+        return this._getBlockly().workspace.removeBlockErrors();
+      },
+
+      showBlockError(region, error) {
+        this._getBlockly().scrollToBlock(region);
+        this._getBlockly().showBlockError(region, error.message);
+      },
+
+      highlightBlock(region) {
+        this._getBlockly().highlightBlock(region);
+      },
+
+      // ==== Private methods (only for internal usage)
+
+      _configureBlocklyAppearance() {
+        this._getBlockly().showCategories = !this._isKindergarten();
+        this._setBlocklyDisplayMode();
+        this._setBlocklySounds();
+        this._setBlocklyColors();
+
+        if (!this.readOnly) {
+          this._relocateTrashOnResize();
         }
 
-        this.enableContextButton();
+        // Removing "/" from the block id character set to avoid syntax errors
+        Blockly.utils.genUid.soup_ = Blockly.utils.genUid.soup_.replace("/", "");
       },
 
-      setToolbox(toolboxXml) {
-        this.getBlockly().toolbox = { defaultToolbox: toolboxXml };
-        // Blockly's workspace is destroyed when toolbox changes, so we initialize it here.
-        this.initializeBlocklyWorkspace();
+      _configureBlocklyBehavior() {
+        this._setTeacherActions();
+        this._setGameActions();
+
+        // Blockly's workspace is destroyed when toolbox changes, so it doesn't make sense to initialize it here.
+        if (!this.hasCustomToolbox()) {
+          this._initializeBlocklyWorkspace();
+        }
+
+        this._registerLayoutChangedEvent();
       },
 
-      setTrashPosition() {
+      _relocateTrashOnResize() {
+        $('.mu-kids-context, .mu-kids-results').on('hidden.bs.modal shown.bs.modal', () => {
+          this._relocateTrash();
+        });
+
+        $(window).resize(() => this._relocateTrash());
+      },
+
+      _initializeBlocklyWorkspace() {
+        this._setInitialXml();
+        this._initializeWorkspace();
+        this._subscribeToWorkspace(() => this._updateSolution());
+
+        if (this.hasInteractiveProgram()) {
+          this._setInteractiveLayout();
+        }
+
+        mumuki.assetsLoadedFor('editor');
+      },
+
+      _relocateTrash() {
         const width = $('#blocklyDiv').width() - 68;
         const height = $('#blocklyDiv').height() - 210;
         $('.blocklyTrash').css("transform", `translate(${width}px, ${height}px)`);
         $('.blocklyTrash').css("display", "unset");
       },
 
-      updateFields() {
-        const blockly = this.getBlockly();
+      _updateSolution() {
+        const blockly = this._getBlockly();
 
-        this.setStudentSolution(blockly.workspaceXml);
+        this._setStudentSolution(blockly.workspaceXml);
 
         if (this.teacherMode) {
-          this.setExtraCode(blockly.workspaceXml);
+          this._setExtraCode(blockly.workspaceXml);
         }
 
         // TODO: this hack enables Angular two-way binding for Bibliotheca. Should be replaced with Mumuki events system
@@ -179,19 +242,19 @@
         this._stopExecution();
       },
 
-      setBlocklySounds() {
+      _setBlocklySounds() {
         Blockly.WorkspaceAudio.prototype.preload = () => {
-          for (var soundName in this.SOUNDS_) {
-            let sound = this.SOUNDS_[soundName];
+          for (const soundName in this.SOUNDS_) {
+            const sound = this.SOUNDS_[soundName];
             sound.volume = 0.01;
-            let playPromise = sound.play();
+            const playPromise = sound.play();
             playPromise && playPromise.then(sound.pause.bind(sound));
             if (goog.userAgent.IPAD || goog.userAgent.IPHONE) break;
           }
         };
       },
 
-      setBlocklyColors() {
+      _setBlocklyColors() {
         Blockly.HSV_SATURATION = 0.64;
         Blockly.HSV_VALUE = 1;
 
@@ -230,16 +293,7 @@
         Blockly.CUSTOM_COLORS.function_call = Blockly.MUMUKI_COLORS.blue;
       },
 
-      setBlocklyCustomSettings() {
-        this.setBlocklyDisplayMode();
-        this.setBlocklySounds();
-        this.setBlocklyColors();
-
-        // Removing "/" from the block id character set to avoid syntax errors
-        Blockly.utils.genUid.soup_ = Blockly.utils.genUid.soup_.replace("/", "");
-      },
-
-      setBlocklyDisplayMode() {
+      _setBlocklyDisplayMode() {
         // The display mode configuration could be monkey-patched here, like this:
         Blockly.displayModes.iconic.iconSize = 64;
         Blockly.displayModes.iconic.procedureDefIcon = `${this.localMediaUrl}main-procedure.png`;
@@ -247,24 +301,13 @@
         Blockly.displayMode = this._isKindergarten() ? 'iconic' : 'text';
       },
 
-      toggleInteractiveMode() {
-        this.$exerciseContainer.toggleClass('play-mode');
-        this.triggerResize();
-      },
-
-      triggerResize() {
-        let event = document.createEvent('HTMLEvents');
+      _triggerResize() {
+        const event = document.createEvent('HTMLEvents');
         event.initEvent('resize', true, false);
         document.dispatchEvent(event);
       },
 
-      reset() {
-        const blockly = this.getBlockly();
-        blockly.workspaceXml = blockly.initialXml;
-        this._scrollToMainBlock();
-      },
-
-      setInteractiveLayout() {
+      _setInteractiveLayout() {
         this.$exerciseContainer.addClass('mu-kids-interactive');
         $('.mu-final-state').html('<gs-keyboard/>');
         $('.mu-editor').append($('<kids-interactive-submit-button/>'));
@@ -274,93 +317,61 @@
         })
       },
 
-      setTeacherActions() {
+      _setTeacherActions() {
         const teacherCode = this.getTeacherCode();
         if (!teacherCode) {
           return;
         }
 
-        const blockly = this.getBlockly();
+        const blockly = this._getBlockly();
         const actions = new Parser().getActionsFromSource(teacherCode);
         blockly.primitiveProcedures = this._withDefaultIcons(actions, 'procedureDeclarations');
         blockly.primitiveFunctions = this._withDefaultIcons(actions, 'functionDeclarations');
       },
 
-      setGameActions() {
-        const blockly = this.getBlockly();
+      _setGameActions() {
+        const blockly = this._getBlockly();
         if (this._isGame()) {
           blockly.primitiveProcedures = blockly.primitiveProcedures || [];
           blockly.primitiveProcedures = blockly.primitiveProcedures.concat([
-            this.gamePrimitive('ShiftUp'),
-            this.gamePrimitive('ShiftDown'),
-            this.gamePrimitive('ShiftLeft'),
-            this.gamePrimitive('ShiftRight')
+            this._gamePrimitive('ShiftUp'),
+            this._gamePrimitive('ShiftDown'),
+            this._gamePrimitive('ShiftLeft'),
+            this._gamePrimitive('ShiftRight')
           ]);
         }
       },
 
-      gamePrimitive(name) {
-        return { alias: 'procedureDeclaration', name: name, attributes: {block_icon: `<%= @assets_url %>/media/${name}.png`} };
+      _gamePrimitive(name) {
+        return { alias: 'procedureDeclaration', name, attributes: {block_icon: `<%= @assets_url %>/media/${name}.png`} };
       },
 
-      enableContextButton() {
-        mumuki.assetsLoadedFor('editor');
-      },
-
-      getBlockly() {
+      _getBlockly() {
         return this.$.blocklyElement;
       },
 
-      getStudentCode: function () {
-        return this
-          .getBlockly()
-          .generateCode({withRegions: true, clearErrors: false});
-      },
-
-      getStudentXml: function () {
-        return this.getStudentSolution() || "";
-      },
-
-      getTeacherCode: function () {
-        const teacherXml = this.getEditorExtra();
-        if (!teacherXml || !teacherXml.value) return;
-        this.$.blocklyTmp.workspaceXml = teacherXml.value;
-        return this.$.blocklyTmp.generateCode();
-      },
-
-      getStudentSolution() {
+      _getStudentSolution() {
         return this._getStudentEditor().value;
       },
 
-      setStudentSolution(code) {
+      _setStudentSolution(code) {
         this._getStudentEditor().value = code;
       },
 
-      getDefaultCode() {
+      _getDefaultCode() {
         return this._getEditorDefaultValue().value;
       },
 
-      setDefaultCode(code) {
+      _setDefaultCode(code) {
         this._getEditorDefaultValue().value = code;
       },
 
-      getEditorExtra: function() {
-        return $("#mu-custom-editor-extra")[0];
+      _getEditorExtra: function() {
+        return $("#mu-custom-editor-extra")[0] || {};
       },
 
-      getEditorTest: function() {
+      _getEditorTest: function() {
         return $("#mu-custom-editor-test")[0];
-      },
-
-      compile(code) {
-        return this._compilationMode().compile(code);
-      },
-
-      _stopExecution() {
-        const submit = $("kids-submit-button")[0];
-        if (submit && submit.$.runner.isRunning) {
-          submit.$.runner.stop();
-        }
       },
 
       _getStudentEditor: function() {
@@ -371,18 +382,25 @@
         return $("#mu-custom-editor-default-value")[0] || {};
       },
 
+      _stopExecution() {
+        const submit = $("kids-submit-button")[0];
+        if (submit && submit.$.runner.isRunning) {
+          submit.$.runner.stop();
+        }
+      },
+
       _registerLayoutChangedEvent() {
         if (!this.teacherMode) {
           return;
         }
 
         mumuki.events.on('layoutChanged', () => {
-          this.setDefaultCode(this._compilationMode().defaultCode);
+          this._setDefaultCode(this._compilationMode().defaultCode);
         });
       },
 
       _scrollToMainBlock() {
-        this._compilationMode().scrollToMainBlock(this.getBlockly());
+        this._compilationMode().scrollToMainBlock(this._getBlockly());
       },
 
       _withDefaultIcons(actions, type) {
@@ -417,8 +435,8 @@
       },
 
       _setInitialXml: function () {
-        const blockly = this.getBlockly();
-        const defaultCode = this.getDefaultCode();
+        const blockly = this._getBlockly();
+        const defaultCode = this._getDefaultCode();
         if (defaultCode) {
           blockly.initialXml = defaultCode;
         } else {
@@ -427,8 +445,8 @@
       },
 
       _initializeWorkspace() {
-        const blockly = this.getBlockly();
-        const value = this.getStudentSolution();
+        const blockly = this._getBlockly();
+        const value = this._getStudentSolution();
 
         blockly.workspaceXml = value || (
           this.teacherMode
@@ -440,7 +458,7 @@
       },
 
       _subscribeToWorkspace: function(action) {
-        this.getBlockly().workspace.addChangeListener(action);
+        this._getBlockly().workspace.addChangeListener(action);
       }
     });
   </script>
@@ -817,12 +835,12 @@
       },
 
       _highlight: function (region) {
-        this._getBlockly().highlightBlock(region);
+        this.$editor.highlightBlock(region);
       },
 
       _showError: function (region, error) {
         const expectsTimeout = /expect_endless_while *: *true/.test(
-          this.$editor.getEditorTest().value
+          this.$editor.getTestCode()
         );
 
         const isExpectedTimeout = (
@@ -832,8 +850,7 @@
 
         if (isExpectedTimeout) return;
 
-        this._getBlockly().scrollToBlock(region);
-        this._getBlockly().showBlockError(region, error.message);
+        this.$editor.showBlockError(region, error);
       },
 
       _cleanState: function () {
@@ -847,17 +864,13 @@
         finalBoard.boom = false;
       },
 
-      _removeBlockErrors: function () {
-        this._getBlockly().workspace.removeBlockErrors();
+      _removeBlockErrors() {
+        this.$editor.removeBlockErrors();
       },
 
       _getLastRegion: function (context = {}) {
         const {regionStack} = context;
         return regionStack && regionStack.filter(it => it).slice(-1)[0];
-      },
-
-      _getBlockly: function () {
-        return this.$editor.getBlockly();
       },
 
       _getInitialBoards: function () {
@@ -886,7 +899,7 @@
       },
 
       _onResetState: function () {
-        this._getBlockly().workspace.removeBlockErrors();
+        this._removeBlockErrors();
         this._resetBoards();
         this._toggleInitialState();
         this.multipleScenarios.resetIndicators();
