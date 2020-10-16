@@ -43,7 +43,9 @@
 
         scrollToMainBlock: (blockly) => {
           const mainBlock = blockly.getBlocksOfType('procedures_defnoreturnnoparams')[0];
-          blockly.scrollToBlock(mainBlock.id);
+          if (mainBlock) {
+            blockly.scrollToBlock(mainBlock.id);
+          }
         },
 
         defaultCode: `<%= @game_framework_default %>`
