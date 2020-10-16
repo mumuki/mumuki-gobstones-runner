@@ -230,10 +230,10 @@
       _updateSolution() {
         const blockly = this._getBlockly();
 
-        this._setStudentSolution(blockly.workspaceXml);
-
         if (this.teacherMode) {
           this._setExtraCode(blockly.workspaceXml);
+        } else {
+          this._setStudentSolution(blockly.workspaceXml);
         }
 
         // TODO: this hack enables Angular two-way binding for Bibliotheca. Should be replaced with Mumuki events system
