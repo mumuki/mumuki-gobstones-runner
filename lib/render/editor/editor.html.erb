@@ -4,6 +4,12 @@
 <link href="./gobstones-code-runner.html" rel="import"/>
 <script src="./hammer.min.js"></script>
 
+<script>
+  function postpone(action) {
+    return setTimeout(action, 50);
+  }
+</script>
+
 <dom-module id="mu-gobstones-custom-editor">
 
   <template>
@@ -20,15 +26,6 @@
   </template>
 
   <script>
-    function postpone(action) {
-      return setTimeout(action, 50);
-    }
-
-    function gbsBoardRemoveBorder(board) {
-      board._setBorderOff();
-      board.updateStyles();
-    }
-
     const compilationModes = {
       gameFramework: {
         compile: ({ main, teacher, ...args }) => {
@@ -46,7 +43,9 @@
 
         scrollToMainBlock: (blockly) => {
           const mainBlock = blockly.getBlocksOfType('procedures_defnoreturnnoparams')[0];
-          blockly.scrollToBlock(mainBlock.id);
+          if (mainBlock) {
+            blockly.scrollToBlock(mainBlock.id);
+          }
         },
 
         defaultCode: `<%= @game_framework_default %>`
@@ -90,184 +89,228 @@
         }
       },
 
-      attached: function () {
-        const setBlocklySounds = () => {
-          Blockly.WorkspaceAudio.prototype.preload = () => {
-            for (var soundName in this.SOUNDS_) {
-              let sound = this.SOUNDS_[soundName];
-              sound.volume = 0.01;
-              let playPromise = sound.play();
-              playPromise && playPromise.then(sound.pause.bind(sound));
-              if (goog.userAgent.IPAD || goog.userAgent.IPHONE) break;
-            }
-          };
-        };
+      // ==== Polymer events
 
-        const setBlocklyColors = () => {
-          Blockly.HSV_SATURATION = 0.64;
-          Blockly.HSV_VALUE = 1;
-
-          Blockly.MUMUKI_COLORS = {
-            pink: "#FF5C82",
-            blue: "#5CBEFF",
-            yellow: "#FFC95C",
-            green: "#5CED71"
-          };
-
-          // reserved
-          Blockly.CUSTOM_COLORS.program = Blockly.MUMUKI_COLORS.pink;
-          Blockly.CUSTOM_COLORS.interactiveProgram = Blockly.MUMUKI_COLORS.pink;
-          Blockly.CUSTOM_COLORS.interactiveBinding = Blockly.MUMUKI_COLORS.pink;
-          Blockly.CUSTOM_COLORS.procedure = Blockly.MUMUKI_COLORS.pink;
-          Blockly.CUSTOM_COLORS.function = Blockly.MUMUKI_COLORS.pink;
-          Blockly.CUSTOM_COLORS.complete = Blockly.MUMUKI_COLORS.pink;
-
-          // control structures
-          Blockly.CUSTOM_COLORS.controlStructure = this._isKindergarten() ? Blockly.MUMUKI_COLORS.green : Blockly.MUMUKI_COLORS.yellow;
-
-          // commands
-          Blockly.CUSTOM_COLORS.primitiveCommand = Blockly.MUMUKI_COLORS.yellow;
-          Blockly.CUSTOM_COLORS.primitiveProcedure = Blockly.MUMUKI_COLORS.yellow;
-          Blockly.CUSTOM_COLORS.procedure_call = Blockly.MUMUKI_COLORS.yellow;
-          Blockly.CUSTOM_COLORS.assignation = Blockly.MUMUKI_COLORS.yellow;
-
-          // expressions
-          Blockly.Msg.MATH_HUE = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.literalExpression = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.primitiveExpression = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.operator = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.variable = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.parameter = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.primitiveFunction = Blockly.MUMUKI_COLORS.blue;
-          Blockly.CUSTOM_COLORS.function_call = Blockly.MUMUKI_COLORS.blue;
-
-          setTimeout(() => {
-            this.getBlockly().testColors(Blockly.CUSTOM_COLORS);
-          });
-        };
-
-        const setBlocklyCustomSettings = () => {
-          if (typeof Blockly === 'undefined' || !Blockly.CUSTOM_COLORS) return postpone(setBlocklyCustomSettings);
-
-          // The display mode configuration could be monkey-patched here, like this:
-          Blockly.displayModes.iconic.iconSize = 64;
-          Blockly.displayModes.iconic.procedureDefIcon = `${this.localMediaUrl}main-procedure.png`;
-
-          Blockly.displayMode = this._isKindergarten() ? 'iconic' : 'text';
-          setBlocklySounds();
-          setBlocklyColors();
-
-          // Removing "/" from the block id character set to avoid syntax errors
-          Blockly.utils.genUid.soup_ = Blockly.utils.genUid.soup_.replace("/", "");
-        };
-
-        const updateFields = () => {
-          const blockly = this.getBlockly();
-
-          const editorValue = this.getEditorValue();
-          if (editorValue) {
-            editorValue.value = blockly.workspaceXml;
-          }
-
-          if (this.teacherMode) {
-            const editorExtra = this.getEditorExtra();
-            if (editorExtra) {
-              editorExtra.value = blockly.workspaceXml;
-            }
-          }
-
-          if (typeof angular !== 'undefined') {
-            angular.element(editorValue).triggerHandler("change");
-          }
-
-          const submit = $("kids-submit-button")[0];
-          if (submit && submit.$.runner.isRunning) {
-            submit.$.runner.stop();
-          }
-        };
-
+      attached() {
         this.$exerciseContainer = $('.mu-kids-exercise');
 
-        const setTrashPosition = () => {
-          var width = $('#blocklyDiv').width() - 68;
-          var height = $('#blocklyDiv').height() - 210;
-          $('.blocklyTrash').css("transform", `translate(${width}px, ${height}px)`);
-          $('.blocklyTrash').css("display", "unset");
-        };
+        /*
+        https://polymer-library.polymer-project.org/1.0/docs/devguide/registering-elements#initialization-order
 
-        var setTrashTimeout;
+        There are no guarantees with regard to initialization timing between sibling elements.
+        This means that siblings may become ready in any order.
+        For accessing sibling elements when an element initializes, you can call async from inside the attached callback.
+        */
+        this.async(() => {
+          this._configureBlocklyAppearance();
+          this._configureBlocklyBehavior();
+        });
+      },
 
-        const localOnResize = () => {
-          clearTimeout(setTrashTimeout);
-          setTrashTimeout = setTimeout(() => {
-            setTrashPosition();
-          });
-        };
+      // ==== Public methods (accesible from other components)
 
-        const triggerResizeOnContextModalClose = () => {
-          $('.mu-kids-context, .mu-kids-results').on('hidden.bs.modal shown.bs.modal', function () {
-            localOnResize();
-          })
-        };
+      reset() {
+        const blockly = this._getBlockly();
+        blockly.workspaceXml = blockly.initialXml;
+        this._scrollToMainBlock();
+      },
 
-        const relocateTrash = (blockly) => {
-          blockly.workspace.trashcan.bottom_ = 150; //Setting vertical position programmatically to adjust the draggable area
-          $(window).resize(() => localOnResize());
-          triggerResizeOnContextModalClose();
-        };
+      setToolbox(toolboxXml) {
+        this._getBlockly().toolbox = { defaultToolbox: toolboxXml };
+        // Blockly's workspace is destroyed when toolbox changes, so we initialize it here.
+        this._initializeBlocklyWorkspace();
+      },
 
-        const initialize = () => {
-          postpone(() => {
-            const blockly = this.getBlockly();
+      compile(code) {
+        return this._compilationMode().compile(code);
+      },
 
-            if (!blockly || !blockly.workspace) return initialize();
+      hasInteractiveProgram() {
+        return this._getBlockly().initialXml.indexOf("block type=\"InteractiveProgram\"") !== -1;
+      },
 
-            blockly.showCategories = !this._isKindergarten();
-
-            if (!this.readOnly) {
-              relocateTrash(blockly);
-            }
-
-            this.setTeacherActions(blockly);
-            this._setInitialXml(blockly);
-            this.interactiveMode = blockly.initialXml.indexOf("block type=\"InteractiveProgram\"") !== -1;
-            if (this.interactiveMode) this.setInteractiveLayout();
-            this._initializeWorkspace(blockly, () => {
-              localOnResize();
-              blockly._onresize();
-
-              this._subscribeToWorkspace(blockly, updateFields);
-            });
-
-            const hasCustomToolbox = $('gs-toolbox').length;
-            if(!hasCustomToolbox) this.enableContextButton();
-
-            this._registerLayoutChangedEvent();
-          });
-        };
-
-        setBlocklyCustomSettings();
-        initialize();
+      hasCustomToolbox() {
+        return $('gs-toolbox').length;
       },
 
       toggleInteractiveMode() {
         this.$exerciseContainer.toggleClass('play-mode');
-        this.triggerResize();
+        this._triggerResize();
       },
 
-      triggerResize() {
-        let event = document.createEvent('HTMLEvents');
+      getTeacherCode() {
+        const extraCode = this._getExtraCode();
+        if (!extraCode) return;
+        this.$.blocklyTmp.workspaceXml = extraCode;
+        return this.$.blocklyTmp.generateCode();
+      },
+
+      getStudentCode: function () {
+        return this
+          ._getBlockly()
+          .generateCode({withRegions: true, clearErrors: false});
+      },
+
+      getStudentXml: function () {
+        return this._getStudentSolution() || "";
+      },
+
+      getTestCode() {
+        return this._getEditorTest().value;
+      },
+
+      removeBlockErrors() {
+        return this._getBlockly().workspace.removeBlockErrors();
+      },
+
+      showBlockError(region, error) {
+        this._getBlockly().scrollToBlock(region);
+        this._getBlockly().showBlockError(region, error.message);
+      },
+
+      highlightBlock(region) {
+        this._getBlockly().highlightBlock(region);
+      },
+
+      // ==== Private methods (only for internal usage)
+
+      _configureBlocklyAppearance() {
+        this._getBlockly().showCategories = !this._isKindergarten();
+        this._setBlocklyDisplayMode();
+        this._setBlocklySounds();
+        this._setBlocklyColors();
+
+        if (!this.readOnly) {
+          this._relocateTrashOnResize();
+        }
+
+        // Removing "/" from the block id character set to avoid syntax errors
+        Blockly.utils.genUid.soup_ = Blockly.utils.genUid.soup_.replace("/", "");
+      },
+
+      _configureBlocklyBehavior() {
+        this._setTeacherActions();
+        this._setGameActions();
+
+        // Blockly's workspace is destroyed when toolbox changes, so it doesn't make sense to initialize it here.
+        if (!this.hasCustomToolbox()) {
+          this._initializeBlocklyWorkspace();
+        }
+
+        this._registerLayoutChangedEvent();
+      },
+
+      _relocateTrashOnResize() {
+        $('.mu-kids-context, .mu-kids-results').on('hidden.bs.modal shown.bs.modal', () => {
+          this._relocateTrash();
+        });
+
+        $(window).resize(() => this._relocateTrash());
+      },
+
+      _initializeBlocklyWorkspace() {
+        this._setInitialXml();
+        this._initializeWorkspace();
+        this._subscribeToWorkspace(() => this._updateSolution());
+
+        if (this.hasInteractiveProgram()) {
+          this._setInteractiveLayout();
+        }
+
+        mumuki.assetsLoadedFor('editor');
+      },
+
+      _relocateTrash() {
+        const width = $('#blocklyDiv').width() - 68;
+        const height = $('#blocklyDiv').height() - 210;
+        $('.blocklyTrash').css("transform", `translate(${width}px, ${height}px)`);
+        $('.blocklyTrash').css("display", "unset");
+      },
+
+      _updateSolution() {
+        const blockly = this._getBlockly();
+
+        if (this.teacherMode) {
+          this._setExtraCode(blockly.workspaceXml);
+        } else {
+          this._setStudentSolution(blockly.workspaceXml);
+        }
+
+        // TODO: this hack enables Angular two-way binding for Bibliotheca. Should be replaced with Mumuki events system
+        if (typeof angular !== 'undefined') {
+          angular.element(this._getStudentEditor()).triggerHandler("change");
+          angular.element(this._getEditorExtra()).triggerHandler("change");
+        }
+
+        this._stopExecution();
+      },
+
+      _setBlocklySounds() {
+        Blockly.WorkspaceAudio.prototype.preload = () => {
+          for (const soundName in this.SOUNDS_) {
+            const sound = this.SOUNDS_[soundName];
+            sound.volume = 0.01;
+            const playPromise = sound.play();
+            playPromise && playPromise.then(sound.pause.bind(sound));
+            if (goog.userAgent.IPAD || goog.userAgent.IPHONE) break;
+          }
+        };
+      },
+
+      _setBlocklyColors() {
+        Blockly.HSV_SATURATION = 0.64;
+        Blockly.HSV_VALUE = 1;
+
+        Blockly.MUMUKI_COLORS = {
+          pink: "#FF5C82",
+          blue: "#5CBEFF",
+          yellow: "#FFC95C",
+          green: "#5CED71"
+        };
+
+        // reserved
+        Blockly.CUSTOM_COLORS.program = Blockly.MUMUKI_COLORS.pink;
+        Blockly.CUSTOM_COLORS.interactiveProgram = Blockly.MUMUKI_COLORS.pink;
+        Blockly.CUSTOM_COLORS.interactiveBinding = Blockly.MUMUKI_COLORS.pink;
+        Blockly.CUSTOM_COLORS.procedure = Blockly.MUMUKI_COLORS.pink;
+        Blockly.CUSTOM_COLORS.function = Blockly.MUMUKI_COLORS.pink;
+        Blockly.CUSTOM_COLORS.complete = Blockly.MUMUKI_COLORS.pink;
+
+        // control structures
+        Blockly.CUSTOM_COLORS.controlStructure = this._isKindergarten() ? Blockly.MUMUKI_COLORS.green : Blockly.MUMUKI_COLORS.yellow;
+
+        // commands
+        Blockly.CUSTOM_COLORS.primitiveCommand = Blockly.MUMUKI_COLORS.yellow;
+        Blockly.CUSTOM_COLORS.primitiveProcedure = Blockly.MUMUKI_COLORS.yellow;
+        Blockly.CUSTOM_COLORS.procedure_call = Blockly.MUMUKI_COLORS.yellow;
+        Blockly.CUSTOM_COLORS.assignation = Blockly.MUMUKI_COLORS.yellow;
+
+        // expressions
+        Blockly.Msg.MATH_HUE = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.literalExpression = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.primitiveExpression = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.operator = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.variable = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.parameter = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.primitiveFunction = Blockly.MUMUKI_COLORS.blue;
+        Blockly.CUSTOM_COLORS.function_call = Blockly.MUMUKI_COLORS.blue;
+      },
+
+      _setBlocklyDisplayMode() {
+        // The display mode configuration could be monkey-patched here, like this:
+        Blockly.displayModes.iconic.iconSize = 64;
+        Blockly.displayModes.iconic.procedureDefIcon = `${this.localMediaUrl}main-procedure.png`;
+
+        Blockly.displayMode = this._isKindergarten() ? 'iconic' : 'text';
+      },
+
+      _triggerResize() {
+        const event = document.createEvent('HTMLEvents');
         event.initEvent('resize', true, false);
         document.dispatchEvent(event);
       },
 
-      reset(code) {
-        const blockly = this.getBlockly();
-        blockly.workspaceXml = code || blockly.initialXml;
-        this._scrollToMainBlock();
-      },
-
-      setInteractiveLayout() {
+      _setInteractiveLayout() {
         this.$exerciseContainer.addClass('mu-kids-interactive');
         $('.mu-final-state').html('<gs-keyboard/>');
         $('.mu-editor').append($('<kids-interactive-submit-button/>'));
@@ -277,82 +320,86 @@
         })
       },
 
-      setTeacherActions(blockly) {
+      _setTeacherActions() {
         const teacherCode = this.getTeacherCode();
-        if (teacherCode) {
-          setTimeout(() => {
-            const actions = new Parser().getActionsFromSource(teacherCode);
-
-            blockly.primitiveProcedures = this._withDefaultIcons(actions, 'procedureDeclarations');
-            blockly.primitiveFunctions = this._withDefaultIcons(actions, 'functionDeclarations');
-          });
+        if (!teacherCode) {
+          return;
         }
+
+        const blockly = this._getBlockly();
+        const actions = new Parser().getActionsFromSource(teacherCode);
+        blockly.primitiveProcedures = this._withDefaultIcons(actions, 'procedureDeclarations');
+        blockly.primitiveFunctions = this._withDefaultIcons(actions, 'functionDeclarations');
       },
 
-      setGameActions(blockly) {
+      _setGameActions() {
+        const blockly = this._getBlockly();
         if (this._isGame()) {
           blockly.primitiveProcedures = blockly.primitiveProcedures || [];
           blockly.primitiveProcedures = blockly.primitiveProcedures.concat([
-            this.gamePrimitive('ShiftUp'),
-            this.gamePrimitive('ShiftDown'),
-            this.gamePrimitive('ShiftLeft'),
-            this.gamePrimitive('ShiftRight')
+            this._gamePrimitive('ShiftUp'),
+            this._gamePrimitive('ShiftDown'),
+            this._gamePrimitive('ShiftLeft'),
+            this._gamePrimitive('ShiftRight')
           ]);
         }
       },
 
-      gamePrimitive(name) {
-        return { alias: 'procedureDeclaration', name: name, attributes: {block_icon: `<%= @assets_url %>/media/${name}.png`} };
+      _gamePrimitive(name) {
+        return { alias: 'procedureDeclaration', name, attributes: {block_icon: `<%= @assets_url %>/media/${name}.png`} };
       },
 
-      enableContextButton() {
-        if(mumuki.kids && mumuki.assetsLoadedFor) {
-          return mumuki.assetsLoadedFor('editor');
-        } else {
-          return postpone(this.enableContextButton.bind(this));
-        }
-
-      },
-
-      getBlockly: function () {
+      _getBlockly() {
         return this.$.blocklyElement;
       },
 
-      getStudentCode: function () {
-        return this
-          .getBlockly()
-          .generateCode({withRegions: true, clearErrors: false});
+      _getStudentSolution() {
+        return this._getStudentEditor().value;
       },
 
-      getStudentXml: function () {
-        return this.getEditorValue().value || "";
+      /**
+       * Sets the student solution xml, which corresponds
+       * to user content in laboratory, and default content in bibliotheca
+       */
+      _setStudentSolution(code) {
+        console.debug(`Setting student ${code}`)
+        this._getStudentEditor().value = code;
       },
 
-      getTeacherCode: function () {
-        const teacherXml = this.getEditorExtra();
-        if (!teacherXml || !teacherXml.value) return;
-        this.$.blocklyTmp.workspaceXml = teacherXml.value;
-        return this.$.blocklyTmp.generateCode();
+      _getDefaultCode() {
+        return this._getEditorDefaultValue().value;
       },
 
-      getEditorValue: function() {
-        return $("#mu-custom-editor-value")[0];
+      _getExtraCode() {
+        return this._getEditorExtra().value;
       },
 
-      getEditorDefaultValue: function() {
-        return $("#mu-custom-editor-default-value")[0];
+      _setExtraCode(code) {
+        console.debug(`Setting extra ${code}`)
+        this._getEditorExtra().value = code;
       },
 
-      getEditorExtra: function() {
-        return $("#mu-custom-editor-extra")[0];
+      _getEditorExtra: function() {
+        return $("#mu-custom-editor-extra")[0] || {};
       },
 
-      getEditorTest: function() {
+      _getEditorTest: function() {
         return $("#mu-custom-editor-test")[0];
       },
 
-      compile(code) {
-        return this._compilationMode().compile(code);
+      _getStudentEditor: function() {
+        return $("#mu-custom-editor-value")[0] || {};
+      },
+
+      _getEditorDefaultValue: function() {
+        return $("#mu-custom-editor-default-value")[0] || {};
+      },
+
+      _stopExecution() {
+        const submit = $("kids-submit-button")[0];
+        if (submit && submit.$.runner.isRunning) {
+          submit.$.runner.stop();
+        }
       },
 
       _registerLayoutChangedEvent() {
@@ -361,12 +408,13 @@
         }
 
         mumuki.events.on('layoutChanged', () => {
-          this.getEditorDefaultValue().value = this._compilationMode().defaultCode;
+          console.debug('layout changed');
+          this._setStudentSolution(this._compilationMode().defaultCode);
         });
       },
 
       _scrollToMainBlock() {
-        this._compilationMode().scrollToMainBlock(this.getBlockly());
+        this._compilationMode().scrollToMainBlock(this._getBlockly());
       },
 
       _withDefaultIcons(actions, type) {
@@ -400,35 +448,31 @@
         return this._isGame() ? compilationModes.gameFramework : compilationModes.classic;
       },
 
-      _setInitialXml: function (blockly) {
-        const editorDefaultContent = this.getEditorDefaultValue();
-        if (editorDefaultContent && editorDefaultContent.value) {
-          blockly.initialXml = editorDefaultContent.value;
+      _setInitialXml: function () {
+        const blockly = this._getBlockly();
+        const defaultCode = this._getDefaultCode();
+        if (defaultCode) {
+          blockly.initialXml = defaultCode;
         } else {
           blockly.initialXml = blockly.workspaceXml;
         }
       },
 
-      _initializeWorkspace: function(blockly, callback) {
-        postpone(() => {
-          const value = this.getEditorValue().value;
+      _initializeWorkspace() {
+        const blockly = this._getBlockly();
+        const value = this._getStudentSolution();
 
-          blockly.workspaceXml = value || (
-            this.teacherMode
-              ? "<xml></xml>"
-              : blockly.initialXml
-          );
-          this._scrollToMainBlock();
+        blockly.workspaceXml = value || (
+          this.teacherMode
+            ? "<xml></xml>"
+            : blockly.initialXml
+        );
 
-          callback();
-        });
+        this._scrollToMainBlock();
       },
 
-      _subscribeToWorkspace: function(blockly, action) {
-        setTimeout(() => {
-          blockly.workspace.addChangeListener(action);
-          action();
-        });
+      _subscribeToWorkspace: function(action) {
+        this._getBlockly().workspace.addChangeListener(action);
       }
     });
   </script>
@@ -796,16 +840,21 @@
           finalBoard.update(table, head);
         }
 
-        gbsBoardRemoveBorder(finalBoard);
+        this._removeBorder(finalBoard);
+      },
+
+      _removeBorder(board) {
+        board._setBorderOff();
+        board.updateStyles();
       },
 
       _highlight: function (region) {
-        this._getBlockly().highlightBlock(region);
+        this.$editor.highlightBlock(region);
       },
 
       _showError: function (region, error) {
         const expectsTimeout = /expect_endless_while *: *true/.test(
-          this.$editor.getEditorTest().value
+          this.$editor.getTestCode()
         );
 
         const isExpectedTimeout = (
@@ -815,8 +864,7 @@
 
         if (isExpectedTimeout) return;
 
-        this._getBlockly().scrollToBlock(region);
-        this._getBlockly().showBlockError(region, error.message);
+        this.$editor.showBlockError(region, error);
       },
 
       _cleanState: function () {
@@ -830,17 +878,13 @@
         finalBoard.boom = false;
       },
 
-      _removeBlockErrors: function () {
-        this._getBlockly().workspace.removeBlockErrors();
+      _removeBlockErrors() {
+        this.$editor.removeBlockErrors();
       },
 
       _getLastRegion: function (context = {}) {
         const {regionStack} = context;
         return regionStack && regionStack.filter(it => it).slice(-1)[0];
-      },
-
-      _getBlockly: function () {
-        return this.$editor.getBlockly();
       },
 
       _getInitialBoards: function () {
@@ -869,7 +913,7 @@
       },
 
       _onResetState: function () {
-        this._getBlockly().workspace.removeBlockErrors();
+        this._removeBlockErrors();
         this._resetBoards();
         this._toggleInitialState();
         this.multipleScenarios.resetIndicators();
@@ -891,31 +935,19 @@
       is: 'gs-toolbox',
       properties: {
         toolboxUrl: Object,
-        observer: '_toolboxChanged'
+        observer: '_setEditorToolbox'
       },
 
       attached: function () {
-        this._setToolbox();
+        this.async(() => {
+          this._setEditorToolbox();
+        });
       },
-      _toolboxChanged: function () {
-        this._setToolbox();
-      },
-      _setToolbox: function () {
+
+      _setEditorToolbox: function () {
         const editor = $("mu-gobstones-custom-editor")[0];
-        const blockly = editor.getBlockly();
-        if(blockly.readOnly) return;
-        const previousCode = editor.getEditorValue().value;
         $.get(this.toolboxUrl, function (toolboxXml) {
-          blockly.toolbox = { defaultToolbox: toolboxXml };
-          editor.setTeacherActions(blockly);
-          editor.setGameActions(blockly);
-          // @faloi - I couldn't figure out why the workspace gets replaced with a generic code,
-          // so here I force a reset with the code previously saved. Sorry not sorry.
-          postpone(() => {
-            editor.reset(previousCode);
-          });
-        }).always(function () {
-          editor.enableContextButton();
+          editor.setToolbox(toolboxXml);
         });
       }
     });
