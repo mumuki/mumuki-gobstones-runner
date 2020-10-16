@@ -136,10 +136,10 @@
         this._triggerResize();
       },
 
-      getTeacherCode: function () {
-        const { value } = this._getEditorExtra();
-        if (!value) return;
-        this.$.blocklyTmp.workspaceXml = value;
+      getTeacherCode() {
+        const extraCode = this._getExtraCode();
+        if (!extraCode) return;
+        this.$.blocklyTmp.workspaceXml = extraCode;
         return this.$.blocklyTmp.generateCode();
       },
 
@@ -364,6 +364,14 @@
 
       _setDefaultCode(code) {
         this._getEditorDefaultValue().value = code;
+      },
+
+      _getExtraCode() {
+        return this._getEditorExtra().value;
+      },
+
+      _setExtraCode(code) {
+        this._getEditorExtra().value = code;
       },
 
       _getEditorExtra: function() {
