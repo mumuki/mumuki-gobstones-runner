@@ -362,6 +362,7 @@
        * to user content in laboratory, and default content in bibliotheca
        */
       _setStudentSolution(code) {
+        console.debug(`Setting student ${code}`)
         this._getStudentEditor().value = code;
       },
 
@@ -374,6 +375,7 @@
       },
 
       _setExtraCode(code) {
+        console.debug(`Setting extra ${code}`)
         this._getEditorExtra().value = code;
       },
 
@@ -406,6 +408,7 @@
         }
 
         mumuki.events.on('layoutChanged', () => {
+          console.debug('layout changed');
           this._setStudentSolution(this._compilationMode().defaultCode);
         });
       },
