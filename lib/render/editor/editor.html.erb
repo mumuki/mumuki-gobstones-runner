@@ -239,6 +239,7 @@
         // TODO: this hack enables Angular two-way binding for Bibliotheca. Should be replaced with Mumuki events system
         if (typeof angular !== 'undefined') {
           angular.element(this._getStudentEditor()).triggerHandler("change");
+          angular.element(this._getEditorExtra()).triggerHandler("change");
         }
 
         this._stopExecution();
