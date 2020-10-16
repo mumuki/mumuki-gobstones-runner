@@ -357,16 +357,16 @@
         return this._getStudentEditor().value;
       },
 
+      /**
+       * Sets the student solution xml, which corresponds
+       * to user content in laboratory, and default content in bibliotheca
+       */
       _setStudentSolution(code) {
         this._getStudentEditor().value = code;
       },
 
       _getDefaultCode() {
         return this._getEditorDefaultValue().value;
-      },
-
-      _setDefaultCode(code) {
-        this._getEditorDefaultValue().value = code;
       },
 
       _getExtraCode() {
@@ -406,7 +406,7 @@
         }
 
         mumuki.events.on('layoutChanged', () => {
-          this._setDefaultCode(this._compilationMode().defaultCode);
+          this._setStudentSolution(this._compilationMode().defaultCode);
         });
       },
 
