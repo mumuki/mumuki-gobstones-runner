@@ -121,6 +121,12 @@
         this._initializeBlocklyWorkspace();
       },
 
+      loadToolboxFromUrl(toolboxUrl) {
+        $.get(toolboxUrl, (toolboxXml) => {
+          this.setToolbox(toolboxXml);
+        });
+      },
+
       compile(code) {
         return this._compilationMode().compile(code);
       },
@@ -946,9 +952,7 @@
 
       _setEditorToolbox: function () {
         const editor = $("mu-gobstones-custom-editor")[0];
-        $.get(this.toolboxUrl, function (toolboxXml) {
-          editor.setToolbox(toolboxXml);
-        });
+        editor.loadToolboxFromUrl(this.toolboxUrl);
       }
     });
   </script>
