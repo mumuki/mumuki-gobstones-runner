@@ -978,6 +978,11 @@
 
       _setEditorToolbox: function () {
         const editor = $("mu-gobstones-custom-editor")[0];
+
+        // editor may have not yet been loaded
+        // so there is nothing to do yet
+        if (!editor) return;
+
         editor.configureCustomToolboxFromUrl(this.toolboxUrl);
       }
     });
