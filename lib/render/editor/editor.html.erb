@@ -115,16 +115,26 @@
         this._scrollToMainBlock();
       },
 
-      setToolbox(toolboxXml) {
-        this._getBlockly().toolbox = { defaultToolbox: toolboxXml };
-        // Blockly's workspace is destroyed when toolbox changes, so we initialize it here.
-        this._initializeBlocklyWorkspace();
+      /**
+       * Configures a custom toolbox using a toolbox url
+       * This method does nothing if editor is read-only, but
+       * assumes a gs-toolbox element is present - otherwise it would
+       * have no sense to have a toolboxUrl.
+       */
+      configureCustomToolboxFromUrl(toolboxUrl) {
+        if (!this.readOnly) {
+          $.get(toolboxUrl, (toolboxXml) => {
+            this._initializeCustomToolboxBlocklyWorkspace(toolboxXml);
+          });
+        }
       },
 
-      loadToolboxFromUrl(toolboxUrl) {
-        $.get(toolboxUrl, (toolboxXml) => {
-          this.setToolbox(toolboxXml);
-        });
+      /**
+       * Wether a custom toolbox is required. Read only editors and gs-toolbox-less context
+       * don't require it
+       */
+      hasCustomToolbox() {
+        return !this.readOnly && $('gs-toolbox').length;
       },
 
       compile(code) {
@@ -133,10 +143,6 @@
 
       hasInteractiveProgram() {
         return this._getBlockly().initialXml.indexOf("block type=\"InteractiveProgram\"") !== -1;
-      },
-
-      hasCustomToolbox() {
-        return $('gs-toolbox').length;
       },
 
       toggleInteractiveMode() {
@@ -197,12 +203,7 @@
       _configureBlocklyBehavior() {
         this._setTeacherActions();
         this._setGameActions();
-
-        // Blockly's workspace is destroyed when toolbox changes, so it doesn't make sense to initialize it here.
-        if (!this.hasCustomToolbox()) {
-          this._initializeBlocklyWorkspace();
-        }
-
+        this._initializeNonCustomToolboxBlocklyWorkspace();
         this._registerLayoutChangedEvent();
       },
 
@@ -212,6 +213,31 @@
         });
 
         $(window).resize(() => this._relocateTrash());
+      },
+
+
+      /**
+       * Initializes a workspace using a custom toolbox.
+       *
+       * Blockly's workspace is destroyed when toolbox changes, so initialization
+       * is performed here
+       */
+      _initializeCustomToolboxBlocklyWorkspace(toolboxXml) {
+        this._getBlockly().toolbox = { defaultToolbox: toolboxXml };
+        this._initializeBlocklyWorkspace();
+      },
+
+      /**
+       * Initializes a workspace using a non-custom toolbox.
+       *
+       * Blockly's workspace is destroyed when toolbox changes,
+       * so this method will initialize it only if a there is a custom toolbox
+       * that will be called later.
+       */
+      _initializeNonCustomToolboxBlocklyWorkspace() {
+        if (!this.hasCustomToolbox()) {
+          this._initializeBlocklyWorkspace();
+        }
       },
 
       _initializeBlocklyWorkspace() {
@@ -952,7 +978,7 @@
 
       _setEditorToolbox: function () {
         const editor = $("mu-gobstones-custom-editor")[0];
-        editor.loadToolboxFromUrl(this.toolboxUrl);
+        editor.configureCustomToolboxFromUrl(this.toolboxUrl);
       }
     });
   </script>
