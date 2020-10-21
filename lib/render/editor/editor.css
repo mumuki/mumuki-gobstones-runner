@@ -124,3 +124,7 @@
 .mu-kids-exercise.mu-kindergarten .mu-scenario.active table.gbs_board {
   display: block !important;
 }
+
+.mu-kids-exercise.mu-kindergarten .gbs_gh {
+  outline: 0 !important;
+}
