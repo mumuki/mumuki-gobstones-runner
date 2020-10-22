@@ -122,11 +122,13 @@
        * have no sense to have a toolboxUrl.
        */
       configureCustomToolboxFromUrl(toolboxUrl) {
-        if (!this.readOnly) {
-          $.get(toolboxUrl, (toolboxXml) => {
-            this._initializeCustomToolboxBlocklyWorkspace(toolboxXml);
-          });
-        }
+        if (this.readOnly) return;
+
+        console.debug('Configuring custom toolbox');
+
+        $.get(toolboxUrl, (toolboxXml) => {
+          this._initializeCustomToolboxBlocklyWorkspace(toolboxXml);
+        });
       },
 
       /**
@@ -241,6 +243,8 @@
       },
 
       _initializeBlocklyWorkspace() {
+        console.debug('Initializing Blockly Workspace');
+
         this._setInitialXml();
         this._initializeWorkspace();
         this._subscribeToWorkspace(() => this._updateSolution());
@@ -977,13 +981,12 @@
       },
 
       _setEditorToolbox: function () {
-        const editor = $("mu-gobstones-custom-editor")[0];
+        const $editor = $("mu-gobstones-custom-editor")[0];
 
-        // editor may have not yet been loaded
-        // so there is nothing to do yet
-        if (!editor) return;
+        // there is no editor to configure
+        if (!$editor) return;
 
-        editor.configureCustomToolboxFromUrl(this.toolboxUrl);
+        $editor.configureCustomToolboxFromUrl(this.toolboxUrl);
       }
     });
   </script>
