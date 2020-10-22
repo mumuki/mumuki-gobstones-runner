@@ -129,10 +129,11 @@ Where:
 
     Existing errors:
 
-     * no_stones: This error occurs when a ball is tried to be removed but there were no balls in that cell.
-     * out_of_board: This error occurs when a move is made that falls out of the board.
-     * wrong_argument_type: This error occurs when a function is called with the incorrect type of argument. For example: `Mover(Rojo)`
-     * unassigned_variable: This error occurs when a variable is used without previous declaration.
+     * `no_stones`: This error occurs when a ball is tried to be removed but there were no balls in that cell.
+     * `out_of_board`: This error occurs when a move is made that falls out of the board.
+     * `boom_called`: This error occurs when the `BOOM` statement is called.
+     * `wrong_argument_type`: This error occurs when a function is called with the incorrect type of argument. For example: `Mover(Rojo)`
+     * `unassigned_variable`: This error occurs when a variable is used without previous declaration.
 
 # Kids tests considerations
 
