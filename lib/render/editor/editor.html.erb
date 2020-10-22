@@ -5,6 +5,24 @@
 <script src="./hammer.min.js"></script>
 
 <script>
+  Blockly.FieldImage.prototype.__setValue__ = Blockly.FieldImage.prototype.setValue;
+  Blockly.FieldImage.prototype.setValue = function(a) {
+    if (a && a.startsWith("undefined")) {
+      console.debug(`Ignoring unavailable image ${a}`);
+    } else {
+      this.__setValue__(a);
+    }
+  }
+
+  Blockly.FieldImage.prototype.__setTooltip__ = Blockly.FieldImage.prototype.setTooltip;
+  Blockly.FieldImage.prototype.setTooltip = function(a) {
+    try {
+      this.__setTooltip__(a);
+    } catch (_e) {
+      console.debug('Could not set tooltip');
+    }
+  }
+
   function postpone(action) {
     return setTimeout(action, 50);
   }
