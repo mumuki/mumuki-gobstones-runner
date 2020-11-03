@@ -116,7 +116,6 @@
   }
 }
 
-
 .mu-kids-exercise.mu-kindergarten .gbs_boom {
   display: none;
 }
@@ -127,4 +126,10 @@
 
 .mu-kids-exercise.mu-kindergarten .gbs_gh {
   outline: 0 !important;
+}
+
+.mu-kids-exercise.mu-kindergarten .mu-kids-state .mu-kids-state-image gs-board>table {
+    background-color: #6D6E70!important;
+    border: 1px solid #6D6E70 !important;
+    border-radius: 4px;
 }
