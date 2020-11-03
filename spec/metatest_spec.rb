@@ -2,6 +2,8 @@ require_relative './spec_helper'
 
 describe 'metatest' do
 
+  before { I18n.locale = :en }
+
   let(:result) { framework.test compilation, examples }
   let(:options) { { show_initial_board: false, check_head_position: true } }
   let(:framework) do
