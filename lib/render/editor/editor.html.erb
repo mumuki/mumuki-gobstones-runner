@@ -10,7 +10,10 @@
     if (a && a.startsWith("undefined")) {
       console.debug(`Ignoring unavailable image ${a}`);
     } else {
-      this.__setValue__(a);
+      const absoluteUrl = a
+        .replace("../media/", "../local-media/")
+        .replace("../local-media/", "<%= @assets_url %>/local-media/");
+      this.__setValue__(absoluteUrl);
     }
   }
 
