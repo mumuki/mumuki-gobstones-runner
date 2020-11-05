@@ -29,6 +29,12 @@ examples:
 
       it { expect(feedback).to eq("* #{I18n.t(:program_has_a_name, name: 'Foo')}") }
     end
+
+    context 'program has a lower name and no braces' do
+      let(:content) { 'program foo' }
+
+      it { expect(feedback).to eq("* #{I18n.t(:program_has_a_name, name: 'foo')}") }
+    end
   end
 end
 

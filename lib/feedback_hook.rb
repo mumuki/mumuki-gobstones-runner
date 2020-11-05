@@ -8,19 +8,29 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
   class GobstonesExplainer < Mumukit::Explainer
     def explain_program_has_a_name(submission, result)
-      if upper_identifier_instead_of_brace? result
-        (submission.match malformed_program_header_with_upper_name).try do |it|
+      if identifier_instead_of_brace? result
+        (submission.match malformed_program_header_with_name).try do |it|
           { name: it[1] }
         end
       end
     end
 
-    def malformed_program_header_with_upper_name
-      '.*program +([A-Z]\w*)'
+    private
+
+    def malformed_program_header_with_name
+      '.*program +([A-Za-z]\w*)'
     end
 
     def upper_identifier_instead_of_brace?(result)
-      result.match? /<pre>\[\d+:\d+\]: Se esperaba una llave izquierda \("{"\).\nSe encontró: un identificador con mayúsculas.<\/pre>/
+      identifier_instead_of_brace?(result, 'may')
+    end
+
+    def lower_identifier_instead_of_brace?(result)
+      identifier_instead_of_brace?(result, 'min')
+    end
+
+    def identifier_instead_of_brace?(result, capital='...')
+      result.match? /<pre>\[\d+:\d+\]: Se esperaba una llave izquierda \("{"\).\nSe encontró: un identificador con #{capital}úsculas.<\/pre>/
     end
   end
 end
