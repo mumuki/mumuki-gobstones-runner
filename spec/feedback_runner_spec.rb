@@ -22,6 +22,13 @@ examples:
 
     let(:server) { GobstonesTestHook.new }
     let(:result) { compile_and_run(req(content)) }
+    let(:request) { req(content) }
+
+    context 'program has an upper name and braces' do
+      let(:content) { 'program Foo(){}' }
+
+      it { expect(feedback).to eq("* #{I18n.t(:program_has_a_name, name: 'Foo')}") }
+    end
   end
 end
 

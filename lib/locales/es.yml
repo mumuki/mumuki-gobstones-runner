@@ -16,3 +16,4 @@ es:
   final_board: 'Tablero final'
   initial_board: 'Tablero inicial'
   no_program_found: 'No se encontró ninguna definición de programa'
+  program_has_a_name: 'Parece que llamaste `%{name}` a `program`, pero los `program` no llevan nombre'
