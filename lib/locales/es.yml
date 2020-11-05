@@ -17,3 +17,4 @@ es:
   initial_board: 'Tablero inicial'
   no_program_found: 'No se encontró ninguna definición de programa'
   program_has_a_name: 'Parece que llamaste `%{name}` a `program`, pero los `program` no llevan nombre'
+  program_has_no_opening_curly_brace: 'Parece que a `program` le falta `{`. Recordá que el contenido de `program` va entre llaves'

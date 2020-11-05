@@ -35,6 +35,16 @@ examples:
 
       it { expect(feedback).to eq("* #{I18n.t(:program_has_a_name, name: 'foo')}") }
     end
+
+    context 'program has no opening curly brace' do
+      let(:content) { %q{ program
+                            foo()
+                            foo()
+                        }
+      }
+
+      it { expect(feedback).to eq("* #{I18n.t(:program_has_no_opening_curly_brace)}") }
+    end
   end
 end
 

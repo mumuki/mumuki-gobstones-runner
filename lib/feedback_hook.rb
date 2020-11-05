@@ -15,6 +15,12 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_program_has_no_opening_curly_brace(submission, result)
+      if identifier_instead_of_brace? result
+        /#{malformed_program_header_with_no_curly_braces}/ =~ submission
+      end
+    end
+
     private
 
     def malformed_program_header_with_name
@@ -31,6 +37,10 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def identifier_instead_of_brace?(result, capital='...')
       result.match? /<pre>\[\d+:\d+\]: Se esperaba una llave izquierda \("{"\).\nSe encontró: un identificador con #{capital}úsculas.<\/pre>/
+    end
+
+    def malformed_program_header_with_no_curly_braces
+      '.*program *\n[\s\n]*[^{]\w+'
     end
   end
 end
