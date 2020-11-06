@@ -9,6 +9,11 @@
   Blockly.FieldImage.prototype.setValue = function(a) {
     if (a && a.startsWith("undefined")) {
       console.debug(`Ignoring unavailable image ${a}`);
+    } else if (a) {
+      const absoluteUrl = a
+        .replace("../media/", "../local-media/")
+        .replace("../local-media/", "<%= @assets_url %>/local-media/");
+      this.__setValue__(absoluteUrl);
     } else {
       this.__setValue__(a);
     }
@@ -282,12 +287,18 @@
       },
 
       _updateSolution() {
+        console.debug("Updating solution");
         const blockly = this._getBlockly();
-
+        let changed;
         if (this.teacherMode) {
-          this._setExtraCode(blockly.workspaceXml);
+          changed = this._setExtraCode(blockly.workspaceXml);
         } else {
-          this._setStudentSolution(blockly.workspaceXml);
+          changed = this._setStudentSolution(blockly.workspaceXml);
+        }
+
+        if (!changed) {
+          console.debug("No solution update required")
+          return;
         }
 
         // TODO: this hack enables Angular two-way binding for Bibliotheca. Should be replaced with Mumuki events system
@@ -380,22 +391,44 @@
           return;
         }
 
-        const blockly = this._getBlockly();
+        console.debug("Set teacher actions");
         const actions = new Parser().getActionsFromSource(teacherCode);
-        blockly.primitiveProcedures = this._withDefaultIcons(actions, 'procedureDeclarations');
-        blockly.primitiveFunctions = this._withDefaultIcons(actions, 'functionDeclarations');
+
+        this._setPrimitiveProcedures(this._withDefaultIcons(actions, 'procedureDeclarations'));
+        this._setPrimitiveFunctions(this._withDefaultIcons(actions, 'functionDeclarations'));
       },
 
       _setGameActions() {
+        if (!this._isGame()) {
+          return;
+        }
+
+        console.debug("Set game actions");
         const blockly = this._getBlockly();
-        if (this._isGame()) {
-          blockly.primitiveProcedures = blockly.primitiveProcedures || [];
-          blockly.primitiveProcedures = blockly.primitiveProcedures.concat([
-            this._gamePrimitive('ShiftUp'),
-            this._gamePrimitive('ShiftDown'),
-            this._gamePrimitive('ShiftLeft'),
-            this._gamePrimitive('ShiftRight')
-          ]);
+
+        this._setPrimitiveProcedures((blockly.primitiveProcedures || []).concat([
+          this._gamePrimitive('ShiftUp'),
+          this._gamePrimitive('ShiftDown'),
+          this._gamePrimitive('ShiftLeft'),
+          this._gamePrimitive('ShiftRight')
+        ]));
+      },
+
+      _setPrimitiveProcedures(procedures) {
+        this._setBlocklyActions("primitiveProcedures", procedures);
+      },
+
+      _setPrimitiveFunctions(functions) {
+        this._setBlocklyActions("primitiveFunctions", functions);
+      },
+
+      _setBlocklyActions(key, actions) {
+        try {
+          this._getBlockly()[key] = actions
+        } catch (e) {
+          if (this._getBlockly()[key] !== actions) {
+            throw e;
+          }
         }
       },
 
@@ -416,8 +449,12 @@
        * to user content in laboratory, and default content in bibliotheca
        */
       _setStudentSolution(code) {
-        console.debug(`Setting student ${code}`)
-        this._getStudentEditor().value = code;
+        if (this._getStudentEditor().value !== code) {
+          console.debug(`Setting student ${code}`)
+          this._getStudentEditor().value = code;
+          return true;
+        }
+        return false;
       },
 
       _getDefaultCode() {
@@ -429,8 +466,12 @@
       },
 
       _setExtraCode(code) {
-        console.debug(`Setting extra ${code}`)
-        this._getEditorExtra().value = code;
+        if (this._getEditorExtra().value !== code) {
+          console.debug(`Setting extra ${code}`)
+          this._getEditorExtra().value = code;
+          return true;
+        }
+        return false;
       },
 
       _getEditorExtra: function() {

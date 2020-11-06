@@ -54,6 +54,8 @@ class Mumukit::Server::App < Sinatra::Base
 
   get '/assets/editor/editor.html' do
     cross_origin
+    content_type 'text/html'
+
     @game_framework_extra = Gobstones::CompilationMode::GameFramework.extra_code
     @game_framework_program = Gobstones::CompilationMode::GameFramework.program_code
     @game_framework_default = Gobstones::CompilationMode::GameFramework.default_code
