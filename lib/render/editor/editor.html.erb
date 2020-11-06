@@ -392,7 +392,6 @@
         }
 
         console.debug("Set teacher actions");
-        const blockly = this._getBlockly();
         const actions = new Parser().getActionsFromSource(teacherCode);
 
         this._setPrimitiveProcedures(this._withDefaultIcons(actions, 'procedureDeclarations'));
@@ -426,7 +425,7 @@
       _setBlocklyActions(key, actions) {
         try {
           this._getBlockly()[key] = actions
-        } catch (_e) {
+        } catch (e) {
           if (this._getBlockly()[key] !== actions) {
             throw e;
           }
