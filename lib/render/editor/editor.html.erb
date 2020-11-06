@@ -394,21 +394,42 @@
         console.debug("Set teacher actions");
         const blockly = this._getBlockly();
         const actions = new Parser().getActionsFromSource(teacherCode);
-        blockly.primitiveProcedures = this._withDefaultIcons(actions, 'procedureDeclarations');
-        blockly.primitiveFunctions = this._withDefaultIcons(actions, 'functionDeclarations');
+
+        this._setPrimitiveProcedures(this._withDefaultIcons(actions, 'procedureDeclarations'));
+        this._setPrimitiveFunctions(this._withDefaultIcons(actions, 'functionDeclarations'));
       },
 
       _setGameActions() {
+        if (!this._isGame()) {
+          return;
+        }
+
         console.debug("Set game actions");
         const blockly = this._getBlockly();
-        if (this._isGame()) {
-          blockly.primitiveProcedures = blockly.primitiveProcedures || [];
-          blockly.primitiveProcedures = blockly.primitiveProcedures.concat([
-            this._gamePrimitive('ShiftUp'),
-            this._gamePrimitive('ShiftDown'),
-            this._gamePrimitive('ShiftLeft'),
-            this._gamePrimitive('ShiftRight')
-          ]);
+
+        this._setPrimitiveProcedures((blockly.primitiveProcedures || []).concat([
+          this._gamePrimitive('ShiftUp'),
+          this._gamePrimitive('ShiftDown'),
+          this._gamePrimitive('ShiftLeft'),
+          this._gamePrimitive('ShiftRight')
+        ]));
+      },
+
+      _setPrimitiveProcedures(procedures) {
+        this._setBlocklyActions("primitiveProcedures", procedures);
+      },
+
+      _setPrimitiveFunctions(functions) {
+        this._setBlocklyActions("primitiveFunctions", functions);
+      },
+
+      _setBlocklyActions(key, actions) {
+        try {
+          this._getBlockly()[key] = actions
+        } catch (_e) {
+          if (this._getBlockly()[key] !== actions) {
+            throw e;
+          }
         }
       },
 
