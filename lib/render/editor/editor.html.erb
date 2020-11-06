@@ -289,11 +289,16 @@
       _updateSolution() {
         console.debug("Updating solution");
         const blockly = this._getBlockly();
-
+        let changed;
         if (this.teacherMode) {
-          this._setExtraCode(blockly.workspaceXml);
+          changed = this._setExtraCode(blockly.workspaceXml);
         } else {
-          this._setStudentSolution(blockly.workspaceXml);
+          changed = this._setStudentSolution(blockly.workspaceXml);
+        }
+
+        if (!changed) {
+          console.debug("No solution update required")
+          return;
         }
 
         // TODO: this hack enables Angular two-way binding for Bibliotheca. Should be replaced with Mumuki events system
@@ -424,8 +429,12 @@
        * to user content in laboratory, and default content in bibliotheca
        */
       _setStudentSolution(code) {
-        console.debug(`Setting student ${code}`)
-        this._getStudentEditor().value = code;
+        if (this._getStudentEditor().value !== code) {
+          console.debug(`Setting student ${code}`)
+          this._getStudentEditor().value = code;
+          return true;
+        }
+        return false;
       },
 
       _getDefaultCode() {
@@ -437,8 +446,12 @@
       },
 
       _setExtraCode(code) {
-        console.debug(`Setting extra ${code}`)
-        this._getEditorExtra().value = code;
+        if (this._getEditorExtra().value !== code) {
+          console.debug(`Setting extra ${code}`)
+          this._getEditorExtra().value = code;
+          return true;
+        }
+        return false;
       },
 
       _getEditorExtra: function() {
