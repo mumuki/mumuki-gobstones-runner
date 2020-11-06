@@ -287,6 +287,7 @@
       },
 
       _updateSolution() {
+        console.debug("Updating solution");
         const blockly = this._getBlockly();
 
         if (this.teacherMode) {
@@ -385,6 +386,7 @@
           return;
         }
 
+        console.debug("Set teacher actions");
         const blockly = this._getBlockly();
         const actions = new Parser().getActionsFromSource(teacherCode);
         blockly.primitiveProcedures = this._withDefaultIcons(actions, 'procedureDeclarations');
@@ -392,6 +394,7 @@
       },
 
       _setGameActions() {
+        console.debug("Set game actions");
         const blockly = this._getBlockly();
         if (this._isGame()) {
           blockly.primitiveProcedures = blockly.primitiveProcedures || [];
