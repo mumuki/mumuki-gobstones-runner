@@ -45,6 +45,16 @@ examples:
 
       it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:program_has_no_opening_curly_brace)}</li>\n</ul>") }
     end
+
+    context 'procedure has no closing curly brace before program' do
+      let(:content) { %q{ procedure Foo() \{
+                            Bar()
+                            program{}
+                        }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:program_before_closing_procedure_when_program)}</li>\n</ul>") }
+    end
   end
 end
 

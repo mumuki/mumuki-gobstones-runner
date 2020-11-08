@@ -21,6 +21,12 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_program_before_closing_procedure_when_program(submission, result)
+      if program_instead_of_command?(result) && missing_brace_end?(submission)
+        /#{program}/ =~ submission
+      end
+    end
+
     private
 
     def malformed_program_header_with_name
@@ -41,6 +47,18 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def malformed_program_header_with_no_curly_braces
       '.*program *\n[\s\n]*[^{]\w+'
+    end
+
+    def program_instead_of_command?(result)
+      result.match? /<pre>\[\d+:\d+\]: Se esperaba un comando.\nSe encontró: la palabra clave "program".<\/pre>/
+    end
+
+    def missing_brace_end?(submission)
+      submission.count('{') > submission.count('}')
+    end
+
+    def program
+      'program\s*{'
     end
   end
 end
