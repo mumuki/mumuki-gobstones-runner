@@ -27,13 +27,13 @@ examples:
     context 'program has an upper name and braces' do
       let(:content) { 'program Foo(){}' }
 
-      it { expect(feedback).to eq("* #{I18n.t(:program_has_a_name, name: 'Foo')}") }
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:program_has_a_name, name: 'Foo')}</li>\n</ul>") }
     end
 
     context 'program has a lower name and no braces' do
       let(:content) { 'program foo' }
 
-      it { expect(feedback).to eq("* #{I18n.t(:program_has_a_name, name: 'foo')}") }
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:program_has_a_name, name: 'foo')}</li>\n</ul>") }
     end
 
     context 'program has no opening curly brace' do
@@ -43,7 +43,7 @@ examples:
                         }
       }
 
-      it { expect(feedback).to eq("* #{I18n.t(:program_has_no_opening_curly_brace)}") }
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:program_has_no_opening_curly_brace)}</li>\n</ul>") }
     end
   end
 end
