@@ -73,6 +73,12 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_lower_poner_typo(submission, result)
+      if open_paren_instead_of_assign?(result)
+        /#{lower_poner}/ =~ submission
+      end
+    end
+
     def explain_lower_sacar_typo(submission, result)
       if open_paren_instead_of_assign?(result)
         /#{lower_sacar}/ =~ submission
@@ -147,6 +153,10 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def lower_mover
       'mover[\s(]'
+    end
+
+    def lower_poner
+      'poner[\s(]'
     end
 
     def lower_sacar
