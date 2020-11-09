@@ -128,6 +128,16 @@ Se encontró: la palabra clave "program".</pre>'] }
 
       it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:lower_mover_typo)}</li>\n</ul>") }
     end
+
+    context 'lower sacar typo' do
+      let(:content) { %q{ procedure Foo() {
+                          sacar (Verde)
+                        }
+                      }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:lower_sacar_typo)}</li>\n</ul>") }
+    end
   end
 end
 

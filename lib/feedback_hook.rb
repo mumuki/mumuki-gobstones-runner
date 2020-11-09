@@ -73,6 +73,12 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_lower_sacar_typo(submission, result)
+      if open_paren_instead_of_assign?(result)
+        /#{lower_sacar}/ =~ submission
+      end
+    end
+
     private
 
     def malformed_program_header_with_name
@@ -141,6 +147,10 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def lower_mover
       'mover[\s(]'
+    end
+
+    def lower_sacar
+      'sacar[\s(]'
     end
   end
 end
