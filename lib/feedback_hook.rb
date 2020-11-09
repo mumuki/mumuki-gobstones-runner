@@ -41,6 +41,12 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_upper_procedure_typo(submission, result)
+      if upper_identifier_instead_of_definition? result
+        /#{uppercase_procedure}/ =~ submission
+      end
+    end
+
     private
 
     def malformed_program_header_with_name
@@ -81,6 +87,14 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def error_line(result)
       result.match /<pre>\[(\d+):\d+\]:/
+    end
+
+    def upper_identifier_instead_of_definition?(result)
+      result.match? /<pre>\[\d+:\d+\]: Se esperaba una definición \(de programa, función, procedimiento, o tipo\).\nSe encontró: un identificador con mayúsculas.<\/pre>/
+    end
+
+    def uppercase_procedure
+      'Procedure\s'
     end
   end
 end

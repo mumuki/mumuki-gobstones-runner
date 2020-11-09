@@ -77,6 +77,16 @@ Se encontró: la palabra clave "program".</pre>'] }
 
       it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:surplus_closing_brace, line: 4)}</li>\n</ul>") }
     end
+
+    context 'upper procedure typo' do
+      let(:content) { %q{ Procedure Foo() {
+                            bar()
+                          }
+                        }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:upper_procedure_typo)}</li>\n</ul>") }
+    end
   end
 end
 
