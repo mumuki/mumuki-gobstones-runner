@@ -21,5 +21,6 @@ es:
   program_has_a_name: 'Parece que llamaste <code>%{name}</code> a <code>program</code>, pero los <code>program</code> no llevan nombre'
   program_has_no_opening_curly_brace: 'Parece que a <code>program</code> le falta <code>{</code>. Recordá que el contenido de <code>program</code> va entre llaves'
   surplus_closing_brace: 'La cantidad de <code>{</code> y <code>}</code> no coincide. ¿Puede que sobre una <code>}</code> en la línea <strong>%{line}</strong>?'
+  upper_function_typo: 'Parece que escribiste <code>Function</code> en lugar de <code>function</code>. ¡Recordá que debe comenzar en minúsculas!'
   upper_procedure_typo: 'Parece que escribiste <code>Procedure</code> en lugar de <code>procedure</code>. ¡Recordá que debe comenzar en minúsculas!'
   upper_program_typo: 'Parece que escribiste <code>Program</code> en lugar de <code>program</code>. ¡Recordá que debe comenzar en minúsculas!'

@@ -41,6 +41,12 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_upper_function_typo(submission, result)
+      if upper_identifier_instead_of_definition? result
+        /#{uppercase_function}/ =~ submission
+      end
+    end
+
     def explain_upper_procedure_typo(submission, result)
       if upper_identifier_instead_of_definition? result
         /#{uppercase_procedure}/ =~ submission
@@ -97,6 +103,10 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def upper_identifier_instead_of_definition?(result)
       result.match? /<pre>\[\d+:\d+\]: Se esperaba una definición \(de programa, función, procedimiento, o tipo\).\nSe encontró: un identificador con mayúsculas.<\/pre>/
+    end
+
+    def uppercase_function
+      'Function\s'
     end
 
     def uppercase_procedure
