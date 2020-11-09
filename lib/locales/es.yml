@@ -12,6 +12,7 @@ es:
   code_wrong_argument_type: 'problema de tipos en los argumentos'
   code_unassigned_variable: 'variable no asignada'
   code_wrong_arguments_quantity: 'cantidad errónea de argumentos'
+  color_typo: 'Parece que escribiste %{color}. ¿Quizá quisiste referirte al color %{rectified_color}?'
   expected_board: 'Tablero final esperado'
   final_board: 'Tablero final'
   initial_board: 'Tablero inicial'

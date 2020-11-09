@@ -182,6 +182,26 @@ Se encontró: la palabra clave "program".</pre>'] }
 
       it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:upper_builtin_function_typo, upper: 'PuedeMover', lower: 'puedeMover')}</li>\n</ul>") }
     end
+
+    context 'Roja typo' do
+      let(:content) { %q{ procedure Foo() {
+                            Poner(Roja)
+                          }
+                        }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:color_typo, color: 'Roja', rectified_color: 'Rojo')}</li>\n</ul>") }
+    end
+
+    context 'Negra typo' do
+      let(:content) { %q{ procedure Foo() {
+                            Sacar  ( Negra)
+                          }
+                        }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:color_typo, color: 'Negra', rectified_color: 'Negro')}</li>\n</ul>") }
+    end
   end
 end
 

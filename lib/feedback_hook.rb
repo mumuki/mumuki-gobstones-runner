@@ -89,6 +89,14 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_color_typo(_, result)
+      if roja_not_defined?(result) || negra_not_defined?(result)
+        (result.match color_not_defined).try do |it|
+          { color: it[1], rectified_color: rectified_color(it[1]) }
+        end
+      end
+    end
+
     private
 
     def malformed_program_header_with_name
@@ -177,6 +185,26 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def upper_builtin_function
       '(PuedeMover|NroBolitas|HayBolitas)'
+    end
+
+    def roja_not_defined?(result)
+      color_not_defined? result, 'Roja'
+    end
+
+    def negra_not_defined?(result)
+      color_not_defined? result, 'Negra'
+    end
+
+    def color_not_defined?(result, color)
+      result.match?(color_not_defined(color))
+    end
+
+    def color_not_defined(color='\w+')
+      /<pre>\[\d+:\d+\]: El constructor "(#{color})" no está definido.<\/pre>/
+    end
+
+    def rectified_color(color)
+      color.chop + "o"
     end
   end
 end
