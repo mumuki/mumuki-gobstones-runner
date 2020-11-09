@@ -59,6 +59,14 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_missing_closing_brace_after_procedure(submission, result)
+      if procedure_instead_of_command?(result) && missing_brace_end?(submission)
+        (error_line(result)).try do |it|
+          { line: it[1] }
+        end
+      end
+    end
+
     private
 
     def malformed_program_header_with_name
@@ -115,6 +123,10 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def uppercase_program
       'Program[\s{]*'
+    end
+
+    def procedure_instead_of_command?(result)
+      result.match? /<pre>\[\d+:\d+\]: Se esperaba un comando.\nSe encontró: la palabra clave "procedure".<\/pre>/
     end
   end
 end
