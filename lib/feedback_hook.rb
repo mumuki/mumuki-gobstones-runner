@@ -67,21 +67,11 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
-    def explain_lower_mover_typo(submission, result)
+    def explain_lower_builtin_procedure_typo(submission, result)
       if open_paren_instead_of_assign?(result)
-        /#{lower_mover}/ =~ submission
-      end
-    end
-
-    def explain_lower_poner_typo(submission, result)
-      if open_paren_instead_of_assign?(result)
-        /#{lower_poner}/ =~ submission
-      end
-    end
-
-    def explain_lower_sacar_typo(submission, result)
-      if open_paren_instead_of_assign?(result)
-        /#{lower_sacar}/ =~ submission
+        (submission.match lower_builtin_procedure).try do |it|
+          { lower: it[1][0...5], upper: it[1][0...5].capitalize }
+        end
       end
     end
 
@@ -151,16 +141,8 @@ class GobstonesFeedbackHook < Mumukit::Hook
       result.match? /<pre>\[\d+:\d+\]: Se esperaba un operador de asignación \(":="\).\nSe encontró: un paréntesis izquierdo \("\("\).<\/pre>/
     end
 
-    def lower_mover
-      'mover[\s(]'
-    end
-
-    def lower_poner
-      'poner[\s(]'
-    end
-
-    def lower_sacar
-      'sacar[\s(]'
+    def lower_builtin_procedure
+      '(mover[\s(]|poner[\s(]|sacar[\s(])'
     end
   end
 end

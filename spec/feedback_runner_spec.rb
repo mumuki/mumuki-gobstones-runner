@@ -126,7 +126,7 @@ Se encontró: la palabra clave "program".</pre>'] }
                       }
       }
 
-      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:lower_mover_typo)}</li>\n</ul>") }
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:lower_builtin_procedure_typo, lower: 'mover', upper: 'Mover')}</li>\n</ul>") }
     end
 
     context 'lower poner typo' do
@@ -136,7 +136,7 @@ Se encontró: la palabra clave "program".</pre>'] }
                       }
       }
 
-      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:lower_poner_typo)}</li>\n</ul>") }
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:lower_builtin_procedure_typo, lower: 'poner', upper: 'Poner')}</li>\n</ul>") }
     end
 
     context 'lower sacar typo' do
@@ -146,7 +146,7 @@ Se encontró: la palabra clave "program".</pre>'] }
                       }
       }
 
-      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:lower_sacar_typo)}</li>\n</ul>") }
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:lower_builtin_procedure_typo, lower: 'sacar', upper: 'Sacar')}</li>\n</ul>") }
     end
   end
 end
