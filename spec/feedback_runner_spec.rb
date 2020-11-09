@@ -53,18 +53,19 @@ examples:
                         }
       }
 
-      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:program_before_closing_procedure_when_program)}</li>\n</ul>") }
+
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:program_before_closing_structure_when_program, keyword: 'procedure')}</li>\n</ul>") }
     end
 
-    context 'procedure has no closing curly brace when no program' do
-      let(:content) { %q{ procedure Foo() \{
+    context 'function has no closing curly brace when no program' do
+      let(:content) { %q{ function foo() \{
                             Bar()
                         }
       }
       let(:result) { ['<pre>[4:1]: Se esperaba un comando.
 Se encontró: la palabra clave "program".</pre>'] }
 
-      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:program_before_closing_procedure_when_no_program)}</li>\n</ul>") }
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:program_before_closing_structure_when_no_program, keyword: 'function')}</li>\n</ul>") }
     end
 
     context 'surplus closing brace' do

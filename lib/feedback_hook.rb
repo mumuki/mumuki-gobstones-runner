@@ -21,15 +21,21 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
-    def explain_program_before_closing_procedure_when_program(submission, result)
-      if program_instead_of_command?(result) && missing_brace_end?(submission)
-        /#{program}/ =~ submission
+    def explain_program_before_closing_structure_when_program(submission, result)
+      if program_instead_of_command?(result) && missing_brace_end?(submission) && function_or_procedure?(submission)
+        (submission.match program).try do |it|
+          { keyword: last_function_or_procedure(submission) }
+        end
       end
     end
 
-    def explain_program_before_closing_procedure_when_no_program(submission, result)
-      if program_instead_of_command?(result) && missing_brace_end?(submission)
-        /#{program}/ !~ submission ? /#{program}/ !~ submission : nil
+    def explain_program_before_closing_structure_when_no_program(submission, result)
+      if program_instead_of_command?(result) && missing_brace_end?(submission) && function_or_procedure?(submission)
+        if /#{program}/ =~ submission
+          nil
+        else
+          { keyword: last_function_or_procedure(submission) }
+        end
       end
     end
 
@@ -103,6 +109,18 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def missing_brace_end?(submission)
       submission.count('{') > submission.count('}')
+    end
+
+    def function_or_procedure?(submission)
+      submission.match? function_or_procedure
+    end
+
+    def function_or_procedure
+      '(function)\s*\w+\s*\([\w\d\s,]*\)\s*{|(procedure)\s*\w+\s*\([\w\d\s,]*\)\s*{'
+    end
+
+    def last_function_or_procedure(submission)
+      submission.scan(/#{function_or_procedure}/).last.compact.first
     end
 
     def program
