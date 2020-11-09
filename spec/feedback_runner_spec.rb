@@ -87,6 +87,16 @@ Se encontró: la palabra clave "program".</pre>'] }
 
       it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:upper_procedure_typo)}</li>\n</ul>") }
     end
+
+    context 'upper program typo' do
+      let(:content) { %q{ Program {
+                            bar()
+                          }
+                        }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:upper_program_typo)}</li>\n</ul>") }
+    end
   end
 end
 

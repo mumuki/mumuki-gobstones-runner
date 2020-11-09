@@ -47,6 +47,12 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_upper_program_typo(submission, result)
+      if upper_identifier_instead_of_definition? result
+        /#{uppercase_program}/ =~ submission
+      end
+    end
+
     private
 
     def malformed_program_header_with_name
@@ -95,6 +101,10 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def uppercase_procedure
       'Procedure\s'
+    end
+
+    def uppercase_program
+      'Program[\s{]*'
     end
   end
 end
