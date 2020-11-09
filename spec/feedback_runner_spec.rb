@@ -149,6 +149,39 @@ Se encontró: la palabra clave "program".</pre>'] }
 
       it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:lower_builtin_procedure_typo, lower: 'sacar', upper: 'Sacar')}</li>\n</ul>") }
     end
+
+    context 'upper HayBolitas typo' do
+      let(:content) { %q{ function foo() {
+                            if (HayBolitas(Verde)) {
+                            }
+                          }
+                        }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:upper_builtin_function_typo, upper: 'HayBolitas', lower: 'hayBolitas')}</li>\n</ul>") }
+    end
+
+    context 'upper NroBolitas typo' do
+      let(:content) { %q{ function foo() {
+                            if (NroBolitas(Verde) > 2) {
+                            }
+                          }
+                        }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:upper_builtin_function_typo, upper: 'NroBolitas', lower: 'nroBolitas')}</li>\n</ul>") }
+    end
+
+    context 'upper PuedeMover typo' do
+      let(:content) { %q{ function foo() {
+                            if (PuedeMover(Este)) {
+                            }
+                          }
+                        }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:upper_builtin_function_typo, upper: 'PuedeMover', lower: 'puedeMover')}</li>\n</ul>") }
+    end
   end
 end
 

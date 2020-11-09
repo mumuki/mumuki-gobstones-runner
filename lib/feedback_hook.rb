@@ -81,6 +81,14 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_upper_builtin_function_typo(submission, result)
+      if procedure_invocation_instead_of_expression?(result)
+        (submission.match upper_builtin_function).try do |it|
+          { upper: it[1], lower: it[1].camelize(:lower) }
+        end
+      end
+    end
+
     private
 
     def malformed_program_header_with_name
@@ -161,6 +169,14 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def lower_builtin_procedure
       '(mover[\s(]|poner[\s(]|sacar[\s(])'
+    end
+
+    def procedure_invocation_instead_of_expression?(result)
+      result.match? /<pre>\[\d+:\d+\]: Se esperaba una expresión.\nSe encontró: una invocación a un procedimiento.<\/pre>/
+    end
+
+    def upper_builtin_function
+      '(PuedeMover|NroBolitas|HayBolitas)'
     end
   end
 end
