@@ -33,6 +33,14 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_surplus_closing_brace(_, result)
+      if unbalanced_closing_braces? result
+        (error_line(result)).try do |it|
+          { line: it[1] }
+        end
+      end
+    end
+
     private
 
     def malformed_program_header_with_name
@@ -65,6 +73,14 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def program
       'program\s*{'
+    end
+
+    def unbalanced_closing_braces?(result)
+      result.match? /<pre>\[\d+:\d+\]: Se encontró un "}" pero no había una llave abierta "{".<\/pre>/
+    end
+
+    def error_line(result)
+      result.match /<pre>\[(\d+):\d+\]:/
     end
   end
 end

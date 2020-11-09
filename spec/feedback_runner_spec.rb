@@ -66,6 +66,17 @@ Se encontró: la palabra clave "program".</pre>'] }
 
       it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:program_before_closing_procedure_when_no_program)}</li>\n</ul>") }
     end
+
+    context 'surplus closing brace' do
+      let(:content) { %q{ procedure Foo() {
+                            repeat (5) {}
+                            Bar() }
+                          \}
+                        }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:surplus_closing_brace, line: 4)}</li>\n</ul>") }
+    end
   end
 end
 
