@@ -67,6 +67,12 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_lower_mover_typo(submission, result)
+      if open_paren_instead_of_assign?(result)
+        /#{lower_mover}/ =~ submission
+      end
+    end
+
     private
 
     def malformed_program_header_with_name
@@ -127,6 +133,14 @@ class GobstonesFeedbackHook < Mumukit::Hook
 
     def procedure_instead_of_command?(result)
       result.match? /<pre>\[\d+:\d+\]: Se esperaba un comando.\nSe encontró: la palabra clave "procedure".<\/pre>/
+    end
+
+    def open_paren_instead_of_assign?(result)
+      result.match? /<pre>\[\d+:\d+\]: Se esperaba un operador de asignación \(":="\).\nSe encontró: un paréntesis izquierdo \("\("\).<\/pre>/
+    end
+
+    def lower_mover
+      'mover[\s(]'
     end
   end
 end

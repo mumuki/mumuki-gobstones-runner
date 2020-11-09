@@ -118,6 +118,16 @@ Se encontró: la palabra clave "program".</pre>'] }
 
       it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:missing_closing_brace_after_procedure, line: 3)}</li>\n</ul>") }
     end
+
+    context 'lower mover typo' do
+      let(:content) { %q{ procedure Foo() {
+                          mover(Oeste)
+                        }
+                      }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:lower_mover_typo)}</li>\n</ul>") }
+    end
   end
 end
 

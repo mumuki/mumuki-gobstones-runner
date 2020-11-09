@@ -16,6 +16,7 @@ es:
   final_board: 'Tablero final'
   initial_board: 'Tablero inicial'
   missing_closing_brace_after_procedure: 'Parece que te falta una <code>}</code> que cierre un <code>procedure</code>. ¿Puede que sea cerca de la línea <strong>%{line}</strong>?'
+  lower_mover_typo: 'Parece que escribiste <code>mover</code> en minúsculas. ¡Recordá que los procedimientos como <code>Mover()</code> deben comenzar en mayúsculas!'
   no_program_found: 'No se encontró ninguna definición de programa'
   program_before_closing_procedure_when_no_program: 'Parece que te falta una <code>}</code> que cierre el último <code>procedure</code>.'
   program_before_closing_procedure_when_program: 'Parece que te falta una <code>}</code> que cierre el <code>procedure</code> antes de <code>program</code>.'
