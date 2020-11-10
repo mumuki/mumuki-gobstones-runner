@@ -116,7 +116,7 @@ class GobstonesFeedbackHook < Mumukit::Hook
     end
 
     def malformed_program_header_with_no_curly_braces
-      '.*program *\n[\s\n]*[^{]\w+'
+      '.*program *[\r\n]\s*[^{]\w+'
     end
 
     def program_instead_of_command?(result)
