@@ -12,7 +12,19 @@ en:
   code_wrong_argument_type: 'wrong arguments type'
   code_unassigned_variable: 'unassigned variable'
   code_wrong_arguments_quantity: 'wrong arguments quantity'
+  color_typo: 'It seems you wrote %{color}. Maybe you meant %{rectified_color}?'
   expected_board: 'Expected final board'
   final_board: 'Final board'
   initial_board: 'Initial board'
+  lower_builtin_procedure_typo: 'Looks lie you wrote <code>%{lower}</code> in lowercase. Remember procedures such as <code>%{upper}()</code> should start in uppercase!'
+  missing_closing_brace_after_procedure: "Looks like you're missing a <code>}</code> to close a <code>procedure</code>. Maybe it's on line <strong>%{line}</strong> or near it?"
   no_program_found: 'No program definition was found'
+  program_before_closing_structure_when_no_program: "Looks like you're missing a <code>}</code> to close the last <code>%{keyword}</code>."
+  program_before_closing_structure_when_program: "Looks like you're missing a <code>}</code> to close the last <code>%{keyword}</code> before <code>program</code>."
+  program_has_a_name: "Looks like you named your <code>program</code> <code>%{name}</code>, but <code>program</code>s shouldn't be named."
+  program_has_no_opening_curly_brace: "Looks like a <code>{</code> is missing on <code>program</code>. Remember the content in <code>program</code> should be between curly braces."
+  surplus_closing_brace: "The amount of <code>{</code> and <code>}</code> doesn't match. Maybe there's an extra <code>}</code> on line <strong>%{line}</strong> or near it?"
+  upper_builtin_function_typo: 'Looks like you wrote <code>%{upper}</code> starting in uppercase. Remember functions such as <code>%{lower}</code> should start in lowercase!'
+  upper_function_typo: 'Looks like you wrote <code>Function</code> instead of <code>function</code>. Remember it should start in lowercase!'
+  upper_procedure_typo: 'Looks like you wrote <code>Procedure</code> instead of <code>procedure</code>. Remember it should start in lowercase!'
+  upper_program_typo: 'Looks like you wrote <code>Program</code> instead of <code>program</code>. Remember it should start in lowercase!'
