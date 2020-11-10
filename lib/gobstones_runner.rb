@@ -21,9 +21,10 @@ require_relative './render/html_renderer'
 
 require_relative './multiple_executions_runner'
 
+require_relative './checker'
+require_relative './expectations_hook'
+require_relative './feedback_hook'
 require_relative './metadata_hook'
 require_relative './precompile_hook'
 require_relative './test_hook'
 require_relative './version_hook'
-require_relative './expectations_hook'
-require_relative './checker'

@@ -158,6 +158,31 @@ examples:
                                                  result: ''
   end
 
+  it 'runs feedback hooks' do
+    response = bridge.run_tests!(
+        locale: :es,
+        content: %q{
+program
+  foo()
+  foo()
+},
+        extra: '',
+        test: %q{
+examples:
+- initial_board: |
+    GBB/1.0
+    size 1 1
+    head 0 0
+})
+
+    expect(response.except(:test_results, :expectation_results))
+        .to eq response_type: :unstructured,
+               status: :errored,
+               result: %q{<pre>[2:3]: Se esperaba una llave izquierda ("\{").
+Se encontró: un identificador con minúsculas.</pre>},
+               feedback: "<ul>\n<li>Parece que a <code>program</code> le falta <code>{</code>. Recordá que el contenido de <code>program</code> va entre llaves.</li>\n</ul>"
+  end
+
   it 'executes each test with the proper argument' do
     response = bridge.run_tests!(
       content: '
