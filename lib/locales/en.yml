@@ -12,7 +12,7 @@ en:
   code_wrong_argument_type: 'wrong arguments type'
   code_unassigned_variable: 'unassigned variable'
   code_wrong_arguments_quantity: 'wrong arguments quantity'
-  color_typo: 'It seems you wrote %{color}. Maybe you meant %{rectified_color}?'
+  color_typo: 'It seems you wrote <code>%{color}</code>. Did you mean <code>%{rectified_color}</code>?'
   expected_board: 'Expected final board'
   final_board: 'Final board'
   initial_board: 'Initial board'
