@@ -216,10 +216,7 @@
         this._setBlocklyDisplayMode();
         this._setBlocklySounds();
         this._setBlocklyColors();
-
-        if (!this.readOnly) {
-          this._relocateTrashOnResize();
-        }
+        this._relocateTrashOnResize();
 
         // Removing "/" from the block id character set to avoid syntax errors
         Blockly.utils.genUid.soup_ = Blockly.utils.genUid.soup_.replace("/", "");
@@ -233,6 +230,11 @@
       },
 
       _relocateTrashOnResize() {
+        if (this.readOnly) {
+          console.debug("No trash relocate on resize required");
+          return;
+        }
+
         $('.mu-kids-context, .mu-kids-results').on('hidden.bs.modal shown.bs.modal', () => {
           this._relocateTrash();
         });
@@ -280,6 +282,11 @@
       },
 
       _relocateTrash() {
+        if (this.readOnly) {
+          console.debug("No trash relocate required");
+          return;
+        }
+
         const width = $('#blocklyDiv').width() - 68;
         const height = $('#blocklyDiv').height() - 210;
         $('.blocklyTrash').css("transform", `translate(${width}px, ${height}px)`);
