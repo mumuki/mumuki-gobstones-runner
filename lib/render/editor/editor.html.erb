@@ -248,6 +248,8 @@
        *
        * Blockly's workspace is destroyed when toolbox changes, so initialization
        * is performed here
+
+       * @see _initializeBlocklyWorkspace
        */
       _initializeCustomToolboxBlocklyWorkspace(toolboxXml) {
         this._getBlockly().toolbox = { defaultToolbox: toolboxXml };
@@ -260,6 +262,8 @@
        * Blockly's workspace is destroyed when toolbox changes,
        * so this method will initialize it only if a there is a custom toolbox
        * that will be called later.
+       *
+       * @see _initializeBlocklyWorkspace
        */
       _initializeNonCustomToolboxBlocklyWorkspace() {
         if (!this.hasCustomToolbox()) {
@@ -267,11 +271,20 @@
         }
       },
 
+      /**
+       * Performs actual workspace (re)creation,
+       * which sets initial xml, user solution, trash position
+       * and appropriate callbacks.
+       *
+       * This method is the actual culmination of the blockly initialization
+       * process
+       */
       _initializeBlocklyWorkspace() {
         console.debug('Initializing Blockly Workspace');
 
         this._setInitialXml();
         this._initializeWorkspace();
+        this._relocateTrash();
         this._subscribeToWorkspace(() => this._updateSolution());
 
         if (this.hasInteractiveProgram()) {
