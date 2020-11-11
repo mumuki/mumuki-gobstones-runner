@@ -287,10 +287,11 @@
           return;
         }
 
+        const $blocklyTrash = $('.blocklyTrash');
         const width = $('#blocklyDiv').width() - 68;
         const height = $('#blocklyDiv').height() - 210;
-        $('.blocklyTrash').css("transform", `translate(${width}px, ${height}px)`);
-        $('.blocklyTrash').css("display", "unset");
+        $blocklyTrash.css("transform", `translate(${width}px, ${height}px)`);
+        $blocklyTrash.css("display", "unset");
       },
 
       _updateSolution() {
