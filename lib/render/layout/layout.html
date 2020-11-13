@@ -16,6 +16,7 @@
       _setAttire: function () {
         $.getJSON(this.attireUrl, function (attire) {
           GobstonesBoard && GobstonesBoard.setDefaultAttire(attire);
+          attire.rules.forEach((rule) => $.get(rule.image));
         });
       }
     });
