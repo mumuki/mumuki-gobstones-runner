@@ -109,7 +109,7 @@ Se encontró: la palabra clave "program".</pre>'] }
       it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:upper_function_typo)}</li>\n</ul>") }
     end
 
-    context 'missing closing brace after procedure' do
+    context 'missing closing brace before procedure' do
       let(:content) { %q{ procedure Foo(){
                             Bar()
                           procedure Lol()\{
@@ -117,7 +117,7 @@ Se encontró: la palabra clave "program".</pre>'] }
                         }
       }
 
-      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:missing_closing_brace_after_procedure, line: 3)}</li>\n</ul>") }
+      it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:missing_closing_brace_before_procedure, line: 3)}</li>\n</ul>") }
     end
 
     context 'lower mover typo' do

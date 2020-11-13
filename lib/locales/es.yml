@@ -17,7 +17,7 @@ es:
   final_board: 'Tablero final'
   initial_board: 'Tablero inicial'
   lower_builtin_procedure_typo: 'Parece que escribiste <code>%{lower}</code> en minúsculas. ¡Recordá que los procedimientos como <code>%{upper}()</code> deben comenzar en mayúsculas!'
-  missing_closing_brace_after_procedure: 'Parece que te falta una <code>}</code> que cierre un <code>procedure</code>. ¿Puede que sea en la línea <strong>%{line}</strong> o cerca de ella?'
+  missing_closing_brace_before_procedure: 'Parece que te falta una <code>}</code> antes de un <code>procedure</code>. ¿Puede que sea en la línea <strong>%{line}</strong> o cerca de ella?'
   no_program_found: 'No se encontró ninguna definición de programa'
   program_before_closing_structure_when_no_program: 'Parece que te falta una <code>}</code> que cierre el último <code>%{keyword}</code>.'
   program_before_closing_structure_when_program: 'Parece que te falta una <code>}</code> que cierre el <code>%{keyword}</code> antes de <code>program</code>.'

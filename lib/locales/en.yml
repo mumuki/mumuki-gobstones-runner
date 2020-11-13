@@ -17,7 +17,7 @@ en:
   final_board: 'Final board'
   initial_board: 'Initial board'
   lower_builtin_procedure_typo: 'Looks lie you wrote <code>%{lower}</code> in lowercase. Remember procedures such as <code>%{upper}()</code> should start in uppercase!'
-  missing_closing_brace_after_procedure: "Looks like you're missing a <code>}</code> to close a <code>procedure</code>. Maybe it's on line <strong>%{line}</strong> or near it?"
+  missing_closing_brace_before_procedure: "Looks like you're missing a <code>}</code> before a <code>procedure</code>. Maybe it's on line <strong>%{line}</strong> or near it?"
   no_program_found: 'No program definition was found'
   program_before_closing_structure_when_no_program: "Looks like you're missing a <code>}</code> to close the last <code>%{keyword}</code>."
   program_before_closing_structure_when_program: "Looks like you're missing a <code>}</code> to close the last <code>%{keyword}</code> before <code>program</code>."
