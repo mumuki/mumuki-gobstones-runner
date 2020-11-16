@@ -216,10 +216,7 @@
         this._setBlocklyDisplayMode();
         this._setBlocklySounds();
         this._setBlocklyColors();
-
-        if (!this.readOnly) {
-          this._relocateTrashOnResize();
-        }
+        this._relocateTrashOnResize();
 
         // Removing "/" from the block id character set to avoid syntax errors
         Blockly.utils.genUid.soup_ = Blockly.utils.genUid.soup_.replace("/", "");
@@ -233,6 +230,11 @@
       },
 
       _relocateTrashOnResize() {
+        if (this.readOnly) {
+          console.debug("No trash relocate on resize required");
+          return;
+        }
+
         $('.mu-kids-context, .mu-kids-results').on('hidden.bs.modal shown.bs.modal', () => {
           this._relocateTrash();
         });
@@ -246,6 +248,8 @@
        *
        * Blockly's workspace is destroyed when toolbox changes, so initialization
        * is performed here
+
+       * @see _initializeBlocklyWorkspace
        */
       _initializeCustomToolboxBlocklyWorkspace(toolboxXml) {
         this._getBlockly().toolbox = { defaultToolbox: toolboxXml };
@@ -258,6 +262,8 @@
        * Blockly's workspace is destroyed when toolbox changes,
        * so this method will initialize it only if a there is a custom toolbox
        * that will be called later.
+       *
+       * @see _initializeBlocklyWorkspace
        */
       _initializeNonCustomToolboxBlocklyWorkspace() {
         if (!this.hasCustomToolbox()) {
@@ -265,11 +271,20 @@
         }
       },
 
+      /**
+       * Performs actual workspace (re)creation,
+       * which sets initial xml, user solution, trash position
+       * and appropriate callbacks.
+       *
+       * This method is the actual culmination of the blockly initialization
+       * process
+       */
       _initializeBlocklyWorkspace() {
         console.debug('Initializing Blockly Workspace');
 
         this._setInitialXml();
         this._initializeWorkspace();
+        this._relocateTrash();
         this._subscribeToWorkspace(() => this._updateSolution());
 
         if (this.hasInteractiveProgram()) {
@@ -280,10 +295,16 @@
       },
 
       _relocateTrash() {
+        if (this.readOnly) {
+          console.debug("No trash relocate required");
+          return;
+        }
+
+        const $blocklyTrash = $('.blocklyTrash');
         const width = $('#blocklyDiv').width() - 68;
         const height = $('#blocklyDiv').height() - 210;
-        $('.blocklyTrash').css("transform", `translate(${width}px, ${height}px)`);
-        $('.blocklyTrash').css("display", "unset");
+        $blocklyTrash.css("transform", `translate(${width}px, ${height}px)`);
+        $blocklyTrash.css("display", "unset");
       },
 
       _updateSolution() {
