@@ -239,7 +239,7 @@
           this._relocateTrash();
         });
 
-        $(window).resize(() => this._relocateTrash());
+        $(window).resize(() => setTimeout(this._relocateTrash));
       },
 
 
@@ -301,8 +301,9 @@
         }
 
         const $blocklyTrash = $('.blocklyTrash');
-        const width = $('#blocklyDiv').width() - 68;
-        const height = $('#blocklyDiv').height() - 210;
+        const $blocklyDiv = $('#blocklyDiv');
+        const width = $blocklyDiv.width() - 68;
+        const height = $blocklyDiv.height() - 210;
         $blocklyTrash.css("transform", `translate(${width}px, ${height}px)`);
         $blocklyTrash.css("display", "unset");
       },
