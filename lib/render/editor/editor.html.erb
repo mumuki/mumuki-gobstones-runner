@@ -224,7 +224,6 @@
 
       _configureBlocklyBehavior() {
         this._setTeacherActions();
-        this._setGameLayout();
         this._setGameActions();
         this._initializeNonCustomToolboxBlocklyWorkspace();
         this._registerLayoutChangedEvent();
@@ -406,13 +405,6 @@
         $('#gbsPlayButton')[0].addEventListener('focus', function () {
           this.blur();
         })
-      },
-
-      _setGameLayout() {
-        if (this._isGame()) {
-          console.debug("Set game layout");
-          $(".mu-exercise-content").addClass('gbs-game-framework');
-        }
       },
 
       _setTeacherActions() {
