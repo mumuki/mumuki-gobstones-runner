@@ -133,3 +133,7 @@
     border: 1px solid #6D6E70 !important;
     border-radius: 4px;
 }
+
+.mu-exercise-content.gbs-game-framework .blocklyBubbleCanvas {
+  display: none;
+}
