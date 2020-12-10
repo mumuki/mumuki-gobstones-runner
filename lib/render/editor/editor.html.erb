@@ -428,11 +428,14 @@
         console.debug("Set game actions");
         const blockly = this._getBlockly();
 
-        this._setPrimitiveProcedures((blockly.primitiveProcedures || []).concat([
-          this._gamePrimitive('ShiftUp'),
-          this._gamePrimitive('ShiftDown'),
-          this._gamePrimitive('ShiftLeft'),
-          this._gamePrimitive('ShiftRight')
+        this._setPrimitiveProcedures(
+          this._gamePrimitivesFor(blockly.primitiveProcedures, [
+            'ShiftUp', 'ShiftDown', 'ShiftLeft', 'ShiftRight'
+        ]));
+
+        this._setPrimitiveFunctions(
+          this._gamePrimitivesFor(blockly.primitiveFunctions, [
+            'two', 'three', 'four', 'five'
         ]));
       },
 
@@ -456,6 +459,10 @@
 
       _gamePrimitive(name) {
         return { alias: 'procedureDeclaration', name, attributes: {block_icon: `<%= @assets_url %>/media/${name}.png`} };
+      },
+
+      _gamePrimitivesFor(base, names) {
+        return (base || []).concat(names.map(it => this._gamePrimitive(it)));
       },
 
       _getBlockly() {
