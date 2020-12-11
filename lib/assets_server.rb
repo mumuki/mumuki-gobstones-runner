@@ -17,10 +17,10 @@ class Mumukit::Server::App < Sinatra::Base
     get_local_asset "#{asset_type}/#{name}.svg", "lib/public/#{name}.svg", 'image/svg+xml'
   end
 
-  def self.get_media_assets(folder)
+  def self.get_media_assets(folder, content_type = nil)
     Dir.glob(File.join(__dir__,"../lib/public/#{folder}/*")).each do |path|
       relative_media_asset_path = "#{folder}/#{File.basename path}"
-      get_local_asset relative_media_asset_path, "lib/public/#{relative_media_asset_path}"
+      get_local_asset relative_media_asset_path, "lib/public/#{relative_media_asset_path}", content_type
     end
   end
 
@@ -43,7 +43,7 @@ class Mumukit::Server::App < Sinatra::Base
   get_local_asset 'full-kindergarten-toolbox.xml', 'lib/public/full-kindergarten-toolbox.xml', 'text/plain'
   get_local_asset 'minimal-kindergarten-toolbox.xml', 'lib/public/minimal-kindergarten-toolbox.xml', 'text/plain'
 
-  get_media_assets 'toolbox'
+  get_media_assets 'toolbox', 'text/plain'
 
   get_media_assets 'media'
   get_media_assets 'local-media'
