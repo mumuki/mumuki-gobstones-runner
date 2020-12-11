@@ -1,0 +1,8 @@
+<category name="Bloques de Gobstones">
+  <block type="RepeticionSimple"></block>
+  <block type="two"></block>
+  <block type="three"></block>
+  <block type="four"></block>
+  <block type="five"></block>
+</category>
+<category name="Procedimientos primitivos"></category>
