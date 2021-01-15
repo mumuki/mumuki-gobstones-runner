@@ -830,7 +830,7 @@
         const targetStateIndex = this.multipleScenarios.currentScenarioIndex;
         this.targetState = this.initialState[targetStateIndex];
 
-        const promise = mumuki.submission.processSolution({ solution })
+        const promise = mumuki.submission.sendSolution({solution})
           .then((results) => {
             if (promise !== this.serverPromise) return;
 
