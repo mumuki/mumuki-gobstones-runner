@@ -872,6 +872,10 @@
         else if (reason === "cancel" && editor.interactiveMode) {
           this._onInteractiveStop(editor);
         }
+        else if (reason === "cancel" && !editor.interactiveMode) {
+          this._onResetState();
+          this.serverPromise = undefined;
+        }
         else this.serverPromise = undefined;
       },
 
