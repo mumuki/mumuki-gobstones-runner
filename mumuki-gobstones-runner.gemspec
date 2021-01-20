@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'gobstones-board', '~> 1.19'
   spec.add_dependency 'gobstones-code-runner', '~> 0.6'
   spec.add_dependency 'mumuki-gobstones-blockly', '~> 0.38.1'
-  spec.add_dependency 'mumukit', '~> 2.37'
+  spec.add_dependency 'mumukit', '~> 2.38'
   spec.add_dependency 'nokogiri', '~> 1.10'
   spec.add_dependency 'sinatra-cross_origin', '~> 0.4'
 
