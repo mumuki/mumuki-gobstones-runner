@@ -869,14 +869,20 @@
         if (reason === "end") {
           this._onExecutionEnd(editor);
         }
-        else if (reason === "cancel" && editor.interactiveMode) {
+        else if (reason === "cancel") {
+          this._onExecutionCancel(editor);
+        }
+        else this.serverPromise = undefined;
+      },
+
+      _onExecutionCancel: function(editor) {
+        if(editor.interactiveMode) {
           this._onInteractiveStop(editor);
         }
-        else if (reason === "cancel" && !editor.interactiveMode) {
+        else {
           this._onResetState();
           this.serverPromise = undefined;
         }
-        else this.serverPromise = undefined;
       },
 
       _onExecutionEnd: function (editor) {
