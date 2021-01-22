@@ -19,6 +19,33 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
     LOGIC_SMELLS + FUNCTIONAL_SMELLS + OBJECT_ORIENTED_SMELLS
   end
 
+  def compile_mulang_analysis(*)
+    super.tap do |it|
+      it[:spec].merge!(
+        originalLanguage: "Json",
+        autocorrectionRules: positive_and_negative(
+          'Uses:==' => 'UsesEqual',
+          'Uses:/=' => 'UsesNotEqual',
+          'Uses:+' => 'UsesPlus',
+          'Uses:-' => 'UsesMinus',
+          'Uses:*' => 'UsesMultiply',
+          'Uses:/' => 'UsesMinus',
+          'Uses:not' => 'UsesNegation',
+          'Uses:&&' => 'UsesAnd',
+          'Uses:||' => 'UsesOr',
+          'Uses:>=' => 'UsesGreatherOrEqualThan',
+          'Uses:>' => 'UsesGreatherThan',
+          'Uses:<=' => 'UsesLessOrEqualThan',
+          'Uses:<' => 'UsesLessThan'
+        )
+      )
+    end
+  end
+
+  def positive_and_negative(rules)
+    rules.flat_map { |k, v| [[k, v], ["Not:#{k}", "Not:#{v}"]] }.to_h
+  end
+
   private
 
   def extract_ast(request)

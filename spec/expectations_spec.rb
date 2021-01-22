@@ -33,16 +33,35 @@ examples:
     let(:expectations) do
       [
         {binding: '*', inspection: 'UsesMath'},
+
         {binding: '*', inspection: 'UsesPlus'},
+        {binding: '*', inspection: 'Uses:+'},
         {binding: '*', inspection: 'UsesMinus'},
+        {binding: '*', inspection: 'Uses:-'},
+
+        {binding: '*', inspection: 'Not:UsesPlus'},
+        {binding: '*', inspection: 'Not:Uses:+'},
+
+        {binding: '*', inspection: 'Not:UsesMinus'},
+        {binding: '*', inspection: 'Not:Uses:-'},
       ]
     end
 
     it do
       expect(result).to eq([
         {expectation: expectations[0], result: true},
+
         {expectation: expectations[1], result: true},
-        {expectation: expectations[2], result: false}
+        {expectation: expectations[1], result: true},
+
+        {expectation: expectations[3], result: false},
+        {expectation: expectations[3], result: false},
+
+        {expectation: expectations[5], result: false},
+        {expectation: expectations[5], result: false},
+
+        {expectation: expectations[7], result: true},
+        {expectation: expectations[7], result: true}
       ])
     end
   end
