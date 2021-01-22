@@ -21,11 +21,12 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
 
   def autocorrection_rules
     {
-      'Uses:==' => 'UsesEqual',
+      'Uses:==' => 'UsesEqual', # non-standard, but for maximal backward compatibility
+      'Uses:===' => 'UsesEqual',
       'Uses:/=' => 'UsesNotEqual',
       'Uses:+' => 'UsesPlus',
       'Uses:-' => 'UsesMinus',
-      'Uses:*' => 'UsesMultiply',
+      'Uses:=*' => 'UsesMultiply',
       'Uses:/' => 'UsesMinus',
       'Uses:not' => 'UsesNegation',
       'Uses:&&' => 'UsesAnd',

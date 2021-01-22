@@ -28,6 +28,15 @@ examples:
     it { expect(result).to eq([{expectation: expectations[0], result: true}]) }
   end
 
+  context 'basic expectations with wildcard' do
+    let(:code) { 'program { foo := nroBolitas(Rojo) }' }
+    let(:expectations) do
+      [{binding: '*', inspection: 'Uses:*'}]
+    end
+
+    it { expect(result).to eq([{expectation: expectations[0], result: true}]) }
+  end
+
   context 'primitive expectations' do
     let(:code) { 'program { foo := 1 + 2 }' }
     let(:expectations) do
