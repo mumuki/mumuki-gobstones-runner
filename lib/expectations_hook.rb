@@ -19,10 +19,6 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
     LOGIC_SMELLS + FUNCTIONAL_SMELLS + OBJECT_ORIENTED_SMELLS
   end
 
-  def original_language
-    "Json"
-  end
-
   def autocorrection_rules
     {
       'Uses:==' => 'UsesEqual',
