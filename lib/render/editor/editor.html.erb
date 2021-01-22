@@ -809,7 +809,7 @@
         this.$editor = $("mu-gobstones-custom-editor")[0];
       },
 
-      _boardToState : function ({size, table, header, boom}) {
+      _boardToState: function ({size, table, header, boom}) {
         return {size, table, header, boom}
       },
 
@@ -830,7 +830,7 @@
         const targetStateIndex = this.multipleScenarios.currentScenarioIndex;
         this.targetState = this.initialState[targetStateIndex];
 
-        const promise = mumuki.submission.processSolution({ solution })
+        const promise = mumuki.submission.sendSolution({solution})
           .then((results) => {
             if (promise !== this.serverPromise) return;
 
@@ -869,10 +869,20 @@
         if (reason === "end") {
           this._onExecutionEnd(editor);
         }
-        else if (reason === "cancel" && editor.interactiveMode) {
-          this._onInteractiveStop(editor);
+        else if (reason === "cancel") {
+          this._onExecutionCancel(editor);
         }
         else this.serverPromise = undefined;
+      },
+
+      _onExecutionCancel: function(editor) {
+        if(editor.interactiveMode) {
+          this._onInteractiveStop(editor);
+        }
+        else {
+          this._onResetState();
+          this.serverPromise = undefined;
+        }
       },
 
       _onExecutionEnd: function (editor) {
