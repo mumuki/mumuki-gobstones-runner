@@ -19,6 +19,25 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
     LOGIC_SMELLS + FUNCTIONAL_SMELLS + OBJECT_ORIENTED_SMELLS
   end
 
+  def autocorrection_rules
+    {
+      'Uses:==' => 'UsesEqual', # non-standard, but for maximal backward compatibility
+      'Uses:===' => 'UsesEqual',
+      'Uses:/=' => 'UsesNotEqual',
+      'Uses:+' => 'UsesPlus',
+      'Uses:-' => 'UsesMinus',
+      'Uses:=*' => 'UsesMultiply',
+      'Uses:/' => 'UsesMinus',
+      'Uses:not' => 'UsesNegation',
+      'Uses:&&' => 'UsesAnd',
+      'Uses:||' => 'UsesOr',
+      'Uses:>=' => 'UsesGreatherOrEqualThan',
+      'Uses:>' => 'UsesGreatherThan',
+      'Uses:<=' => 'UsesLessOrEqualThan',
+      'Uses:<' => 'UsesLessThan'
+    }
+  end
+
   private
 
   def extract_ast(request)
