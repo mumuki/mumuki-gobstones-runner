@@ -97,6 +97,26 @@ class GobstonesFeedbackHook < Mumukit::Hook
       end
     end
 
+    def explain_function_or_parameter_name_expected(submission, result)
+      if result =~ /<pre>\[(\d+):(\d+)\]: Se esperaba un identificador con minúsculas\.\nSe encontró: un identificador con mayúsculas\.<\/pre>/
+        if submission.lines[$1.to_i - 1].include? 'function'
+          # may be a wrong function name or a parameter name
+          { kind: $3 }
+        else
+          # may be a parameter name
+          { kind: $3 }
+        end
+      end
+    end
+
+    def explain_procedure_name_expected(submission, result)
+      if result =~ /<pre>\[(\d+):(\d+)\]: Se esperaba un identificador con mayúsculas\.\nSe encontró: un identificador con minúsculas\.<\/pre>/
+        if submission.lines[$1.to_i - 1] =~ /\s*procedure\s+([a-z][[:alnum:]]*)/
+          { wrong_name: $1, right_name: $1.capitalize }
+        end
+      end
+    end
+
     private
 
     def malformed_program_header_with_name

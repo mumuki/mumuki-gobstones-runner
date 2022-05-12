@@ -28,3 +28,4 @@ es:
   upper_function_typo: 'Parece que escribiste <code>Function</code> en lugar de <code>function</code>. ¡Recordá que debe comenzar en minúsculas!'
   upper_procedure_typo: 'Parece que escribiste <code>Procedure</code> en lugar de <code>procedure</code>. ¡Recordá que debe comenzar en minúsculas!'
   upper_program_typo: 'Parece que escribiste <code>Program</code> en lugar de <code>program</code>. ¡Recordá que debe comenzar en minúsculas!'
+  procedure_name_expected: 'Parece que escribiste el nombre de procedimiento en %{wrong_name} minúsculas. ¡Recordá que debe comenzar en mayúsculas! Probá cambiarlo a %{right_name}'

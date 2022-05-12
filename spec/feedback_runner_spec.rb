@@ -79,6 +79,39 @@ Se encontró: la palabra clave "program".</pre>'] }
       it { expect(feedback).to eq("<ul>\n<li>#{I18n.t(:surplus_closing_brace, line: 4)}</li>\n</ul>") }
     end
 
+    context 'upper parameter typo' do
+      let(:content) { %q{ procedure Foo(Direccion) {
+
+                          }
+                        }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>mal parámetro</li>\n</ul>") }
+      it { expect(result[0]).to eq "<pre>[1:15]: Se esperaba un identificador con minúsculas.\nSe encontró: un identificador con mayúsculas.</pre>" }
+    end
+
+    context 'lower procedure typo' do
+      let(:content) { %q{ procedure foo(Direccion) {
+
+                          }
+                        }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>Parece que escribiste el nombre de procedimiento en foo minúsculas. ¡Recordá que debe comenzar en mayúsculas! Probá cambiarlo a Foo</li>\n</ul>") }
+    end
+
+
+    context 'upper function typo' do
+      let(:content) { %q{ function Foo(Direccion) {
+
+                          }
+                        }
+      }
+
+      it { expect(feedback).to eq("<ul>\n<li>mal nombre de funcion</li>\n</ul>") }
+      it { expect(result[0]).to eq "<pre>[1:10]: Se esperaba un identificador con minúsculas.\nSe encontró: un identificador con mayúsculas.</pre>" }
+    end
+
     context 'upper procedure typo' do
       let(:content) { %q{ Procedure Foo() {
                             bar()
@@ -204,4 +237,3 @@ Se encontró: la palabra clave "program".</pre>'] }
     end
   end
 end
-
