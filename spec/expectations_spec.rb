@@ -75,6 +75,29 @@ examples:
     end
   end
 
+  context 'primite comparison operators' do
+    let(:code) { 'function x(y) { return (y > 0) }' }
+    let(:expectations) do
+      [
+        {binding: '*', inspection: 'UsesGreaterThan'},
+        {binding: '*', inspection: 'UsesGreaterThanOrEqual'},
+
+        {binding: '*', inspection: 'Uses:>'},
+        {binding: '*', inspection: 'Uses:>='}
+      ]
+    end
+
+    it do
+      expect(result).to eq([
+        {expectation: expectations[0], result: true},
+        {expectation: expectations[1], result: false},
+
+        {expectation: expectations[2], result: true},
+        {expectation: expectations[3], result: false}
+      ])
+    end
+  end
+
   context 'multiple basic expectations' do
     let(:code) { 'program { bar := 1 }' }
     let(:expectations) do

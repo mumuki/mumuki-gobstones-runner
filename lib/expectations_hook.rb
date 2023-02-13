@@ -31,8 +31,8 @@ class GobstonesExpectationsHook < Mumukit::Templates::MulangExpectationsHook
       'Uses:not' => 'UsesNegation',
       'Uses:&&' => 'UsesAnd',
       'Uses:||' => 'UsesOr',
-      'Uses:>=' => 'UsesGreatherOrEqualThan',
-      'Uses:>' => 'UsesGreatherThan',
+      'Uses:>=' => 'UsesGreaterOrEqualThan',
+      'Uses:>' => 'UsesGreaterThan',
       'Uses:<=' => 'UsesLessOrEqualThan',
       'Uses:<' => 'UsesLessThan'
     }
