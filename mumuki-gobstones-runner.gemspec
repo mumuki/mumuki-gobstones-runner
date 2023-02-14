@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
+  spec.add_dependency 'mulang', '~> 6.10'
   spec.add_dependency 'gobstones-board', '~> 1.19'
   spec.add_dependency 'gobstones-code-runner', '~> 0.6'
   spec.add_dependency 'mumuki-gobstones-blockly', '~> 0.38.1'
