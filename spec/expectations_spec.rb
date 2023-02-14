@@ -76,14 +76,14 @@ examples:
   end
 
   context 'primite comparison operators' do
-    let(:code) { 'function x(y) { return (y > 0) }' }
+    let(:code) { 'function isPositive(number) { return (number > 0) }' }
     let(:expectations) do
       [
-        {binding: '*', inspection: 'UsesGreaterThan'},
-        {binding: '*', inspection: 'UsesGreaterThanOrEqual'},
+        {binding: 'isPositive', inspection: 'UsesGreaterThan'},
+        {binding: 'isPositive', inspection: 'UsesGreaterOrEqualThan'},
 
-        {binding: '*', inspection: 'Uses:>'},
-        {binding: '*', inspection: 'Uses:>='}
+        {binding: 'isPositive', inspection: 'Uses:>'},
+        {binding: 'isPositive', inspection: 'Uses:>='}
       ]
     end
 
@@ -92,8 +92,8 @@ examples:
         {expectation: expectations[0], result: true},
         {expectation: expectations[1], result: false},
 
-        {expectation: expectations[2], result: true},
-        {expectation: expectations[3], result: false}
+        {expectation: expectations[0], result: true},
+        {expectation: expectations[1], result: false}
       ])
     end
   end
