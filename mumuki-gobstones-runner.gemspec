@@ -18,9 +18,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'mulang', '~> 6.10'
-  spec.add_dependency 'gobstones-board', '~> 1.19'
-  spec.add_dependency 'gobstones-code-runner', '~> 0.6'
-  spec.add_dependency 'mumuki-gobstones-blockly', '~> 0.38.1'
+  spec.add_dependency 'mumuki-gobstones-board', '~> 1.20', '>= 1.20.1'
+  spec.add_dependency 'mumuki-gobstones-code-runner', '~> 0.11', '>= 0.11.1'
+  spec.add_dependency 'mumuki-gobstones-blockly', '~> 0.39.0'
   spec.add_dependency 'mumukit', '~> 2.39'
   spec.add_dependency 'nokogiri', '~> 1.10'
   spec.add_dependency 'sinatra-cross_origin', '~> 0.4'
