@@ -13,7 +13,7 @@ module Gobstones
 
       builder.result          = renderer.send "render_error_#{error.message}", error.details
       builder.summary_type    = error.message
-      builder.summary_message = I18n.t error.message, error.details
+      builder.summary_message = I18n.t error.message, **error.details
     end
 
     private
